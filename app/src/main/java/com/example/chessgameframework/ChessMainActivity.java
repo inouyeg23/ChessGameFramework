@@ -37,7 +37,8 @@ public class ChessMainActivity extends GameMainActivity {
      */
     @Override
     public LocalGame createLocalGame(GameState gameState) {
-        return null;
+        if(gameState == null) return new ChessLocalGame();
+        return new ChessLocalGame((ChessGameState) gameState);
     }
 
 
