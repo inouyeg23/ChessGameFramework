@@ -1,9 +1,5 @@
 package com.example.chessgameframework;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;

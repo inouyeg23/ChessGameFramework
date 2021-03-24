@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.example.chessgameframework.ChessGameState;
+
 /**
  * A class that knows how to play the game. The data in this class represent the
  * state of a game. The state represented by an instance of this class can be a
@@ -66,7 +68,7 @@ public abstract class LocalGame implements Game, Tickable {
     private GameTimer myTimer = new GameTimer(this);
 
     // the game's state
-    protected GameState state;
+    protected ChessGameState state;
 
     /**
      * Returns the game's timer

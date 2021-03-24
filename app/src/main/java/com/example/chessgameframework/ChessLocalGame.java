@@ -2,9 +2,30 @@ package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
+import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 public class ChessLocalGame extends LocalGame {
+    /**
+     * Constructor for the TTTLocalGame.
+     */
+    public ChessLocalGame() {
+
+        // perform superclass initialization
+        super();
+
+        // create a new, unfilled-in TTTState object
+        super.state = new ChessGameState();
+    }
+
+    /**
+     * Constructor for the TTTLocalGame with loaded tttState
+     * @param chessState
+     */
+    public ChessLocalGame(ChessGameState chessState){
+        super();
+        super.state = new ChessGameState(chessState);
+    }
     /**
      * Notify the given player that its state has changed. This should involve sending
      * a GameInfo object to the player. If the game is not a perfect-information game
@@ -16,7 +37,7 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
-
+        p.sendInfo(new ChessGameState((ChessGameState) state));
     }
 
     /**
