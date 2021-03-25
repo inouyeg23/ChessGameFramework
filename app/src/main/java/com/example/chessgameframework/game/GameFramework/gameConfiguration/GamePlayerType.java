@@ -1,6 +1,6 @@
 package com.example.chessgameframework.game.GameFramework.gameConfiguration;
 
-import edu.up.cs301.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 /**
  * class GamePlayerType

@@ -1,7 +1,9 @@
 package com.example.chessgameframework.game.GameFramework.players;
 
-import edu.up.cs301.game.GameFramework.GameMainActivity;
-import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
+import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+
+
+import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 /**
  * A player who plays a (generic) game. Each class that implements a player for
