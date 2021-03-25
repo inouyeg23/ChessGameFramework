@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
-import com.example.chessgameframework.game.R;
+import com.example.chessgameframework.R;
 
 /**
  * Helper-class for showing dialog boxes

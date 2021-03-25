@@ -34,7 +34,7 @@ import com.example.chessgameframework.game.GameFramework.utilities.IPCoder;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 import com.example.chessgameframework.game.GameFramework.utilities.MessageBox;
 import com.example.chessgameframework.game.GameFramework.utilities.Saving;
-import com.example.chessgameframework.game.R;
+import com.example.chessgameframework.R;
 
 /**
  * class GameMainActivity
@@ -169,8 +169,8 @@ public abstract class GameMainActivity extends Activity implements
 
         // if there is a saved configuration, modify the default configuration accordingly
         if (!this.config.restoreSavedConfig(saveFileName(), this)) {
-            MessageBox.popUpMessage(Resources.getSystem().getString(android.R.string.Config_Error_Msg),
-                    this);
+            //MessageBox.popUpMessage(Resources.getSystem().getString(android.R.string.Config_Error_Msg),
+            //        this);
         }
 
         if (this.config.isUserModifiable()) { // normal run: user has chance to modify configuration
