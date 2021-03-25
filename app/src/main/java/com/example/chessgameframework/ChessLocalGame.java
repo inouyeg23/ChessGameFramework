@@ -2,7 +2,6 @@ package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
-import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 public class ChessLocalGame extends LocalGame {
@@ -79,4 +78,6 @@ public class ChessLocalGame extends LocalGame {
     protected boolean makeMove(GameAction action) {
         return false;
     }
+
+
 }

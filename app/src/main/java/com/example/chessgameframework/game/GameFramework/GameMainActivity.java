@@ -26,15 +26,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
-import edu.up.cs301.game.GameFramework.gameConfiguration.GameConfig;
-import edu.up.cs301.game.GameFramework.gameConfiguration.GamePlayerType;
-import edu.up.cs301.game.GameFramework.infoMessage.GameState;
-import edu.up.cs301.game.GameFramework.players.GamePlayer;
-import edu.up.cs301.game.GameFramework.utilities.IPCoder;
-import edu.up.cs301.game.GameFramework.utilities.Logger;
-import edu.up.cs301.game.GameFramework.utilities.MessageBox;
-import edu.up.cs301.game.GameFramework.utilities.Saving;
-import edu.up.cs301.game.R;
+import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
+import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
+import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
+import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.utilities.IPCoder;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
+import com.example.chessgameframework.game.GameFramework.utilities.MessageBox;
+import com.example.chessgameframework.game.GameFramework.utilities.Saving;
+import com.example.chessgameframework.game.R;
 
 /**
  * class GameMainActivity
@@ -169,7 +169,7 @@ public abstract class GameMainActivity extends Activity implements
 
         // if there is a saved configuration, modify the default configuration accordingly
         if (!this.config.restoreSavedConfig(saveFileName(), this)) {
-            MessageBox.popUpMessage(Resources.getSystem().getString(R.string.Config_Error_Msg),
+            MessageBox.popUpMessage(Resources.getSystem().getString(android.R.string.Config_Error_Msg),
                     this);
         }
 

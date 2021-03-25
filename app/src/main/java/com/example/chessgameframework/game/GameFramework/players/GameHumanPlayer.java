@@ -2,6 +2,7 @@ package com.example.chessgameframework.game.GameFramework.players;
 
 import com.example.chessgameframework.game.GameFramework.Game;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameOverAckAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.MyNameIsAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.ReadyAction;
