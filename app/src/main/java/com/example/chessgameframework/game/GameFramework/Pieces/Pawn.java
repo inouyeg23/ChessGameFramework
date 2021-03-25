@@ -1,6 +1,8 @@
-package com.example.chessgameframework;
+package com.example.chessgameframework.game.GameFramework.Pieces;
 
-public class Pawn extends Piece{
+import com.example.chessgameframework.game.GameFramework.Piece;
+
+public class Pawn extends Piece {
     public Pawn(boolean isBlack) {
         super(isBlack);
     }

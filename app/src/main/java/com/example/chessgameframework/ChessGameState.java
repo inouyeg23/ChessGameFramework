@@ -1,5 +1,6 @@
 package com.example.chessgameframework;
 
+import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 public class ChessGameState extends GameState implements Serializable {
 
     //8x8 array of pieces
-    private String[][] board;
+    private Piece[][] board;
 
     //whose turn it is
     private int playerTurn;
@@ -61,10 +62,10 @@ public class ChessGameState extends GameState implements Serializable {
      */
     public ChessGameState(){
         //initialize an empty board
-        board = new String[8][8];
+        board = new Piece[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                board[i][j] = "  ";
+                board[i][j] = null;
             }
         }
         //starts at 0
@@ -100,7 +101,7 @@ public class ChessGameState extends GameState implements Serializable {
      */
       public ChessGameState(ChessGameState original){
           // copy the values from original array
-          board = new String[8][8];
+          board = new Piece[8][8];
           for (int i = 0; i < 8; i++) {
               for (int j = 0; j < 8; j++) {
                   board[i][j] = original.board[i][j];
@@ -147,17 +148,17 @@ public class ChessGameState extends GameState implements Serializable {
       }// copy constructor
 
 
-    public String getPiece(int row, int col){
+    public Piece getPiece(int row, int col){
         if(board == null|| row < 0 || col < 0) {
-            return "Out of Bounds";
+            return null;
         }
         if(row >= board.length || col >= board[row].length){
-            return "Out of Bounds";
+            return null;
         }
         return board[row][col];
     }
 
-    public void setPiece(int row, int col, String piece){
+    public void setPiece(int row, int col, Piece piece){
         if(board == null|| row < 0 || col < 0) {
             return;
         }
@@ -209,7 +210,7 @@ public class ChessGameState extends GameState implements Serializable {
         //0 for black, 1 for white
         if((currPlayer == 0 && !isCheckedBlack) || (currPlayer == 1 && !isCheckedWhite)){
             //checking if space is empty
-            if(board[row][col] == " "){
+            if(board[row][col] == null){
                 //space is empty
                 return true;
             } else {
@@ -232,7 +233,7 @@ public class ChessGameState extends GameState implements Serializable {
      * highlighted_____Move is currently a boolean but may change to
      * boolean method to list out possible moves for that specific piece
      */
-    public boolean movePiece(int row, int col, int selectRow, int selectCol, String selectedPiece){
+    public boolean movePiece(int row, int col, int selectRow, int selectCol, Piece selectedPiece){
         selectedPiece = getPiece(row, col);
         if(currPlayer == playerTurn){
             //determines the piece and reflects the given player action
@@ -267,7 +268,7 @@ public class ChessGameState extends GameState implements Serializable {
                     break;
                 case "king":
                     if(highlightedKingMove) {
-                        if(board[row][col] == " ") {
+                        if(board[row][col] == null) {
                             //space is empty
                             setPiece(selectRow, selectCol, selectedPiece);
                         }
