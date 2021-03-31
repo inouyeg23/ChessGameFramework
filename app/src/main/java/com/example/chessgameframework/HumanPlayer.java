@@ -25,15 +25,11 @@ public class HumanPlayer extends GamePlayerType {
             public View getTopView() {
                 return null;
             }
-
             @Override
             public void receiveInfo(GameInfo info) {
-
             }
-
             @Override
             public void setAsGui(GameMainActivity activity) {
-
             }
         };
     }

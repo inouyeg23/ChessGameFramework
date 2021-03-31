@@ -1,9 +1,16 @@
 package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
+import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
+import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @authors: Jonah Ingler, Garrett Inouye, Logan Machida, Connor Morgan
@@ -56,6 +63,7 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean highlightedBishopMove;
     public boolean highlightedKingMove;
     public boolean highlightedQueenMove;
+    private Queen queen = new Queen();
 
     /**
      * Constructor for class ChessGameState
@@ -224,78 +232,70 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-
-    /**
-     * selectedMove refers to something to be implemented later
-     * it will return a value based on what the user selected
-     * to move the piece in that spot.
-     *
-     * highlighted_____Move is currently a boolean but may change to
-     * boolean method to list out possible moves for that specific piece
-     */
-    public boolean movePiece(int row, int col, int selectRow, int selectCol, Piece selectedPiece){
-        selectedPiece = getPiece(row, col);
-        if(currPlayer == playerTurn){
-            //determines the piece and reflects the given player action
-            switch (selectedPiece){
-                case "pawn":
-                    if(highlightedPawnMove) {
-                        if (isLegal(selectRow, selectCol)) {
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-                case "knight":
-                    if(highlightedKnightMove) {
-                        if (isLegal(selectRow, selectCol)) {
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-                case "rook":
-                    if(highlightedRookMove) {
-                        if (isLegal(selectRow, selectCol)) {
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-                case "bishop":
-                    if(highlightedBishopMove) {
-                        if (isLegal(selectRow, selectCol)) {
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-                case "king":
-                    if(highlightedKingMove) {
-                        if(board[row][col] == null) {
-                            //space is empty
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-                case "queen":
-                    if(highlightedQueenMove) {
-                        if (isLegal(selectRow, selectCol)) {
-                            setPiece(selectRow, selectCol, selectedPiece);
-                        }
-                    }
-                    break;
-            }
-            //moves on the next player
-            switch (playerTurn) {
-                case 0:
-                    playerTurn = 1;
-                    break;
-                case 1:
-                    playerTurn = 0;
-                    break;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    /**
+//     * selectedMove refers to something to be implemented later
+//     * it will return a value based on what the user selected
+//     * to move the piece in that spot.
+//     *
+//     * highlighted_____Move is currently a boolean but may change to
+//     * boolean method to list out possible moves for that specific piece
+//     */
+//    public boolean movePiece(int row, int col, int selectRow, int selectCol){
+//        Piece selectedPiece = getPiece(row, col);
+//        if(currPlayer == playerTurn){
+//            //determines the piece and reflects the given player action
+//            if (selectedPiece == Pawn) {
+//                if (highlightedPawnMove) {
+//                    if (isLegal(selectRow, selectCol)) {
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            } else if (Knight.equals(selectedPiece)) {
+//                if (highlightedKnightMove) {
+//                    if (isLegal(selectRow, selectCol)) {
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            } else if (Rook.equals(selectedPiece)) {
+//                if (highlightedRookMove) {
+//                    if (isLegal(selectRow, selectCol)) {
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            } else if (Bishop.equals(selectedPiece)) {
+//                if (highlightedBishopMove) {
+//                    if (isLegal(selectRow, selectCol)) {
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            } else if (King.equals(selectedPiece)) {
+//                if (highlightedKingMove) {
+//                    if (board[row][col] == null) {
+//                        //space is empty
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            } else if (Objects.equals(Queen, selectedPiece)) {
+//                if (highlightedQueenMove) {
+//                    if (isLegal(selectRow, selectCol)) {
+//                        setPiece(selectRow, selectCol, selectedPiece);
+//                    }
+//                }
+//            }
+//            //moves on the next player
+//            switch (playerTurn) {
+//                case 0:
+//                    playerTurn = 1;
+//                    break;
+//                case 1:
+//                    playerTurn = 0;
+//                    break;
+//            }
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     public boolean drawOffered(){
         //drawInitiated would turn true or false based on button onClick
