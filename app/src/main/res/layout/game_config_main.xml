@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+
     <ImageView
         android:id="@+id/startScreen"
         android:layout_width="match_parent"
