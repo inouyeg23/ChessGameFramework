@@ -473,6 +473,12 @@ public abstract class GameMainActivity extends Activity implements
 
     protected void initSettingsTab(){
         //Override if the game has customizable rules
+        Spinner choosecolor = (Spinner)findViewById((R.id.chooseColor));
+        String [] chessColor = new String[] {"Random", "Black", "White"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, chessColor);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        choosecolor.setAdapter(adapter);
+
     }
 
     /**

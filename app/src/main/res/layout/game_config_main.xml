@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="450dp"
+        android:layout_marginTop="650dp"
         android:fontFamily="@font/oswald_bold"
         android:scaleX="3"
         android:scaleY="3"
@@ -38,8 +38,8 @@
         android:id="@+id/playGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="800dp"
         android:scaleX="2"
         android:scaleY="2"
         android:text="@string/start_the_game" />
