@@ -1,12 +1,6 @@
 package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
-import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
-import com.example.chessgameframework.game.GameFramework.Pieces.King;
-import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
-import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
-import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -63,7 +57,6 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean highlightedBishopMove;
     public boolean highlightedKingMove;
     public boolean highlightedQueenMove;
-    private Queen queen = new Queen();
 
     /**
      * Constructor for class ChessGameState
