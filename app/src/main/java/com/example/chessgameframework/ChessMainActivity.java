@@ -39,7 +39,10 @@ public class ChessMainActivity extends GameMainActivity {
         ArrayList<GamePlayerType> playerTypes = new ArrayList<GamePlayerType>();
 
         //Adds the allowed player types
-        playerTypes.add(new HumanPlayer("Human Player"));
+        playerTypes.add(new GamePlayerType("Local Human Player") {
+            public GamePlayer createPlayer(String name) {
+                return new HumanPlayer(name);
+            }});
 
         //create a game configuration class for chess
         GameConfig defaultConfig = new GameConfig(playerTypes,1,2,"chess", 8080);
