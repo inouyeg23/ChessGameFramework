@@ -1,6 +1,7 @@
 package com.example.chessgameframework.game.GameFramework.infoMessage;
 
-import static com.example.chessgameframework.game.GameFramework.infoMessage.GameState.;
+//import static com.example.chessgameframework.game.GameFramework.infoMessage.GameState.;
+import static com.example.chessgameframework.game.GameFramework.utilities.Saving.SEPARATOR;;
 
 /**
  * The state of the game. This class should be subclassed so that it holds

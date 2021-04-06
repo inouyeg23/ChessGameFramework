@@ -8,11 +8,14 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -20,12 +23,14 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
+
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
@@ -154,6 +159,7 @@ public abstract class GameMainActivity extends Activity implements
      *
      * "main" for the game framework
      */
+    private ImageView startScreen = null;
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,8 +167,16 @@ public abstract class GameMainActivity extends Activity implements
         //Set Context for Toast Logging
         Logger.setContext(getApplicationContext());
 
+        // Removes top bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         // Initialize the layout
         setContentView(R.layout.game_config_main);
+
+        //sets up the start screen image view
+        ImageView startScreen = (ImageView)findViewById(R.id.startScreen);
+        startScreen.setImageResource(R.drawable.chessstartscreen);
 
         // create the default configuration for this game
         this.config = createDefaultConfig();
@@ -185,8 +199,7 @@ public abstract class GameMainActivity extends Activity implements
 
             // allow buttons to interact
             justStarted = false;
-        }
-        else { // special run (during debugging?): use the given configuration, unmodified
+        } else { // special run (during debugging?): use the given configuration, unmodified
             String msg = launchGame(this.config, null);
             if (msg != null) {
                 // we have an error message
@@ -199,12 +212,12 @@ public abstract class GameMainActivity extends Activity implements
         } else {
             Logger.setToastValue(false);
         }
-        if (((CheckBox) findViewById(R.id.debugLogging)).isChecked()){
+        if (((CheckBox) findViewById(R.id.debugLogging)).isChecked()) {
             Logger.setDebugValue(true);
-        }else {
+        } else {
             Logger.setDebugValue(false);
         }
-    }// onCreate
+    }
 
     /**
      * Returns the name of the configuration save-file.
@@ -467,6 +480,12 @@ public abstract class GameMainActivity extends Activity implements
 
     protected void initSettingsTab(){
         //Override if the game has customizable rules
+        Spinner choosecolor = (Spinner)findViewById((R.id.chooseColor));
+        String [] chessColor = new String[] {"Random", "Black", "White"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, chessColor);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        choosecolor.setAdapter(adapter);
+
     }
 
     /**
