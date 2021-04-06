@@ -1,4 +1,4 @@
-package com.example.chessgameframework.game.GameFramework.chessPieces;
+package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
 import android.graphics.Color;
 import android.graphics.Point;
