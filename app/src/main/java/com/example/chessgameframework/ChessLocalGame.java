@@ -79,14 +79,37 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean makeMove(GameAction action) {
-        ChessGameState chessGameState = new ChessGameState();
-        ChessMoveAction chessMoveAction = new ChessMoveAction();
-        int col = chessMoveAction.getCol();
-        int row = chessMoveAction.getRow();
-        int selectedCol = chessMoveAction.getSelectedCol();
-        int selectedRow = chessMoveAction.getSelectedRow();
-        Piece piece = chessMoveAction.getSelectedPiece();
-        chessGameState.movePiece(col, row, selectedCol, selectedRow, piece);
-        return false;
+
+        ChessGameState CGS = (ChessGameState) super.state;
+        ChessMoveAction CMA = (ChessMoveAction) action;
+
+        int row = CMA.getRow();
+        int col = CMA.getCol();
+        int selectedCol = CMA.getSelectedCol();
+        int selectedRow = CMA.getSelectedRow();
+        Piece piece = CMA.getSelectedPiece();
+
+        // get the ID of our player
+        int playerID = getPlayerIdx(CMA.getPlayer());
+
+        // if there is a friendly piece, return false
+        if (CGS.getPiece(row, col) == null) {
+            return false;
+        }
+
+        // get the 0/1 id of the player whose move it is
+        int playerTurn = CGS.getPlayerTurn();
+
+        // place the player's piece on the selected square
+        state.movePiece(col, row, selectedCol, selectedRow, piece);
+
+        // make it the other player's turn
+        state.setPlayerTurn(1 - playerTurn);
+
+
+        // return true, indicating the it was a legal move
+        return true;
+
+
     }
 }
