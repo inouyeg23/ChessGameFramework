@@ -1,7 +1,9 @@
 package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
+import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
+import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 public class ChessLocalGame extends LocalGame {
@@ -18,7 +20,7 @@ public class ChessLocalGame extends LocalGame {
     }
 
     /**
-     * Constructor for the TTTLocalGame with loaded tttState
+     * Constructor for the ChessLocalGame with loaded chessState
      * @param chessState
      */
     public ChessLocalGame(ChessGameState chessState){
@@ -63,6 +65,7 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean canMove(int playerIdx) {
+
         return false;
     }
 
@@ -76,8 +79,14 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean makeMove(GameAction action) {
+        ChessGameState chessGameState = new ChessGameState();
+        ChessMoveAction chessMoveAction = new ChessMoveAction();
+        int col = chessMoveAction.getCol();
+        int row = chessMoveAction.getRow();
+        int selectedCol = chessMoveAction.getSelectedCol();
+        int selectedRow = chessMoveAction.getSelectedRow();
+        Piece piece = chessMoveAction.getSelectedPiece();
+        chessGameState.movePiece(col, row, selectedCol, selectedRow, piece);
         return false;
     }
-
-
 }

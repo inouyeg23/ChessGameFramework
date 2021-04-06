@@ -63,7 +63,6 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean highlightedBishopMove;
     public boolean highlightedKingMove;
     public boolean highlightedQueenMove;
-    private Queen queen = new Queen();
 
     /**
      * Constructor for class ChessGameState
@@ -176,6 +175,32 @@ public class ChessGameState extends GameState implements Serializable {
         board[row][col] = piece;
     }
 
+    //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
+    public void inCheck() {
+        int selectRow;
+        int selectCol;
+        for (int i = 0; i <= 8; i++) {
+            for (int j = 0; j <= 8; j++) {
+                if (getPiece(i, j) instanceof King) {
+                    selectRow = i;
+                    selectCol = j;
+                    for (int row = 0; row <= 8; row++) {
+                        for (int col = 0; col <= 8; col++) {
+                            Piece targetPiece = getPiece(row, col);
+                            if (targetPiece.canMove(row, col, selectRow, selectCol)) {
+                                if (targetPiece.isBlack()) {
+                                    setCheckedWhite(true);
+                                } else {
+                                    setCheckedBlack(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * toString method
      * prints the values for all the variables
@@ -194,6 +219,19 @@ public class ChessGameState extends GameState implements Serializable {
                 "Black checkmated: " + isCheckedmateBlack + "\n" +
                 "White checkmated: " + isCheckedmateWhite + "\n" +
                 "Game paused: " + isPaused + "\n";
+    }
+
+    public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
+        if(piece.canMove(row,col,selectedRow,selectedCol)){
+            setPiece(selectedRow,selectedCol,piece);
+            setPiece(row,col,null);
+        }
+        if(currPlayer == 1){
+            currPlayer = 0;
+        }
+        else{
+            currPlayer = 1;
+        }
     }
 
     /**
@@ -232,70 +270,6 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-//    /**
-//     * selectedMove refers to something to be implemented later
-//     * it will return a value based on what the user selected
-//     * to move the piece in that spot.
-//     *
-//     * highlighted_____Move is currently a boolean but may change to
-//     * boolean method to list out possible moves for that specific piece
-//     */
-//    public boolean movePiece(int row, int col, int selectRow, int selectCol){
-//        Piece selectedPiece = getPiece(row, col);
-//        if(currPlayer == playerTurn){
-//            //determines the piece and reflects the given player action
-//            if (selectedPiece == Pawn) {
-//                if (highlightedPawnMove) {
-//                    if (isLegal(selectRow, selectCol)) {
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            } else if (Knight.equals(selectedPiece)) {
-//                if (highlightedKnightMove) {
-//                    if (isLegal(selectRow, selectCol)) {
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            } else if (Rook.equals(selectedPiece)) {
-//                if (highlightedRookMove) {
-//                    if (isLegal(selectRow, selectCol)) {
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            } else if (Bishop.equals(selectedPiece)) {
-//                if (highlightedBishopMove) {
-//                    if (isLegal(selectRow, selectCol)) {
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            } else if (King.equals(selectedPiece)) {
-//                if (highlightedKingMove) {
-//                    if (board[row][col] == null) {
-//                        //space is empty
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            } else if (Objects.equals(Queen, selectedPiece)) {
-//                if (highlightedQueenMove) {
-//                    if (isLegal(selectRow, selectCol)) {
-//                        setPiece(selectRow, selectCol, selectedPiece);
-//                    }
-//                }
-//            }
-//            //moves on the next player
-//            switch (playerTurn) {
-//                case 0:
-//                    playerTurn = 1;
-//                    break;
-//                case 1:
-//                    playerTurn = 0;
-//                    break;
-//            }
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 
     public boolean drawOffered(){
         //drawInitiated would turn true or false based on button onClick

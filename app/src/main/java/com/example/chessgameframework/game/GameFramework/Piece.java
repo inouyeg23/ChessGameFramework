@@ -33,5 +33,5 @@ public abstract class Piece {
      *
      * 
      **/
-    public abstract boolean canMove(int row, int col, int selectRow, int selectCol, Piece piece);
+    public abstract boolean canMove(int row, int col, int selectRow, int selectCol);
 }
