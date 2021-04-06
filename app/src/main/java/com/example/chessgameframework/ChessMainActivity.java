@@ -1,5 +1,15 @@
 package com.example.chessgameframework;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.view.SurfaceView;
+import android.widget.ImageView;
+
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
@@ -7,13 +17,14 @@ import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameC
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 import java.util.ArrayList;
 
 public class ChessMainActivity extends GameMainActivity {
     /**
      *  We need to override the abstract methods from GameMainActivity.
-     *  I can see what that looks like in th eTTTMainActivity
+     *  I can see what that looks like in the TTTMainActivity
      */
 
     /**
@@ -23,10 +34,25 @@ public class ChessMainActivity extends GameMainActivity {
      */
     @Override
     public GameConfig createDefaultConfig() {
-        ArrayList<GamePlayerType> al = new ArrayList<GamePlayerType>();
-        al.add(new HumanPlayer("Human"));
-        return new GameConfig(al,1,1,"chess", 8080);
+
+        //Define allowed player types
+        ArrayList<GamePlayerType> playerTypes = new ArrayList<GamePlayerType>();
+
+        //Adds the allowed player types
+        playerTypes.add(new GamePlayerType("Local Human Player") {
+            public GamePlayer createPlayer(String name) {
+                return new HumanPlayer(name);
+            }});
+
+        //create a game configuration class for chess
+        GameConfig defaultConfig = new GameConfig(playerTypes,1,2,"chess", 8080);
+        defaultConfig.addPlayer("Human Player", 0); //player 1: a human player
+
+        //returns the default configuration
+        return defaultConfig;
+
     }
+
 
     /**
      * createLocalGame
@@ -43,9 +69,7 @@ public class ChessMainActivity extends GameMainActivity {
         if(gameState == null) return new ChessLocalGame();
         return new LocalGame() {
             @Override
-            protected void sendUpdatedStateTo(GamePlayer p) {
-
-            }
+            protected void sendUpdatedStateTo(GamePlayer p) { }
 
             @Override
             protected boolean canMove(int playerIdx) {
@@ -63,6 +87,7 @@ public class ChessMainActivity extends GameMainActivity {
             }
         };
     }
+
 
 
 }
