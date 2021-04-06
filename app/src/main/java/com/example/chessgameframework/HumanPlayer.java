@@ -42,6 +42,7 @@ public class HumanPlayer extends GameHumanPlayer implements View.OnClickListener
     public View getTopView() {
         return myActivity.findViewById(R.id.top_gui_layout);
     }
+    
     public void receiveInfo(GameInfo info) {
     }
 
