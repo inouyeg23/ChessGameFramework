@@ -1,21 +1,21 @@
-package com.example.chessgameframework;
+package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.example.chessgameframework.ChessGameState;
+import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
-import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
-import com.example.chessgameframework.game.GameFramework.players.GamePlayer;;import org.w3c.dom.Text;
+;
 
-public class HumanPlayer extends GameHumanPlayer implements View.OnClickListener {
+public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
 
     // These variables will reference widgets that will be modified during play
     private TextView    playerNameTextView      = null;
@@ -29,7 +29,7 @@ public class HumanPlayer extends GameHumanPlayer implements View.OnClickListener
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-    public HumanPlayer(String typeName) {
+    public ChessHumanPlayer(String typeName) {
         super(typeName);
     }
     /**
@@ -44,6 +44,7 @@ public class HumanPlayer extends GameHumanPlayer implements View.OnClickListener
     }
     
     public void receiveInfo(GameInfo info) {
+
     }
 
     /**
@@ -55,7 +56,22 @@ public class HumanPlayer extends GameHumanPlayer implements View.OnClickListener
      */
     @Override
     public void onClick(View button) {
-
+        ChessGameState newChessGameState = new ChessGameState();
+        if(button == quitButton){
+            newChessGameState.isQuitPressed = true;
+        }
+        if(button == forfeitButton){
+            newChessGameState.isForfeitPressed = true;
+        }
+        if(button == offerDrawButton){
+            newChessGameState.isDrawPressed = true;
+        }
+        if(button == pauseButton){
+            newChessGameState.isPaused = true;
+        }
+        if(button == undoButton){
+            newChessGameState.isUndoPressed = true;
+        }
     }
 
     /**
