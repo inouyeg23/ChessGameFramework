@@ -1,23 +1,13 @@
 package com.example.chessgameframework;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.os.Bundle;
-import android.view.SurfaceView;
-import android.widget.ImageView;
-
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
+import com.example.chessgameframework.game.GameFramework.chessPlayers.ChessHumanPlayer;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
-import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 import java.util.ArrayList;
 
@@ -41,7 +31,7 @@ public class ChessMainActivity extends GameMainActivity {
         //Adds the allowed player types
         playerTypes.add(new GamePlayerType("Local Human Player") {
             public GamePlayer createPlayer(String name) {
-                return new HumanPlayer(name);
+                return new ChessHumanPlayer(name);
             }});
 
         //create a game configuration class for chess
