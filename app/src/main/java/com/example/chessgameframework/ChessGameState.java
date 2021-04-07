@@ -1,10 +1,10 @@
 package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.King;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * @authors: Jonah Ingler, Garrett Inouye, Logan Machida, Connor Morgan
@@ -32,7 +32,7 @@ public class ChessGameState extends GameState implements Serializable {
     private int secondsBlack;
 
     //is the game paused
-    private boolean isPaused;
+    public boolean isPaused;
 
     //is there a checkmate
     private boolean isCheckedmateWhite;
@@ -41,9 +41,10 @@ public class ChessGameState extends GameState implements Serializable {
     //booleans to work with onClick method and check if valid
 
     public boolean gameStarted;
-    public boolean drawInitiated;
-    public boolean forfeitInitiated;
-    public boolean playAgainInitiated;
+    public boolean isQuitPressed;
+    public boolean isDrawPressed;
+    public boolean isForfeitPressed;
+    public boolean isUndoPressed;
 
     //different from playerTurn, it holds the current player rather than
     //the whole game switching between players to make sure it is
@@ -90,7 +91,7 @@ public class ChessGameState extends GameState implements Serializable {
         secondsWhite = 600;
 
         //game starts paused
-        isPaused = true;
+        isPaused = false;
 
     }//constructor
 
@@ -134,9 +135,10 @@ public class ChessGameState extends GameState implements Serializable {
 
           // new variables
           gameStarted = original.gameStarted;
-          drawInitiated = original.drawInitiated;
-          forfeitInitiated = original.forfeitInitiated;
-          playAgainInitiated = original.playAgainInitiated;
+          isDrawPressed = original.isDrawPressed;
+          isForfeitPressed = original.isForfeitPressed;
+          isUndoPressed = original.isUndoPressed;
+          isQuitPressed = original.isQuitPressed;
 
           currPlayer = original.currPlayer;
 
@@ -234,15 +236,26 @@ public class ChessGameState extends GameState implements Serializable {
      * boolean and verifies whether the move is legal and
      * modifies the gamestate to reflect the taken action
      */
-    public boolean gameStart(){
-        gameStarted = true;
-        return true;
+    public boolean isStartPressed(){
+        if(gameStarted){
+            //this will be implemented using game framework; not required for game
+            //state assignment
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public boolean gamePaused(){
+    public boolean isPausePressed(){
         //this will be implemented using game framework; not required for game
         //state assignment
-        return false;
+        if(isPaused){
+            //this will be implemented using game framework; not required for game
+            //state assignment
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isLegal(int row, int col){
@@ -264,10 +277,9 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-
-    public boolean drawOffered(){
-        //drawInitiated would turn true or false based on button onClick
-        if(drawInitiated){
+    public boolean isQuitPressed(){
+        //quitInitiated would turn true or false based on button onClick
+        if(isQuitPressed){
             //this will be implemented using game framework; not required for game
             //state assignment
             return true;
@@ -277,9 +289,22 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
+    public boolean isDrawPressed(){
+        //drawInitiated would turn true or false based on button onClick
+        if(isDrawPressed){
+            //this will be implemented using game framework; not required for game
+            //state assignment
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
     //forfeitInitiated would turn true or false based on button onClick
-    public boolean forfeitGame(){
-        if(forfeitInitiated){
+    public boolean isForfeitPressed(){
+        if(isForfeitPressed){
             //this will be implemented using game framework; not required for game
             //state assignment
             return true;
@@ -289,8 +314,8 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     //playAgainInitiated would turn true or false based on button onClick
-    public boolean playAgain(){
-        if(playAgainInitiated){
+    public boolean isUndoPressed(){
+        if(isUndoPressed){
             //this will be implemented using game framework; not required for game
             //state assignment
             return true;
