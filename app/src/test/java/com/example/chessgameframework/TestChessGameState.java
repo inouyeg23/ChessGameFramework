@@ -26,7 +26,7 @@ public class TestChessGameState {
     public void gameStart() {
         ChessGameState gameState = new ChessGameState();
         assertTrue(!gameState.gameStarted);
-        gameState.gameStart();
+        //gameState.gameStarted = true;
         assertTrue(gameState.gameStarted);
     }
 
