@@ -1,5 +1,15 @@
 package com.example.chessgameframework;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.view.SurfaceView;
+import android.widget.ImageView;
+
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
@@ -8,6 +18,7 @@ import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameC
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 import java.util.ArrayList;
 

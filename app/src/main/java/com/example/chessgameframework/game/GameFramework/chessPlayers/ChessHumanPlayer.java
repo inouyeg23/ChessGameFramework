@@ -1,24 +1,39 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.nfc.Tag;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 import com.example.chessgameframework.ChessGameState;
+import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
+import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMoveInfo;
+import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
+import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
-/**
- * @authors: Logan Machida
- *
- */
+import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
+;
 
-public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
+public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
+
+    private static final String TAG = "ChessHumanPlayer";
 
     // These variables will reference widgets that will be modified during play
     private TextView    playerNameTextView      = null;
@@ -28,12 +43,21 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      offerDrawButton         = null;
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
+    private ChessSurfaceView chessview          = null;
+
+    // Variables dealing with pieces
+    private ImageButton blackPawn = null;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-    public ChessHumanPlayer(String typeName) {
-        super(typeName);
+    // the surface view
+    private ChessSurfaceView chessView;
+
+    public ChessHumanPlayer(String name) {
+        super(name);
+
+
     }
     /**
      * Returns the GUI's top view object
@@ -47,6 +71,24 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
     
     public void receiveInfo(GameInfo info) {
+        MyRunnable updateName = new MyRunnable(info, true);
+        new Thread(updateName).start();
+
+        if (chessView == null) return;
+
+        if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
+            // if the move was out of turn or otherwise illegal, flash the screen
+            flash(Color.RED, 50);
+        }
+        else if (!(info instanceof ChessGameState))
+            // if we do not have a ChessGameState, ignore
+            return;
+
+        else {
+            chessView.setState((ChessGameState)info);
+            chessView.invalidate();
+            Logger.log(TAG, "receiving");
+        }
 
     }
 
@@ -78,6 +120,18 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
 
     /**
+     * callback method when the screen it touched. We're
+     * looking for a screen touch
+     *
+     * @param event
+     * 		the motion event that was detected
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
+
+    /**
      * callback method--our game has been chosen/rechosen to be the GUI,
      * called from the GUI thread
      *
@@ -95,9 +149,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ImageView backgroundScreen = (ImageView)activity.findViewById(R.id.backgroundScreen);
         backgroundScreen.setImageResource(R.drawable.chessstartscreen);
 
-        ImageView chessBoard = (ImageView)activity.findViewById(R.id.chessBoard);
-        chessBoard.setImageResource(R.drawable.chessboard);
-
         //Initialize the widget reference member variables
         this.playerNameTextView = (TextView)activity.findViewById(R.id.playerName);
         this.opposingNameTextView = (TextView)activity.findViewById(R.id.opposingName);
@@ -106,6 +157,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.offerDrawButton = (Button)activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button)activity.findViewById(R.id.pauseButton);
         this.undoButton = (Button)activity.findViewById(R.id.undoButton);
+        this.chessview = (ChessSurfaceView)activity.findViewById(R.id.chessSurfaceView);
 
         //Listen for button presses
         quitButton.setOnClickListener(this);
@@ -113,6 +165,19 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         offerDrawButton.setOnClickListener(this);
         pauseButton.setOnClickListener(this);
         undoButton.setOnClickListener(this);
+
+        //Listen for touch presses
+        chessview.setOnTouchListener(this);
+
+    }
+
+    /**
+     * perform any initialization that needs to be done after the player
+     * knows what their game-position and opponents' names are.
+     */
+    protected void initAfterReady() {
+        playerNameTextView.setText(allPlayerNames[0]);
+        opposingNameTextView.setText(allPlayerNames[1]);
     }
 
 
