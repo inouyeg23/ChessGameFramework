@@ -3,6 +3,8 @@ package com.example.chessgameframework.game.GameFramework.chessPlayers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.nfc.Tag;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -13,18 +15,24 @@ import android.widget.TextView;
 
 
 import com.example.chessgameframework.ChessGameState;
+import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
+import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMoveInfo;
+import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 ;
 
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
+
+    private static final String TAG = "ChessHumanPlayer";
 
     // These variables will reference widgets that will be modified during play
     private TextView    playerNameTextView      = null;
@@ -40,6 +48,9 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
 
     // the android activity that we are running
     private GameMainActivity myActivity;
+
+    // the surface view
+    private ChessSurfaceView chessView;
 
     public ChessHumanPlayer(String name) {
         super(name);
@@ -60,6 +71,22 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     public void receiveInfo(GameInfo info) {
         MyRunnable updateName = new MyRunnable(info, true);
         new Thread(updateName).start();
+
+        if (chessView == null) return;
+
+        if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
+            // if the move was out of turn or otherwise illegal, flash the screen
+            flash(Color.RED, 50);
+        }
+        else if (!(info instanceof ChessGameState))
+            // if we do not have a ChessGameState, ignore
+            return;
+
+        else {
+            chessView.setState((ChessGameState)info);
+            chessView.invalidate();
+            Logger.log(TAG, "receiving");
+        }
 
     }
 

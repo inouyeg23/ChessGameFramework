@@ -26,6 +26,9 @@ public class ChessSurfaceView extends SurfaceView implements View.OnTouchListene
     private Bitmap whiteKing = null;
     private Bitmap whiteQueen = null;
 
+    // the game's state
+    protected ChessGameState gameState;
+
     public ChessSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -60,5 +63,9 @@ public class ChessSurfaceView extends SurfaceView implements View.OnTouchListene
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return false;
+    }
+
+    public void setState(ChessGameState state) {
+        this.gameState = state;
     }
 }
