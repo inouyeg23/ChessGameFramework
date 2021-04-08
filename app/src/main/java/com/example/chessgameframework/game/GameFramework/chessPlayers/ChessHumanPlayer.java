@@ -9,10 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 import com.example.chessgameframework.ChessGameState;
+import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
@@ -34,6 +36,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      offerDrawButton         = null;
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
+    private ChessSurfaceView chessview          = null;
 
     // Variables dealing with pieces
     private ImageButton blackPawn = null;
@@ -120,9 +123,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ImageView backgroundScreen = (ImageView)activity.findViewById(R.id.backgroundScreen);
         backgroundScreen.setImageResource(R.drawable.chessstartscreen);
 
-        //ImageView chessBoard = (ImageView)activity.findViewById(R.id.chessBoard);
-        //chessBoard.setImageResource(R.drawable.chessemptyboard);
-
         //Initialize the widget reference member variables
         this.playerNameTextView = (TextView)activity.findViewById(R.id.playerName);
         this.opposingNameTextView = (TextView)activity.findViewById(R.id.opposingName);
@@ -131,6 +131,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.offerDrawButton = (Button)activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button)activity.findViewById(R.id.pauseButton);
         this.undoButton = (Button)activity.findViewById(R.id.undoButton);
+        this.chessview = (ChessSurfaceView)activity.findViewById(R.id.chessSurfaceView);
 
         //Listen for button presses
         quitButton.setOnClickListener(this);
@@ -138,6 +139,9 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         offerDrawButton.setOnClickListener(this);
         pauseButton.setOnClickListener(this);
         undoButton.setOnClickListener(this);
+
+        //Listen for touch presses
+        chessview.setOnTouchListener(this);
 
     }
 
