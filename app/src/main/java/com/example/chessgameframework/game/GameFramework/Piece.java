@@ -2,6 +2,11 @@ package com.example.chessgameframework.game.GameFramework;
 
 public abstract class Piece {
 
+    /**
+     * @authors: Jonah Ingler
+     *
+     */
+
     //if isBlack is true, than it is black, otherwise it is white
     private boolean isBlack;
     private boolean isTaken;
@@ -30,8 +35,6 @@ public abstract class Piece {
      * canMove method should be true if the piece can move, and false if it cannot.
      * need a class/method to determine whether the selected square is occupied or not.
      *          (maybe a class called Square??) so that it can take a piece as well
-     *
-     * 
      **/
     public abstract boolean canMove(int row, int col, int selectRow, int selectCol);
 }
