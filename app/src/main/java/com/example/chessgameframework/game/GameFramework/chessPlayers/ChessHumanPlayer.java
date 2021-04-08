@@ -13,7 +13,10 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
-;
+/**
+ * @authors: Logan Machida
+ *
+ */
 
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
 

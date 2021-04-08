@@ -8,18 +8,9 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurn
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
-import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
-import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
-import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
-import edu.up.cs301.game.GameFramework.utilities.Logger;
-import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
-
 /**
- * This is a really dumb computer player that always just makes a random move
- * it's so stupid that it sometimes tries to make moves on non-blank spots.
- * 
- * @author Steven R. Vegdahl
- * @versio2 July 2013 
+ * @authors: Logan Machida
+ *
  */
 public class ChessComputerPlayerEasy extends GameComputerPlayer
 {
@@ -30,8 +21,6 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
         // invoke superclass constructor
         super(name); // invoke superclass constructor
     }
-
-
 
     /**
      * Called when the player receives a game-state (or other info) from the
@@ -66,20 +55,10 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
                         // we'll end up here again (and possibly again, and again). At some point,
                         // we'll end up randomly pick a move that is legal.
                         Logger.log("ChessComputer", "Sending move");
-                        game.sendAction(new ChessMoveAction(this,randomX, randomY, x, y));
-
-
+                        game.sendAction(new ChessMoveAction(this,randomX, randomY, x, y, randomPiece));
                     }
                 }
             }
         }
-
-
-
-
-
     }
-
-
-
 }

@@ -12,13 +12,8 @@ import edu.up.cs301.tictactoe.infoMessage.TTTState;
 import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
 
 /**
- * A computerized tic-tac-toe player that recognizes an immediate win
- * or loss, and plays appropriately.  If there is not an immediate win
- * (which it plays) or loss (which it blocks), it moves randomly.
- * 
- * @author Steven R. Vegdahl 
- * @version September 2016
- * 
+ * @authors: Logan Machida
+ *
  */
 public class ChessComputerPlayerHard extends GameComputerPlayer {
 	//Tag for logging

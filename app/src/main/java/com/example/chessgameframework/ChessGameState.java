@@ -65,8 +65,8 @@ public class ChessGameState extends GameState implements Serializable {
     public ChessGameState(){
         //initialize an empty board
         board = new Piece[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
                 board[i][j] = null;
             }
         }
@@ -104,8 +104,8 @@ public class ChessGameState extends GameState implements Serializable {
       public ChessGameState(ChessGameState original){
           // copy the values from original array
           board = new Piece[8][8];
-          for (int i = 0; i < 8; i++) {
-              for (int j = 0; j < 8; j++) {
+          for (int i = 1; i <= 8; i++) {
+              for (int j = 1; j <= 8; j++) {
                   board[i][j] = original.board[i][j];
               }
           }
@@ -152,7 +152,7 @@ public class ChessGameState extends GameState implements Serializable {
 
 
     public Piece getPiece(int row, int col){
-        if(board == null|| row < 0 || col < 0) {
+        if(board == null|| row < 1 || col < 1) {
             return null;
         }
         if(row >= board.length || col >= board[row].length){
@@ -162,7 +162,7 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void setPiece(int row, int col, Piece piece){
-        if(board == null|| row < 0 || col < 0) {
+        if(board == null|| row < 1 || col < 1) {
             return;
         }
         if(row >= board.length || col >= board[row].length) {
@@ -173,21 +173,56 @@ public class ChessGameState extends GameState implements Serializable {
 
     //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
     public void inCheck() {
-        int selectRow;
-        int selectCol;
-        for (int i = 0; i <= 8; i++) {
-            for (int j = 0; j <= 8; j++) {
-                if (getPiece(i, j) instanceof King) {
-                    selectRow = i;
-                    selectCol = j;
-                    for (int row = 0; row <= 8; row++) {
-                        for (int col = 0; col <= 8; col++) {
-                            Piece targetPiece = getPiece(row, col);
-                            if (targetPiece.canMove(row, col, selectRow, selectCol)) {
-                                if (targetPiece.isBlack()) {
-                                    setCheckedWhite(true);
-                                } else {
+        //Piece king
+        Piece king;
+
+        //iterate though to search for a king
+        for (int row1 = 1; row1 <= 8; row1++) {
+            for (int col1 = 1; col1 <= 8; col1++) {
+                //checks to see if the piece is a king
+                if (getPiece(row1, col1) instanceof King) {
+                    king = getPiece(row1,col1);
+                    //iterate through to search for a piece that can "take" the king
+                    for (int row2 = 1; row2 <= 8; row2++) {
+                        for (int col2 = 1; col2 <= 8; col2++) {
+                            //piece
+                            Piece targetPiece = getPiece(row2, col2);
+                            if (targetPiece.canMove(row2, col2, row1, col1)) {
+                                //puts the pieces in check if an opposing piece can move into it's spot
+                                //sets the checks accordingly
+                                if (king.isBlack() && !targetPiece.isBlack()) {
                                     setCheckedBlack(true);
+                                }
+                                if (!king.isBlack() && targetPiece.isBlack()){
+                                    setCheckedWhite(true);
+                                }
+                                //searches for a possible way out of the the check
+                                boolean escape = true;
+                                int count1 = 0;
+                                Piece targetPiece2;
+                                for (int row3 = 1; row3 <= 8; row3++) {
+                                    for (int col3 = 1; col3 <= 8; col3++){
+                                        if(king.canMove(row1,col1,row3,col3)){
+                                            count1++;
+                                            for (int row4 = 1; row4 <= 8; row4++) {
+                                                for (int col4 = 1; col4 <= 8; col4++) {
+                                                    targetPiece2 = getPiece(row4, col4);
+                                                    if (targetPiece2.canMove(row4, col4, row3, col3)){
+                                                        escape = true;
+                                                    }
+                                                    else if (!targetPiece2.canMove(row4,col4,row3,col3)){
+                                                        escape = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (king.isBlack() && !targetPiece.isBlack() && escape == false){
+                                    isCheckedmateBlack = true;
+                                }
+                                if (!king.isBlack() && targetPiece.isBlack() && escape == false){
+                                    isCheckedmateWhite = true;
                                 }
                             }
                         }
@@ -196,6 +231,8 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
     }
+
+
 
     /**
      * toString method
