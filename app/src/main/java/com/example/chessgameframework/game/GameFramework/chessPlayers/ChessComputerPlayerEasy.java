@@ -8,13 +8,12 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurn
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
-
 /**
  * This is a really dumb computer player that always just makes a random move
  * it's so stupid that it sometimes tries to make moves on non-blank spots.
  * 
  * @author Steven R. Vegdahl
- * @versio2 July 2013 
+ * @version July 2013
  */
 public class ChessComputerPlayerEasy extends GameComputerPlayer
 {
@@ -37,47 +36,46 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
      */
     @Override
     protected void receiveInfo(GameInfo info) {
-        /*
         // if it was a "not your turn" message, just ignore it
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
 
-        // make a random move
-        ChessGameState CGS = new ChessGameState();
-        int randomX = (int) (Math.random()*8);
-        int randomY = (int) (Math.random()*8);
-        Piece randomPiece = CGS.getPiece(randomX, randomY);
+        if (!(info instanceof ChessGameState)) return;
+        ChessGameState gameState = (ChessGameState)info;
 
-        for(int x=0; x<8; x++) {
-            for(int y = 0; y<8; y++) {
-                if (randomPiece.isBlack()) {
-                    if(randomPiece.canMove(randomX, randomY, x, y)){
+        // move a piece at random
+        Piece randomPiece = null;
+        int randomX = -1, randomY = -1;
 
-                        // delay for a second to make opponent think we're thinking
+        while(randomPiece == null) {
+
+            // select the random piece
+            while (randomPiece == null) {
+                randomX = (int) (Math.random() * 8);
+                randomY = (int) (Math.random() * 8);
+                if (gameState.currPlayer == 0 && randomPiece.isBlack() == false) {
+                    randomPiece = gameState.getPiece(randomX, randomY);
+                } else if (gameState.currPlayer == 1 && randomPiece.isBlack() == true) {
+                    randomPiece = gameState.getPiece(randomX, randomY);
+                }
+            }
+
+            // find and make a move for piece, otherwise find another piece to move
+            for (int moveX = 0; moveX < 8; moveX++) {
+                for (int moveY = 0; moveY < 8; moveY++) {
+
+                    if (randomPiece.canMove(randomX, randomY, moveX, moveY)) {
                         sleep(1);
-
-                        // Submit our move to the game object. We haven't even checked it it's
-                        // our turn, or that that position is unoccupied. If it was not our turn,
-                        // we'll get a message back that we'll ignore. If it was an illegal move,
-                        // we'll end up here again (and possibly again, and again). At some point,
-                        // we'll end up randomly pick a move that is legal.
-                        Logger.log("ChessComputer", "Sending move");
-                        game.sendAction(new ChessMoveAction(this,randomX, randomY, x, y));
-
-
+                        // move to that location
+                        Logger.log("ChessComputerPlayerEasy", "Sending move");
+                        game.sendAction(new ChessMoveAction(this, randomX, randomY, moveX, moveY, randomPiece));
+                    }
+                    else{
+                        randomPiece = null;
                     }
                 }
             }
         }
 
-         */
-
-
-
-
-
     }
-
-
-
 }

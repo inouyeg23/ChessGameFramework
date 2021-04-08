@@ -33,6 +33,9 @@ public class ChessSurfaceView extends SurfaceView{
     int scaledShape;
 
 
+    // the game's state
+    protected ChessGameState gameState;
+
     public ChessSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -223,8 +226,8 @@ public class ChessSurfaceView extends SurfaceView{
 
     } //drawQueen
 
-
-
-
+    public void setState(ChessGameState state) {
+        this.gameState = state;
+    }
 
 }
