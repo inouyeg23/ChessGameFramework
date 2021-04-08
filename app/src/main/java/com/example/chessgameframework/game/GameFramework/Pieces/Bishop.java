@@ -1,5 +1,7 @@
 package com.example.chessgameframework.game.GameFramework.Pieces;
 
+import android.graphics.Canvas;
+
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
 
@@ -71,4 +73,5 @@ public class Bishop extends Piece {
         }
         return false;
     }
+
 }

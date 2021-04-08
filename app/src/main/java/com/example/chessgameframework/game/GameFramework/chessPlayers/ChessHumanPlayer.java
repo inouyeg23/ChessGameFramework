@@ -1,7 +1,13 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -9,13 +15,16 @@ import android.widget.TextView;
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
+import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
+import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 ;
 
-public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener {
+public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
 
     // These variables will reference widgets that will be modified during play
     private TextView    playerNameTextView      = null;
@@ -26,11 +35,16 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
 
+    // Variables dealing with pieces
+    private ImageButton blackPawn = null;
+
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-    public ChessHumanPlayer(String typeName) {
-        super(typeName);
+    public ChessHumanPlayer(String name) {
+        super(name);
+
+
     }
     /**
      * Returns the GUI's top view object
@@ -44,6 +58,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
     
     public void receiveInfo(GameInfo info) {
+        MyRunnable updateName = new MyRunnable(info, true);
+        new Thread(updateName).start();
 
     }
 
@@ -75,6 +91,18 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
 
     /**
+     * callback method when the screen it touched. We're
+     * looking for a screen touch
+     *
+     * @param event
+     * 		the motion event that was detected
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
+
+    /**
      * callback method--our game has been chosen/rechosen to be the GUI,
      * called from the GUI thread
      *
@@ -92,8 +120,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ImageView backgroundScreen = (ImageView)activity.findViewById(R.id.backgroundScreen);
         backgroundScreen.setImageResource(R.drawable.chessstartscreen);
 
-        ImageView chessBoard = (ImageView)activity.findViewById(R.id.chessBoard);
-        chessBoard.setImageResource(R.drawable.chessboard);
+        //ImageView chessBoard = (ImageView)activity.findViewById(R.id.chessBoard);
+        //chessBoard.setImageResource(R.drawable.chessemptyboard);
 
         //Initialize the widget reference member variables
         this.playerNameTextView = (TextView)activity.findViewById(R.id.playerName);
@@ -110,6 +138,16 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         offerDrawButton.setOnClickListener(this);
         pauseButton.setOnClickListener(this);
         undoButton.setOnClickListener(this);
+
+    }
+
+    /**
+     * perform any initialization that needs to be done after the player
+     * knows what their game-position and opponents' names are.
+     */
+    protected void initAfterReady() {
+        playerNameTextView.setText(allPlayerNames[0]);
+        opposingNameTextView.setText(allPlayerNames[1]);
     }
 
 
