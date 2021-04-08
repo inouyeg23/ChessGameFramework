@@ -8,8 +8,8 @@ public abstract class Piece {
 
     //piece class with it's color as a parameter
     public Piece(boolean isBlack) {
-        setBlack(this.isBlack);
-        setTaken(this.isTaken);
+        this.isBlack = isBlack;
+        this.isTaken = false;
     }
 
     //getters and setters for the two instance variables

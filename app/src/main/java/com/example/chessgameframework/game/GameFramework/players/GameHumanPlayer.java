@@ -230,7 +230,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
      * Helper-class that runs the on the GUI's main thread when
      * there is a message to the player.
      */
-    private class MyRunnable implements Runnable {
+    public class MyRunnable implements Runnable {
         // the message to send to the player
         private GameInfo myInfo;
         private Boolean isInitialState = false;
