@@ -56,16 +56,21 @@ public class ChessSurfaceView extends SurfaceView{
     }
 
     protected void onDraw(Canvas g){
-        updateDimensions(g);
-
-        drawBoard(g);
-
-        //gameState.setPiece(0,0, new Pawn(true));
-
         // if we don't have any state, there's nothing more to draw, so return
         if (gameState == null) {
             return;
         }
+
+        updateDimensions(g);
+
+        drawBoard(g);
+
+<<<<<<< Updated upstream
+        //gameState.setPiece(0,0, new Pawn(true));
+=======
+        gameState.setPiece(0,0, new Pawn(true));
+>>>>>>> Stashed changes
+
 
 
         for (int row = 0; row < 8; row++) {
