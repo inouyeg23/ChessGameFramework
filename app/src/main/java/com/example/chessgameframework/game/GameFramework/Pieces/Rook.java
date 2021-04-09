@@ -24,7 +24,7 @@ public class Rook extends Piece {
         }
 
         //make sure that the booleans for check are up to date
-        chessGameState.inCheck();
+        //chessGameState.inCheck();
 
         //to find the total spaces moved, take the absolute value of the selected place - the final
         //if one of them is equal to 0, then the rook is moving laterally or virtically (I cant spell)

@@ -25,7 +25,7 @@ public class Knight extends Piece {
         }
 
         //make sure that the booleans for check are up to date
-        chessGameState.inCheck();
+        //chessGameState.inCheck();
 
         int colFinal = Math.abs(selectCol - col);
         int rowFinal = Math.abs(selectRow - row);

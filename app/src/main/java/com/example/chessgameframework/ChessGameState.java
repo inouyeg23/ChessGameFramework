@@ -267,88 +267,31 @@ public class ChessGameState extends GameState implements Serializable {
     public void inCheck() {
         int[] kingLocation = getKingLoc(0);
         if(inCheck(kingLocation)) {
-            setCheckedBlack(true);
+            isCheckedBlack = true;
         }
         kingLocation = getKingLoc(1);
         if(inCheck(kingLocation)) {
-            setCheckedWhite(true);
+            isCheckedWhite = true;
         }
     }
 
-//    public boolean inCheckMate(int[] kingLocation) {
-//        Piece king = getPiece(kingLocation[0], kingLocation[1]);
-//          for (int row1 = 0; row1 < 8; row1++) {
-//            for (int col1 = 0; col1 < 8; col1++) {
-//              if(king.canMove(kingLocation[0], kingLocation[1], row1, col1)){
-//                    int[] kingLocation2;
-//                    kingLocation2
-//
-//              }
-//          }
-//    }
+    public boolean inCheckMate(int[] kingLocation) {
+        Piece king = getPiece(kingLocation[0], kingLocation[1]);
+        for (int row1 = 0; row1 < 8; row1++) {
+            for (int col1 = 0; col1 < 8; col1++) {
+                if (king.canMove(kingLocation[0], kingLocation[1], row1, col1)) {
+                    int[] kingLocation2 = new int[0];
+                    kingLocation2[0] = row1;
+                    kingLocation2[1] = col1;
+                    if (!inCheck(kingLocation2)) {
+                        return false;
+                    }
+                }
+            }
 
-//
-//                //Piece king
-//        //Piece king;
-//
-//        //iterate though to search for a king
-//        for (int row1 = 0; row1 < 8; row1++) {
-//            for (int col1 = 0; col1 < 8; col1++) {
-//                //checks to see if the piece is a king
-//                if (getPiece(row1, col1) instanceof King) {
-//                    king = getPiece(row1,col1);
-//                    //iterate through to search for a piece that can "take" the king
-//                    for (int row2 = 0; row2 < 8; row2++) {
-//                        for (int col2 = 0; col2 < 8; col2++) {
-//                            //piece
-//                            Piece targetPiece = getPiece(row2, col2);
-//                            if (targetPiece.canMove(row2, col2, row1, col1)) {
-//                                //puts the pieces in check if an opposing piece can move into it's spot
-//                                //sets the checks accordingly
-//                                if (king.isBlack() && !targetPiece.isBlack()) {
-//                                    setCheckedBlack(true);
-//                                }
-//                                if (!king.isBlack() && targetPiece.isBlack()){
-//                                    setCheckedWhite(true);
-//                                }
-//                                //searches for a possible way out of the the check
-//                                boolean escape = true;
-//                                int count1 = 0;
-//                                Piece targetPiece2;
-//                                //searches for spaces the king can move to
-//                                for (int row3 = 0; row3 < 8; row3++) {
-//                                    for (int col3 = 0; col3 < 8; col3++){
-//                                        if(king.canMove(row1,col1,row3,col3)){
-//                                            count1++;
-//                                            //searches for pieces in the game, that can move to one of the place
-//                                            for (int row4 = 0; row4 < 8; row4++) {
-//                                                for (int col4 = 0; col4 < 8; col4++) {
-//                                                    targetPiece2 = getPiece(row4, col4);
-//                                                    //if target piece can move
-//                                                    if (targetPiece2.canMove(row4, col4, row3, col3)){
-//                                                        escape = true;
-//                                                    }
-//                                                    else if (!targetPiece2.canMove(row4,col4,row3,col3)){
-//                                                        escape = false;
-//                                                    }
-//
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                                if (king.isBlack() && !targetPiece.isBlack() && escape == false){
-//                                    isCheckedmateBlack = true;
-//                                }
-//                                if (!king.isBlack() && targetPiece.isBlack() && escape == false){
-//                                    isCheckedmateWhite = true;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        }
+        return true;
+    }
 
 
 
