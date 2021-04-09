@@ -60,13 +60,13 @@ public class ChessSurfaceView extends SurfaceView{
 
         drawBoard(g);
 
-        Pawn fuck = new Pawn(true);
-        gameState.setPiece(0,0, fuck);
+        //gameState.setPiece(0,0, new Pawn(true));
 
         // if we don't have any state, there's nothing more to draw, so return
         if (gameState == null) {
             return;
         }
+
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -76,8 +76,8 @@ public class ChessSurfaceView extends SurfaceView{
         }
 
 
-
         /*
+
         //player side
         drawPawn(g, 'b', 6, 0);
         drawPawn(g, 'b', 6, 1);
@@ -114,8 +114,8 @@ public class ChessSurfaceView extends SurfaceView{
         drawKnight(g, 'w', 0, 6);
         drawRook(g, 'w', 0, 7);
 
-
          */
+
 
 
 
@@ -153,6 +153,9 @@ public class ChessSurfaceView extends SurfaceView{
     }
 
     protected void drawPiece(Canvas g, Piece piece, int row, int col){
+        if(piece == null){
+            return;
+        }
         if(piece instanceof Pawn){
             if(piece.isBlack()){
                 drawPawn(g, 'b', row, col);
