@@ -65,12 +65,7 @@ public class ChessSurfaceView extends SurfaceView{
 
         drawBoard(g);
 
-<<<<<<< Updated upstream
-        //gameState.setPiece(0,0, new Pawn(true));
-=======
         gameState.setPiece(0,0, new Pawn(true));
->>>>>>> Stashed changes
-
 
 
         for (int row = 0; row < 8; row++) {

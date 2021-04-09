@@ -44,18 +44,12 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
     private ChessSurfaceView chessView          = null;
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
     public ChessHumanPlayer(String name) {
         super(name);
 
