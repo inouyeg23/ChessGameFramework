@@ -74,8 +74,8 @@ public class ChessGameState extends GameState implements Serializable {
     public ChessGameState(){
         //initialize an empty board
         board = new Piece[8][8];
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 board[i][j] = null;
             }
         }
