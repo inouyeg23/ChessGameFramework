@@ -1,7 +1,12 @@
 package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
+import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -59,6 +64,10 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean highlightedKingMove;
     public boolean highlightedQueenMove;
 
+    //initialize the board full of pieces in the starting position
+    //both kings are stored in the array below as well (black then white)
+    Piece[] kings = new Piece[2];
+
     /**
      * Constructor for class ChessGameState
      */
@@ -70,6 +79,54 @@ public class ChessGameState extends GameState implements Serializable {
                 board[i][j] = null;
             }
         }
+        //fills the board
+        //black side
+        board[0][0] = new Rook(true);
+        board[0][1] = new Knight(true);
+        board[0][2] = new Bishop(true);
+        board[0][3] = new Queen(true);
+        board[0][4] = new King(true);
+        board[0][5] = new Bishop(true);
+        board[0][6] = new Knight(true);
+        board[0][7] = new Rook(true);
+        //pawns
+        board[1][0] = new Pawn(true);
+        board[1][1] = new Pawn(true);
+        board[1][2] = new Pawn(true);
+        board[1][3] = new Pawn(true);
+        board[1][4] = new Pawn(true);
+        board[1][5] = new Pawn(true);
+        board[1][6] = new Pawn(true);
+        board[1][7] = new Pawn(true);
+
+        //white side
+        board[7][0] = new Rook(false);
+        board[7][1] = new Knight(false);
+        board[7][2] = new Bishop(false);
+        board[7][3] = new King(false);
+        board[7][4] = new Queen(false);
+        board[7][5] = new Bishop(false);
+        board[7][6] = new Knight(false);
+        board[7][7] = new Rook(false);
+        //pawns
+        board[6][0] = new Pawn(false);
+        board[6][1] = new Pawn(false);
+        board[6][2] = new Pawn(false);
+        board[6][3] = new Pawn(false);
+        board[6][4] = new Pawn(false);
+        board[6][5] = new Pawn(false);
+        board[6][6] = new Pawn(false);
+        board[6][7] = new Pawn(false);
+
+        Piece kingBlack = getPiece(0,4);
+        if (kingBlack instanceof King) {
+            kings[0] = kingBlack;
+        }
+        Piece kingWhite = getPiece(7,3);
+        if (kingBlack instanceof King) {
+            kings[1] = kingWhite;
+        }
+
         //starts at 0
         //  0 for black, 1 for white
         playerTurn = 0;
@@ -171,10 +228,68 @@ public class ChessGameState extends GameState implements Serializable {
         board[row][col] = piece;
     }
 
+    public int[] getKingLoc(int k){
+          int[] kingLoc =  new int[2];
+        for (int row1 = 1; row1 <= 8; row1++) {
+            for (int col1 = 1; col1 <= 8; col1++) {
+                if (getPiece(row1, col1).equals(kings[k])) {
+                    kingLoc[0] = row1;
+                    kingLoc[1] = col1;
+                }
+            }
+        }
+        return kingLoc;
+    }
+
     //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
+    public boolean inCheck(int[] kingLocation) {
+        Piece king = getPiece(kingLocation[0], kingLocation[1]);
+        //iterate through to search for a piece that can "take" the king
+        for (int row2 = 1; row2 <= 8; row2++) {
+            for (int col2 = 1; col2 <= 8; col2++) {
+                //piece
+                Piece targetPiece = getPiece(row2, col2);
+                if (targetPiece.canMove(row2, col2, kingLocation[0], kingLocation[1])) {
+                    //puts the pieces in check if an opposing piece can move into it's spot
+                    //sets the checks accordingly
+                    if (king.isBlack() && !targetPiece.isBlack()) {
+                        return true;
+                    }
+                    if (!king.isBlack() && targetPiece.isBlack()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void inCheck() {
-        //Piece king
-        Piece king;
+        int[] kingLocation = getKingLoc(0);
+        if(inCheck(kingLocation)) {
+            setCheckedBlack(true);
+        }
+        kingLocation = getKingLoc(1);
+        if(inCheck(kingLocation)) {
+            setCheckedWhite(true);
+        }
+    }
+
+    public boolean inCheckMate(int[] kingLocation) {
+        Piece king = getPiece(kingLocation[0], kingLocation[1]);
+          for (int row1 = 1; row1 <= 8; row1++) {
+            for (int col1 = 1; col1 <= 8; col1++) {
+              if(king.canMove(kingLocation[0], kingLocation[1], row1, col1)){
+                    int[] kingLocation2;
+                    kingLocation2
+
+              }
+          }
+    }
+
+
+                //Piece king
+        //Piece king;
 
         //iterate though to search for a king
         for (int row1 = 1; row1 <= 8; row1++) {
@@ -200,19 +315,23 @@ public class ChessGameState extends GameState implements Serializable {
                                 boolean escape = true;
                                 int count1 = 0;
                                 Piece targetPiece2;
+                                //searches for spaces the king can move to
                                 for (int row3 = 1; row3 <= 8; row3++) {
                                     for (int col3 = 1; col3 <= 8; col3++){
                                         if(king.canMove(row1,col1,row3,col3)){
                                             count1++;
+                                            //searches for pieces in the game, that can move to one of the place
                                             for (int row4 = 1; row4 <= 8; row4++) {
                                                 for (int col4 = 1; col4 <= 8; col4++) {
                                                     targetPiece2 = getPiece(row4, col4);
+                                                    //if target piece can move
                                                     if (targetPiece2.canMove(row4, col4, row3, col3)){
                                                         escape = true;
                                                     }
                                                     else if (!targetPiece2.canMove(row4,col4,row3,col3)){
                                                         escape = false;
                                                     }
+                                                    
                                                 }
                                             }
                                         }
@@ -230,7 +349,6 @@ public class ChessGameState extends GameState implements Serializable {
                 }
             }
         }
-    }
 
 
 
