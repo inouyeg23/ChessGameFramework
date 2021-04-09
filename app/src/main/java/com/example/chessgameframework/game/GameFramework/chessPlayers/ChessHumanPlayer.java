@@ -71,9 +71,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
     
     public void receiveInfo(GameInfo info) {
-        MyRunnable updateName = new MyRunnable(info, true);
-        new Thread(updateName).start();
-
         if (chessView == null) return;
 
         if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {

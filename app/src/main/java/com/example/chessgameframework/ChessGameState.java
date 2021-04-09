@@ -2,6 +2,7 @@ package com.example.chessgameframework;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -65,11 +66,12 @@ public class ChessGameState extends GameState implements Serializable {
     public ChessGameState(){
         //initialize an empty board
         board = new Piece[8][8];
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 board[i][j] = null;
             }
         }
+
         //starts at 0
         //  0 for black, 1 for white
         playerTurn = 0;
@@ -104,8 +106,8 @@ public class ChessGameState extends GameState implements Serializable {
       public ChessGameState(ChessGameState original){
           // copy the values from original array
           board = new Piece[8][8];
-          for (int i = 1; i <= 8; i++) {
-              for (int j = 1; j <= 8; j++) {
+          for (int i = 0; i < 8; i++) {
+              for (int j = 0; j < 8; j++) {
                   board[i][j] = original.board[i][j];
               }
           }
@@ -152,7 +154,7 @@ public class ChessGameState extends GameState implements Serializable {
 
 
     public Piece getPiece(int row, int col){
-        if(board == null|| row < 1 || col < 1) {
+        if(board == null|| row < 0 || col < 0) {
             return null;
         }
         if(row >= board.length || col >= board[row].length){
@@ -162,7 +164,7 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void setPiece(int row, int col, Piece piece){
-        if(board == null|| row < 1 || col < 1) {
+        if(board == null|| row < 0 || col < 0) {
             return;
         }
         if(row >= board.length || col >= board[row].length) {

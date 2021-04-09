@@ -36,6 +36,7 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
      */
     @Override
     protected void receiveInfo(GameInfo info) {
+        /*
         // if it was a "not your turn" message, just ignore it
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
@@ -52,8 +53,8 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
 
             // select the random piece
             while (randomPiece == null) {
-                randomX = (int) (Math.random() * 8 + 1);
-                randomY = (int) (Math.random() * 8 + 1);
+                randomX = (int) (Math.random() * 8);
+                randomY = (int) (Math.random() * 8);
                 if (gameState.currPlayer == 0 && !randomPiece.isBlack()) {
                     randomPiece = gameState.getPiece(randomX, randomY);
                 } else if (gameState.currPlayer == 1 && randomPiece.isBlack()) {
@@ -62,8 +63,8 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
             }
 
             // find and make a move for piece, otherwise find another piece to move
-            for (int moveX = 1; moveX <= 8; moveX++) {
-                for (int moveY = 1; moveY <= 8; moveY++) {
+            for (int moveX = 0; moveX < 8; moveX++) {
+                for (int moveY = 0; moveY < 8; moveY++) {
 
                     if (randomPiece.canMove(randomX, randomY, moveX, moveY)) {
                         sleep(1);
@@ -77,5 +78,9 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
                 }
             }
         }
+
+         */
+
     }
+
 }

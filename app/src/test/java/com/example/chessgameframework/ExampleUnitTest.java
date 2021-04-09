@@ -31,9 +31,9 @@ public class ExampleUnitTest {
         Piece p = gameState.getPiece(0,0);
         assertEquals(p.isBlack(),false);
         assertTrue(p instanceof Rook);
-        gameState.setPiece(1,1,new King(true));
-        Piece p1 = gameState.getPiece(1,1);
-        assertEquals(true,p1.isBlack());
+        gameState.setPiece(7,7,new King(true));
+        Piece p1 = gameState.getPiece(7,7);
+        assertEquals(p1.isBlack(), true);
         assertTrue(p1 instanceof King);
     }
 
