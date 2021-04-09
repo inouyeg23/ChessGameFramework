@@ -72,6 +72,8 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
 
+        board[0][0] = new Pawn(true);
+
         //starts at 0
         //  0 for black, 1 for white
         playerTurn = 0;
@@ -154,7 +156,7 @@ public class ChessGameState extends GameState implements Serializable {
 
 
     public Piece getPiece(int row, int col){
-        if(board == null|| row < 0 || col < 0) {
+      if(board[row][col] == null || row < 0 || col < 0) {
             return null;
         }
         if(row >= board.length || col >= board[row].length){
@@ -164,7 +166,7 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void setPiece(int row, int col, Piece piece){
-        if(board == null|| row < 0 || col < 0) {
+        if(row < 0 || col < 0) {
             return;
         }
         if(row >= board.length || col >= board[row].length) {

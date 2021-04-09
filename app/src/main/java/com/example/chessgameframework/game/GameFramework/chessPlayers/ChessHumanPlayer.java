@@ -43,16 +43,11 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      offerDrawButton         = null;
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
-    private ChessSurfaceView chessview          = null;
-
-    // Variables dealing with pieces
-    private ImageButton blackPawn = null;
+    private ChessSurfaceView chessView          = null;
 
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-    // the surface view
-    private ChessSurfaceView chessView;
 
     public ChessHumanPlayer(String name) {
         super(name);
@@ -154,7 +149,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.offerDrawButton = (Button)activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button)activity.findViewById(R.id.pauseButton);
         this.undoButton = (Button)activity.findViewById(R.id.undoButton);
-        this.chessview = (ChessSurfaceView)activity.findViewById(R.id.chessSurfaceView);
+        this.chessView = (ChessSurfaceView)activity.findViewById(R.id.chessSurfaceView);
 
         //Listen for button presses
         quitButton.setOnClickListener(this);
@@ -164,7 +159,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         undoButton.setOnClickListener(this);
 
         //Listen for touch presses
-        chessview.setOnTouchListener(this);
+        chessView.setOnTouchListener(this);
 
     }
 
