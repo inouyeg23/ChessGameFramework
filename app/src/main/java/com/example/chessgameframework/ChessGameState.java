@@ -228,6 +228,7 @@ public class ChessGameState extends GameState implements Serializable {
         board[row][col] = piece;
     }
 
+    //finds the location of the king
     public int[] getKingLoc(int k){
           int[] kingLoc =  new int[2];
         for (int row1 = 0; row1 < 8; row1++) {
@@ -292,8 +293,6 @@ public class ChessGameState extends GameState implements Serializable {
         }
         return true;
     }
-
-
 
     /**
      * toString method
