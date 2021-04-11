@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.nfc.Tag;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -20,6 +21,7 @@ import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
+import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
@@ -140,6 +142,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         if(gameState.getPiece(xsquare,ysquare) != null) {
             //we have a piece so now we want to draw all of the possible moves
 
+
             MoveBoard board = new MoveBoard();
             board.findMoves(gameState, xsquare, ysquare);
 
@@ -149,12 +152,12 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                     if (board.getCanMove(i, j)) {
                         System.out.println("we could move to: " + i + ", " + j);
                         //draw a circle or something idk yet
+                        ChessMoveAction action = new ChessMoveAction(this, xsquare,ysquare,i, j, gameState.getPiece(xsquare,ysquare));
+                        game.sendAction(action);
+                        chessView.invalidate();
                     }
-
                 }
             }
-
-
         }
         return true;
     }

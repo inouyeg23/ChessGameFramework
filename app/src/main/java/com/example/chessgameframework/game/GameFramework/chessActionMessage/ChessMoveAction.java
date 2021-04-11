@@ -10,7 +10,7 @@ public class ChessMoveAction extends GameAction {
     private int col;
     private int selectedCol;
     private int selectedRow;
-    private Piece selectedPiece;
+
     /**
      * constructor for GameAction
      *
@@ -42,5 +42,4 @@ public class ChessMoveAction extends GameAction {
 
     public int getSelectedRow() { return selectedRow;}
 
-    public Piece getSelectedPiece(){return selectedPiece;}
 }
