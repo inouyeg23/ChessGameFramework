@@ -77,14 +77,20 @@ public class MoveBoard {
             if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack()))
                 board[row][col + 1] = true;
             //left
-
+            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack()))
+                board[row][col - 1] = true;
             //up right
-
+            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack()))
+                board[row-1][col + 1] = true;
             //up left
-
+            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack()))
+                board[row - 1][col - 1] = true;
             //down right
-
+            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack()))
+                board[row + 1][col + 1] = true;
             //down left
+            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack()))
+                board[row + 1][col - 1] = true;
 
         }
         else if(piece instanceof Queen){
