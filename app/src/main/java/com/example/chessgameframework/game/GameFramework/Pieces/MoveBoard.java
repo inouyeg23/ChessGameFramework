@@ -77,17 +77,120 @@ public class MoveBoard {
             if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack()))
                 board[row][col + 1] = true;
             //left
-
+            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack()))
+                board[row][col - 1] = true;
             //up right
-
+            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack()))
+                board[row-1][col + 1] = true;
             //up left
-
+            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack()))
+                board[row - 1][col - 1] = true;
             //down right
-
+            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack()))
+                board[row + 1][col + 1] = true;
             //down left
+            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack()))
+                board[row + 1][col - 1] = true;
 
         }
         else if(piece instanceof Queen){
+            //down right
+            for(int i = 1; row+i < 8 && col + i <8; i++){
+                if(gameState.getPiece(row + i,col + i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
+                        break;
+                    board[row + i][col + i] = true;
+                    break;
+                }
+                else
+                    board[row + i][col + i] = true;
+            }
+            //down left
+            for(int i = 1; row+i < 8 && col - i > -1; i++){
+                if(gameState.getPiece(row + i,col - i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
+                        break;
+                    board[row + i][col - i] = true;
+                    break;
+                }
+                else
+                    board[row + i][col - i] = true;
+            }
+            //up left
+            for(int i = 1; row-i > -1 && col - i > -1; i++){
+                if(gameState.getPiece(row - i,col - i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
+                        break;
+                    board[row - i][col - i] = true;
+                    break;
+                }
+                else
+                    board[row - i][col - i] = true;
+            }
+            //up right
+            for(int i = 1; row-i > -1 && col + i < 8; i++){
+                if(gameState.getPiece(row - i,col + i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
+                        break;
+                    board[row - i][col + i] = true;
+                    break;
+                }
+                else
+                    board[row - i][col + i] = true;
+            }
+
+            for(int i = row + 1; i <= 7; i++){
+                if(gameState.getPiece(i,col) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
+                        break;
+                    board[i][col] = true;
+                    break;
+                }
+                else
+                    board[i][col] = true;
+            }
+
+            for(int i = row - 1; i >= 0; i--){
+                if(gameState.getPiece(i,col) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
+                        break;
+                    board[i][col] = true;
+                    break;
+                }
+                else
+                    board[i][col] = true;
+            }
+
+            for(int i = col + 1; i <= 7; i++){
+                if(gameState.getPiece(row,i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
+                        break;
+                    }
+                    board[row][i] = true;
+                    break;
+                }
+                else
+                    board[row][i] = true;
+            }
+
+            for(int i = col - 1; i >= 0; i--){
+                if(gameState.getPiece(row,i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
+                        break;
+                    board[row][i] = true;
+                    break;
+                }
+                else
+                    board[row][i] = true;
+            }
 
         }
         else if(piece instanceof Rook){
@@ -142,13 +245,84 @@ public class MoveBoard {
             }
         }
         else if(piece instanceof Bishop){
+            //down right
+            for(int i = 1; row+i < 8 && col + i <8; i++){
+                if(gameState.getPiece(row + i,col + i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
+                        break;
+                    board[row + i][col + i] = true;
+                    break;
+                }
+                else
+                    board[row + i][col + i] = true;
+            }
+            //down left
+            for(int i = 1; row+i < 8 && col - i > -1; i++){
+                if(gameState.getPiece(row + i,col - i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
+                        break;
+                    board[row + i][col - i] = true;
+                    break;
+                }
+                else
+                    board[row + i][col - i] = true;
+            }
+            //up left
+            for(int i = 1; row-i > -1 && col - i > -1; i++){
+                if(gameState.getPiece(row - i,col - i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
+                        break;
+                    board[row - i][col - i] = true;
+                    break;
+                }
+                else
+                    board[row - i][col - i] = true;
+            }
+            //up right
+            for(int i = 1; row-i > -1 && col + i < 8; i++){
+                if(gameState.getPiece(row - i,col + i) != null){
+                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
+                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
+                        break;
+                    board[row - i][col + i] = true;
+                    break;
+                }
+                else
+                    board[row - i][col + i] = true;
+            }
 
         }
         else if(piece instanceof Knight){
-
+            //left up
+            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack()))
+                board[row-1][col - 2] = true;
+            //left down
+            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack()))
+                board[row+1][col - 2] = true;
+            //right up
+            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack()))
+                board[row-1][col + 2] = true;
+            //right down
+            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack()))
+                board[row+1][col + 2] = true;
+            //up right
+            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack()))
+                board[row-2][col + 1] = true;
+            //up left
+            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack()))
+                board[row - 2][col - 1] = true;
+            //down right
+            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack()))
+                board[row + 2][col + 1] = true;
+            //down left
+            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack()))
+                board[row + 2][col - 1] = true;
         }
 
-        return;
+
     }
 
     public boolean getCanMove(int row,int col){
