@@ -322,7 +322,7 @@ public class MoveBoard {
                 board[row + 2][col - 1] = true;
         }
 
-        return;
+
     }
 
     public boolean getCanMove(int row,int col){
