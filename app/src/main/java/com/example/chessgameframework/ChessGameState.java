@@ -292,6 +292,12 @@ public class ChessGameState extends GameState implements Serializable {
             }
 
         }
+        if (king.isBlack()){
+            setCheckedmateBlack(true);
+        }
+        else{
+            setCheckedmateWhite(true);
+        }
         return true;
     }
 
