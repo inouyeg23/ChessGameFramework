@@ -7,6 +7,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -209,7 +210,7 @@ public class ChessGameState extends GameState implements Serializable {
 
 
     public Piece getPiece(int row, int col){
-        if(board == null|| row < 0 || col < 0) {
+        if(board[row][col] == null|| row < 0 || col < 0) {
             return null;
         }
         if(row >= board.length || col >= board[row].length){
@@ -219,7 +220,7 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void setPiece(int row, int col, Piece piece){
-        if(board == null|| row < 0 || col < 0) {
+        if(row < 0 || col < 0) {
             return;
         }
         if(row >= board.length || col >= board[row].length) {

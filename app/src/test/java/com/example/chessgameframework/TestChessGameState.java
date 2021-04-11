@@ -22,5 +22,11 @@ public class TestChessGameState {
         assertEquals(true,p1.isBlack());
         assertTrue(p1 instanceof King);
     }
-
+    @Test
+    public void gameStart() {
+        ChessGameState gameState = new ChessGameState();
+        assertTrue(!gameState.gameStarted);
+        //gameState.gameStarted = true;
+        assertTrue(gameState.gameStarted);
+    }
 }
