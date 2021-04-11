@@ -22,6 +22,7 @@ public class TestChessGameState {
         assertEquals(true,p1.isBlack());
         assertTrue(p1 instanceof King);
     }
+<<<<<<<<< Temporary merge branch 1
     @Test
     public void gameStart() {
         ChessGameState gameState = new ChessGameState();
@@ -29,4 +30,7 @@ public class TestChessGameState {
         //gameState.gameStarted = true;
         assertTrue(gameState.gameStarted);
     }
+=========
+>>>>>>>>> Temporary merge branch 2
+
 }
