@@ -19,10 +19,12 @@ import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
+import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMoveInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
@@ -121,7 +123,40 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return false;
+
+        //check if a piece was pressed
+        float x = event.getX();
+        float y = event.getY();
+
+        float boxWidth = v.getWidth()/8;
+        float boxHeight = v.getHeight()/8;
+
+        int xsquare = (int) (x/boxWidth);
+        int ysquare = (int) (y/boxHeight);
+
+        System.out.println("clicked on box :" + xsquare + ", " + ysquare);
+
+        ChessGameState gameState = (ChessGameState) game.getGameState();
+        if(gameState.getPiece(xsquare,ysquare) != null) {
+            //we have a piece so now we want to draw all of the possible moves
+
+            MoveBoard board = new MoveBoard();
+            board.findMoves(gameState, xsquare, ysquare);
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+
+                    if (board.getCanMove(i, j)) {
+                        System.out.println("we could move to: " + i + ", " + j);
+                        //draw a circle or something idk yet
+                    }
+
+                }
+            }
+
+
+        }
+        return true;
     }
 
     /**
