@@ -11,6 +11,15 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
+import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
+import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
+
 public class ChessSurfaceView extends SurfaceView{
     // Initializing each piece
     private Bitmap blackPawn =      BitmapFactory.decodeResource(getResources(), R.drawable.black_pawn);
@@ -42,46 +51,73 @@ public class ChessSurfaceView extends SurfaceView{
         setWillNotDraw(false);
     }
 
+    public void setState(ChessGameState state) {
+        this.gameState = state;
+    }
+
     protected void onDraw(Canvas g){
+        // if we don't have any state, there's nothing more to draw, so return
+        if (gameState == null) {
+            return;
+        }
+
         updateDimensions(g);
 
         drawBoard(g);
 
+        gameState.setPiece(0,0, new Pawn(true));
+
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece result = gameState.getPiece(row, col); // get piece
+                drawPiece(g, result, row, col);
+            }
+        }
+
+
+        /*
+
         //player side
-        drawPawn(g, 'b', 7, 1);
-        drawPawn(g, 'b', 7, 2);
-        drawPawn(g, 'b', 7, 3);
-        drawPawn(g, 'b', 7, 4);
-        drawPawn(g, 'b', 7, 5);
-        drawPawn(g, 'b', 7, 6);
-        drawPawn(g, 'b', 7, 7);
-        drawPawn(g, 'b', 7, 8);
-        drawRook(g, 'b', 8, 1);
-        drawKnight(g, 'b', 8, 2);
-        drawBishop(g, 'b', 8, 3);
-        drawKing(g, 'b', 8, 4);
-        drawQueen(g, 'b', 8, 5);
-        drawBishop(g, 'b', 8, 6);
-        drawKnight(g, 'b', 8, 7);
-        drawRook(g, 'b', 8, 8);
+        drawPawn(g, 'b', 6, 0);
+        drawPawn(g, 'b', 6, 1);
+        drawPawn(g, 'b', 6, 2);
+        drawPawn(g, 'b', 6, 3);
+        drawPawn(g, 'b', 6, 4);
+        drawPawn(g, 'b', 6, 5);
+        drawPawn(g, 'b', 6, 6);
+        drawPawn(g, 'b', 6, 7);
+        drawRook(g, 'b', 7, 0);
+        drawKnight(g, 'b', 7, 1);
+        drawBishop(g, 'b', 7, 2);
+        drawKing(g, 'b', 7, 3);
+        drawQueen(g, 'b', 7, 4);
+        drawBishop(g, 'b', 7, 5);
+        drawKnight(g, 'b', 7, 6);
+        drawRook(g, 'b', 7, 7);
 
         //opposing side
-        drawPawn(g, 'w', 2, 1);
-        drawPawn(g, 'w', 2, 2);
-        drawPawn(g, 'w', 2, 3);
-        drawPawn(g, 'w', 2, 4);
-        drawPawn(g, 'w', 2, 5);
-        drawPawn(g, 'w', 2, 6);
-        drawPawn(g, 'w', 2, 7);
-        drawPawn(g, 'w', 2, 8);
-        drawRook(g, 'w', 1, 1);
-        drawKnight(g, 'w', 1, 2);
-        drawBishop(g, 'w', 1, 3);
-        drawKing(g, 'w', 1, 4);
-        drawQueen(g, 'w', 1, 5);
-        drawBishop(g, 'w', 1, 6);
-        drawKnight(g, 'w', 1, 7);
-        drawRook(g, 'w', 1, 8);
+        drawPawn(g, 'w', 1, 0);
+        drawPawn(g, 'w', 1, 1);
+        drawPawn(g, 'w', 1, 2);
+        drawPawn(g, 'w', 1, 3);
+        drawPawn(g, 'w', 1, 4);
+        drawPawn(g, 'w', 1, 5);
+        drawPawn(g, 'w', 1, 6);
+        drawPawn(g, 'w', 1, 7);
+        drawRook(g, 'w', 0, 0);
+        drawKnight(g, 'w', 0, 1);
+        drawBishop(g, 'w', 0, 2);
+        drawKing(g, 'w', 0, 3);
+        drawQueen(g, 'w', 0, 4);
+        drawBishop(g, 'w', 0, 5);
+        drawKnight(g, 'w', 0, 6);
+        drawRook(g, 'w', 0, 7);
+
+         */
+
+
+
 
         //add images corresponding to drawables
 
@@ -98,7 +134,6 @@ public class ChessSurfaceView extends SurfaceView{
         int width = g.getWidth();
         int height = g.getHeight();
 
-
         //use both width or height to create a perfect square
         if (width > height) {
             dimen = height;
@@ -109,7 +144,6 @@ public class ChessSurfaceView extends SurfaceView{
         scaledShape = (dimen/8)-5;
     }
 
-
     protected void drawBoard(Canvas g) {
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -117,6 +151,61 @@ public class ChessSurfaceView extends SurfaceView{
         Bitmap resizedchessboard = Bitmap.createScaledBitmap(chessBoard, dimen, dimen, false);
         g.drawBitmap(resizedchessboard, 0.0f, 0.0f, background);
     }
+
+    protected void drawPiece(Canvas g, Piece piece, int row, int col){
+        if(piece == null){
+            return;
+        }
+        if(piece instanceof Pawn){
+            if(piece.isBlack()){
+                drawPawn(g, 'b', row, col);
+            } else {
+                drawPawn(g, 'w', row, col);
+            }
+            return;
+        }
+        if(piece instanceof Knight){
+            if(piece.isBlack()){
+                drawKnight(g, 'b', row, col);
+            } else {
+                drawKnight(g, 'w', row, col);
+            }
+            return;
+        }
+        if(piece instanceof Rook){
+            if(piece.isBlack()){
+                drawRook(g, 'b', row, col);
+            } else {
+                drawRook(g, 'w', row, col);
+            }
+            return;
+        }
+        if(piece instanceof Bishop){
+            if(piece.isBlack()){
+                drawBishop(g, 'b', row, col);
+            } else {
+                drawBishop(g, 'w', row, col);
+            }
+            return;
+        }
+        if(piece instanceof King){
+            if(piece.isBlack()){
+                drawKing(g, 'b', row, col);
+            } else {
+                drawKing(g, 'w', row, col);
+            }
+            return;
+        }
+        if(piece instanceof Queen){
+            if(piece.isBlack()){
+                drawQueen(g, 'b', row, col);
+            } else {
+                drawQueen(g, 'w', row, col);
+            }
+            return;
+        }
+    }
+
 
     protected void drawPawn(Canvas g, char color, int row, int col){
         Paint background = new Paint();
@@ -132,7 +221,7 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedpawn= Bitmap.createScaledBitmap(whitePawn, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedpawn, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedpawn, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawPawn
 
@@ -150,7 +239,7 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedknight= Bitmap.createScaledBitmap(whiteKnight, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedknight, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedknight, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawKnight
 
@@ -168,7 +257,7 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedrook= Bitmap.createScaledBitmap(whiteRook, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedrook, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedrook, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawRook
 
@@ -186,7 +275,7 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedbishop= Bitmap.createScaledBitmap(whiteBishop, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedbishop, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedbishop, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawBishop
 
@@ -204,7 +293,7 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedking= Bitmap.createScaledBitmap(whiteKing, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedking, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedking, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawKing
 
@@ -222,12 +311,10 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedqueen= Bitmap.createScaledBitmap(whiteQueen, scaledShape, scaledShape, false);
                 break;
         }
-        g.drawBitmap(resizedqueen, ((dimen/8)*(col-1)), ((dimen/8)*(row-1)), background);
+        g.drawBitmap(resizedqueen, (dimen/8)*col, (dimen/8)*row, background);
 
     } //drawQueen
 
-    public void setState(ChessGameState state) {
-        this.gameState = state;
-    }
+
 
 }
