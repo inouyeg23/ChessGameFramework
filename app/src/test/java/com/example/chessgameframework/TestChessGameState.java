@@ -29,5 +29,4 @@ public class TestChessGameState {
         //gameState.gameStarted = true;
         assertTrue(gameState.gameStarted);
     }
-
 }
