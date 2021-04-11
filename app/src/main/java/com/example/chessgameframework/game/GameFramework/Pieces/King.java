@@ -24,7 +24,7 @@ public class King extends Piece {
         }
 
         //make sure that the booleans for check are up to date
-        chessGameState.inCheck();
+       // chessGameState.inCheck();
 
         //to find the total spaces moved, take the absolute value of the selected place - the final
         //combines the rook and bishop moves
