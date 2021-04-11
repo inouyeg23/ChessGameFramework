@@ -8,12 +8,6 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurn
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
-import edu.up.cs301.game.GameFramework.infoMessage.GameInfo;
-import edu.up.cs301.game.GameFramework.infoMessage.NotYourTurnInfo;
-import edu.up.cs301.game.GameFramework.players.GameComputerPlayer;
-import edu.up.cs301.game.GameFramework.utilities.Logger;
-import edu.up.cs301.tictactoe.tttActionMessage.TTTMoveAction;
-
 /**
  * This is a really dumb computer player that always just makes a random move
  * it's so stupid that it sometimes tries to make moves on non-blank spots.
