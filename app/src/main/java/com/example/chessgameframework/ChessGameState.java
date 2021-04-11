@@ -3,14 +3,11 @@ package com.example.chessgameframework;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
-<<<<<<<<< Temporary merge branch 1
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
-=========
 import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
->>>>>>>>> Temporary merge branch 2
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -83,8 +80,6 @@ public class ChessGameState extends GameState implements Serializable {
                 board[i][j] = null;
             }
         }
-<<<<<<<<< Temporary merge branch 1
-=========
         //fills the board
         //black side
         board[0][0] = new Rook(true);
@@ -132,7 +127,6 @@ public class ChessGameState extends GameState implements Serializable {
         if (kingBlack instanceof King) {
             kings[1] = kingWhite;
         }
->>>>>>>>> Temporary merge branch 2
 
         //starts at 0
         //  0 for black, 1 for white
@@ -216,11 +210,7 @@ public class ChessGameState extends GameState implements Serializable {
 
 
     public Piece getPiece(int row, int col){
-<<<<<<<<< Temporary merge branch 1
         if(board[row][col] == null|| row < 0 || col < 0) {
-=========
-        if(board == null|| row < 0 || col < 0) {
->>>>>>>>> Temporary merge branch 2
             return null;
         }
         if(row >= board.length || col >= board[row].length){
@@ -230,11 +220,7 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void setPiece(int row, int col, Piece piece){
-<<<<<<<<< Temporary merge branch 1
         if(row < 0 || col < 0) {
-=========
-        if(board == null|| row < 0 || col < 0) {
->>>>>>>>> Temporary merge branch 2
             return;
         }
         if(row >= board.length || col >= board[row].length) {
