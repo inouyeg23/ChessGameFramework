@@ -139,7 +139,10 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ChessGameState gameState = (ChessGameState) game.getGameState();
         if(gameState.getPiece(xsquare,ysquare) != null) {
             //we have a piece so now we want to draw all of the possible moves
-
+            System.out.println("we found a piece");
+            if(gameState.getPiece(xsquare,ysquare).isBlack()){
+                System.out.println("the piece we found was black");
+            }
             MoveBoard board = new MoveBoard();
             board.findMoves(gameState, xsquare, ysquare);
 

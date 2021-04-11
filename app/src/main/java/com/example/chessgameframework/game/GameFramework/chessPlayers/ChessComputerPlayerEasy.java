@@ -2,6 +2,7 @@ package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
@@ -15,8 +16,7 @@ import com.example.chessgameframework.game.GameFramework.utilities.Logger;
  * @author Steven R. Vegdahl
  * @version July 2013
  */
-public class ChessComputerPlayerEasy extends GameComputerPlayer
-{
+public class ChessComputerPlayerEasy extends GameComputerPlayer {
     /*
      * Constructor for the ChessComputerPlayerEasy class
      */
@@ -26,61 +26,48 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer
     }
 
 
-
     /**
      * Called when the player receives a game-state (or other info) from the
      * game.
      *
-     * @param info
-     * 		the message from the game
+     * @param info the message from the game
      */
     @Override
     protected void receiveInfo(GameInfo info) {
-        /*
         // if it was a "not your turn" message, just ignore it
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
-
-        if (!(info instanceof ChessGameState)) return;
-        ChessGameState gameState = (ChessGameState)info;
-
+        //if (!(info instanceof ChessGameState)) return;
+        ChessGameState gameState = new ChessGameState();
         // move a piece at random
         Piece randomPiece = null;
-        int randomX = -1;
-        int randomY = -1;
 
-        while(randomPiece == null) {
-
+        while (randomPiece == null) {
+            int randomRow = -1;
+            int randomCol = -1;
             // select the random piece
             while (randomPiece == null) {
-                randomX = (int) (Math.random() * 8);
-                randomY = (int) (Math.random() * 8);
-                if (gameState.currPlayer == 0 && !randomPiece.isBlack()) {
-                    randomPiece = gameState.getPiece(randomX, randomY);
-                } else if (gameState.currPlayer == 1 && randomPiece.isBlack()) {
-                    randomPiece = gameState.getPiece(randomX, randomY);
-                }
+                randomRow = (int) (Math.random() * 8);
+                randomCol = (int) (Math.random() * 8);
+                randomPiece = gameState.getPiece(randomRow, randomCol);
             }
 
-            // find and make a move for piece, otherwise find another piece to move
-            for (int moveX = 0; moveX < 8; moveX++) {
-                for (int moveY = 0; moveY < 8; moveY++) {
-
-                    if (randomPiece.canMove(randomX, randomY, moveX, moveY)) {
+            MoveBoard moveBoard = new MoveBoard();
+            moveBoard.findMoves(gameState, randomRow, randomCol);
+            for (int moveRow = 0; moveRow < 8; moveRow++) {
+                for (int moveCol = 0; moveCol < 8; moveCol++) {
+                    if (moveBoard.getCanMove(moveRow, moveCol)) {
                         sleep(1);
                         // move to that location
                         Logger.log("ChessComputerPlayerEasy", "Sending move");
-                        game.sendAction(new ChessMoveAction(this, randomX, randomY, moveX, moveY, randomPiece));
-                    }
-                    else{
-                        randomPiece = null;
+                        game.sendAction(new ChessMoveAction(this, randomRow, randomCol, moveRow, moveCol, randomPiece));
+                        return;
                     }
                 }
             }
+            randomPiece = null;
         }
-
-         */
-
     }
-
 }
+
+

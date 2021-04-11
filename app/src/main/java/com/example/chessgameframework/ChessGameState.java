@@ -3,6 +3,7 @@ package com.example.chessgameframework;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
@@ -247,18 +248,17 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean inCheck(int[] kingLocation) {
         Piece king = getPiece(kingLocation[0], kingLocation[1]);
         //iterate through to search for a piece that can "take" the king
-        for (int row2 = 0; row2 < 8; row2++) {
-            for (int col2 = 0; col2 < 8; col2++) {
-                //piece
-                Piece targetPiece = getPiece(row2, col2);
-                if (targetPiece.canMove(row2, col2, kingLocation[0], kingLocation[1])) {
-                    //puts the pieces in check if an opposing piece can move into it's spot
-                    //sets the checks accordingly
-                    if (king.isBlack() && !targetPiece.isBlack()) {
-                        return true;
-                    }
-                    if (!king.isBlack() && targetPiece.isBlack()) {
-                        return true;
+        MoveBoard board = new MoveBoard();
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(getPiece(i,j).isBlack()!=king.isBlack()){
+                    board.findMoves(this,i,j);
+                    for(int k = 0; k < 8; k++){
+                        for(int l = 0; l < 8; l++){
+                            if (board.getCanMove(k,l) && kingLocation[0] == k && kingLocation[1] == l){
+                                return true;
+                            }
+                        }
                     }
                 }
             }
