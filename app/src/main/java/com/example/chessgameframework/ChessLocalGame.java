@@ -53,7 +53,11 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected String checkIfGameOver() {
-        if(state.isForfeitPressed()){
+        if(state.isCheckedmateBlack()) {
+            return "White Won. ";
+        }else if(state.isCheckedmateWhite()){
+            return "Black Won";
+        } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {
             return playerNames[0] + " quit. ";
