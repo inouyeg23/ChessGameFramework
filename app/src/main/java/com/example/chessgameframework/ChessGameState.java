@@ -71,6 +71,9 @@ public class ChessGameState extends GameState implements Serializable {
     //both kings are stored in the array below as well (black then white)
     Piece[] kings = new Piece[2];
 
+    public int[] kingLocationWhite = new int[2];
+    public int[] kingLocationBlack = new int[2];
+
     /**
      * Constructor for class ChessGameState
      */
@@ -231,6 +234,24 @@ public class ChessGameState extends GameState implements Serializable {
         board[row][col] = piece;
     }
 
+    public void setKingLocation(int row, int col){
+          kingLocationWhite[0] = row;
+          kingLocationWhite[1] = col;
+    }
+
+    public boolean checkIfTwoKings(){
+          int c = 0;
+          for(int i = 0; i < 8; i++){
+              for(int j = 0; j < 8; j++){
+                  if(board[i][j] != null && board[i][j] instanceof King){
+                      c++;
+                  }
+              }
+          }
+          return c == 2;
+    }
+
+    /*
     //finds the location of the king
     public int[] getKingLoc(int k){
           int[] kingLoc =  new int[2];
@@ -245,7 +266,8 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
         return kingLoc;
-    }
+    }\
+     */
 
     //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
     public boolean inCheck(int[] kingLocation) {
@@ -269,6 +291,7 @@ public class ChessGameState extends GameState implements Serializable {
         return false;
     }
 
+    /*
     public void inCheck() {
         int[] kingLocation = getKingLoc(0);
         if(inCheck(kingLocation)) {
@@ -279,6 +302,7 @@ public class ChessGameState extends GameState implements Serializable {
             isCheckedWhite = true;
         }
     }
+     */
 
     public boolean inCheckMate(int[] kingLocation) {
         Piece king = getPiece(kingLocation[0], kingLocation[1]);
@@ -344,7 +368,11 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-
+        if(board[row][col] instanceof King){
+            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+            setKingLocation(selectedRow, selectedCol);
+        }
+        System.out.println("moved piece");
         setPiece(selectedRow,selectedCol,board[row][col]);
         setPiece(row,col,null);
 

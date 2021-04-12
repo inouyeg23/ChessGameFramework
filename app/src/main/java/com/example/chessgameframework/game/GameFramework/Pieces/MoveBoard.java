@@ -10,10 +10,14 @@ public class MoveBoard {
     private boolean[][] board;
     private boolean[][] checkBoard;
     private int numMoves;
+    private int kingMoves;
 
 
     public MoveBoard(){
         numMoves = 0;
+        kingMoves = 0;
+
+
         board = new boolean[8][8];
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -543,10 +547,25 @@ public class MoveBoard {
         return this.numMoves;
     }
 
+    private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
+        /*
+        if(gameState.kingLocationWhite[0] == destRow && gameState.kingLocationWhite[1] == destCol){
+            if(kingMoves == 0){
+                gameState.setCheckedmateBlack(true);
+                System.out.println("king checkmated");
+            }
+            gameState.setCheckedBlack(true);
+            System.out.println("king in check");
+            return false;
+        }
+        */
+        System.out.println("no checks");
+        return true;
+    }
 
+    /*
     private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
         Piece piece = gameState.getPiece(row,col);
-
 
         checkBoard = new boolean[8][8];
         for(int i = 0; i < 8; i++){
@@ -880,7 +899,7 @@ public class MoveBoard {
         }
 
         if (!checkBoard[destRow][destCol]){
-            return true;
+            return false;
         }
         if(playerNum == 0){
             gameState.setCheckedWhite(true);
@@ -888,6 +907,8 @@ public class MoveBoard {
         else{
             gameState.setCheckedBlack(false);
         }
-        return false;
+        return true;
     }
+
+     */
 }
