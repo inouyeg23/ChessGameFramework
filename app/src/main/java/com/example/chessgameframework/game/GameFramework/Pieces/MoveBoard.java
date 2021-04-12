@@ -70,7 +70,8 @@ public class MoveBoard {
                     board[row - 1][col] = true;
                     numMoves++;
                 }
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col+1).isBlack()) {
+                
+                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && !gameState.getPiece(row-1,col+1).isBlack()) {
                     board[row - 1][col + 1] = true;
                     numMoves++;
                 }

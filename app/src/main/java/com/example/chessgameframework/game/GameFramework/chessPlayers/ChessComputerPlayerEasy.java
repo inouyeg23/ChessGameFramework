@@ -38,7 +38,8 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
         //if (!(info instanceof ChessGameState)) return;
-        ChessGameState gameState = new ChessGameState();
+
+        ChessGameState gameState = new ChessGameState((ChessGameState) info);
         // move a piece at random
         Piece randomPiece = null;
 

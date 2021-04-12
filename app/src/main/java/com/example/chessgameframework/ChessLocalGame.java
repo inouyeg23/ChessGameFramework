@@ -107,9 +107,7 @@ public class ChessLocalGame extends LocalGame {
             int playerID = getPlayerIdx(CMA.getPlayer());
 
             // if there is a friendly piece, return false
-            if (CGS.getPiece(row, col) == null) {
-                return false;
-            }
+
 
             // get the 0/1 id of the player whose move it is
             int playerTurn = CGS.getPlayerTurn();

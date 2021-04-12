@@ -345,12 +345,7 @@ public class ChessGameState extends GameState implements Serializable {
         setPiece(selectedRow,selectedCol,piece);
         setPiece(row,col,null);
 
-        if(currPlayer == 1){
-            currPlayer = 0;
-        }
-        else {
-            currPlayer = 1;
-        }
+
     }
 
     /**
