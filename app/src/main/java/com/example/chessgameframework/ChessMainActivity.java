@@ -51,7 +51,7 @@ public class ChessMainActivity extends GameMainActivity {
         //create a game configuration class for chess
         GameConfig defaultConfig = new GameConfig(playerTypes,1,2,"chess", 8080);
         defaultConfig.addPlayer("Human Player", 0); //player 1: a human player
-        defaultConfig.addPlayer("Trash Computer", 1); //player 1: a human player
+        defaultConfig.addPlayer("Trash Computer", 1); //player 2: a human player
 
         //returns the default configuration
         return defaultConfig;

@@ -105,8 +105,8 @@ public class ChessGameState extends GameState implements Serializable {
         board[7][0] = new Rook(false);
         board[7][1] = new Knight(false);
         board[7][2] = new Bishop(false);
-        board[7][3] = new King(false);
-        board[7][4] = new Queen(false);
+        board[7][4] = new King(false);
+        board[7][3] = new Queen(false);
         board[7][5] = new Bishop(false);
         board[7][6] = new Knight(false);
         board[7][7] = new Rook(false);
@@ -339,10 +339,10 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-        if(piece.canMove(row,col,selectedRow,selectedCol)){
-            setPiece(selectedRow,selectedCol,piece);
-            setPiece(row,col,null);
-        }
+
+        setPiece(selectedRow,selectedCol,piece);
+        setPiece(row,col,null);
+
         if(currPlayer == 1){
             currPlayer = 0;
         }

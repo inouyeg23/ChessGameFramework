@@ -175,7 +175,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
                     System.out.println("send a move to: " + xsquare + ", " + ysquare);
                     ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
-
+                    //gameState.movePiece(selX,selY,xsquare,ysquare,gameState.getPiece(selX,selY));
+                    game.sendAction(action);
                 }
 
             }

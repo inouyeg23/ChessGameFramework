@@ -66,6 +66,9 @@ public class ChessLocalGame extends LocalGame {
     @Override
     protected boolean canMove(int playerIdx) {
 
+        if(playerIdx == 0){
+            return true;
+        }
         return false;
     }
 
