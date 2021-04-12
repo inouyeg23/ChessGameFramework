@@ -56,7 +56,7 @@ public class ChessLocalGame extends LocalGame {
         if(state.isCheckedmateBlack()) {
             return "White Won. ";
         }else if(state.isCheckedmateWhite()){
-            return "Black Won";
+            return "Black Won. ";
         } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {
