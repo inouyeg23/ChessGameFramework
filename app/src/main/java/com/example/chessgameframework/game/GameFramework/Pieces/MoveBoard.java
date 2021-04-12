@@ -52,14 +52,14 @@ public class MoveBoard {
                     }
                 }
 
-                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && !gameState.getPiece(row+1,col+1).isBlack()) {
+                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col + 1,gameState.getPlayerTurn())) {
                         board[row + 1][col + 1] = true;
                         numMoves++;
                     }
                 }
 
-                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && !gameState.getPiece(row+1,col-1).isBlack()) {
+                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col - 1,gameState.getPlayerTurn())) {
                         board[row + 1][col - 1] = true;
                         numMoves++;
@@ -83,14 +83,14 @@ public class MoveBoard {
                     }
                 }
 
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && !gameState.getPiece(row-1,col+1).isBlack()) {
+                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col+1,gameState.getPlayerTurn())) {
                         board[row - 1][col + 1] = true;
                         numMoves++;
                     }
                 }
 
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col-1).isBlack()) {
+                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-1,gameState.getPlayerTurn())) {
                         board[row - 1][col - 1] = true;
                         numMoves++;
@@ -546,14 +546,6 @@ public class MoveBoard {
 
 
     private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
-        ChessGameState ngs = new ChessGameState(gameState);
-        ngs.movePiece(row,col,destRow,destCol,ngs.getPiece(row, col));
-        ngs.inCheck();
-        if(playerNum == 0){
-            return ngs.isCheckedWhite();
-        }
-        else
-            return ngs.isCheckedBlack();
-
+        return true;
     }
 }
