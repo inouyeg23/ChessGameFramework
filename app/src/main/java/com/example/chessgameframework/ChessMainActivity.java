@@ -57,8 +57,6 @@ public class ChessMainActivity extends GameMainActivity {
         return defaultConfig;
 
     }
-
-
     /**
      * createLocalGame
      *
@@ -68,7 +66,25 @@ public class ChessMainActivity extends GameMainActivity {
      *
      * @return a new, game-specific instance of a sub-class of the LocalGame
      *         class.
-     */
+     **/
+
+     @Override
+     public LocalGame createLocalGame(GameState gameState) {
+        if(gameState == null) return new ChessLocalGame();
+        return new ChessLocalGame((ChessGameState) gameState);
+     }
+
+    /*
+    /**
+     * createLocalGame
+     *
+     * Creates a new game that runs on the server tablet,
+     * @param gameState
+     * 				the gameState for this game or null for a new game
+     *
+     * @return a new, game-specific instance of a sub-class of the LocalGame
+     *         class.
+
     @Override
     public LocalGame createLocalGame(GameState gameState) {
         if(gameState == null) return new ChessLocalGame();
@@ -82,9 +98,7 @@ public class ChessMainActivity extends GameMainActivity {
             }
 
             @Override
-            protected String checkIfGameOver() {
-                return null;
-            }
+            protected String checkIfGameOver() { return null; }
 
             @Override
             protected boolean makeMove(GameAction action) {
@@ -92,6 +106,7 @@ public class ChessMainActivity extends GameMainActivity {
             }
         };
     }
+    */
 
 
 

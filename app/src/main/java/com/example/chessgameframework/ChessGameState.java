@@ -310,6 +310,7 @@ public class ChessGameState extends GameState implements Serializable {
     @Override
     public String toString(){
         return "Player turn: " + playerTurn + "\n" +
+                "Current player: " + currPlayer + "\n" +
                 "Black points: " + pointsBlack + "\n" +
                 "White points: " + pointsWhite + "\n" +
                 "Black seconds: " + secondsBlack + "\n" +
@@ -318,7 +319,8 @@ public class ChessGameState extends GameState implements Serializable {
                 "White checked: " + isCheckedWhite + "\n" +
                 "Black checkmated: " + isCheckedmateBlack + "\n" +
                 "White checkmated: " + isCheckedmateWhite + "\n" +
-                "Game paused: " + isPaused + "\n";
+                "Game paused: " + isPaused + "\n" +
+                "Game forfeited: " + isForfeitPressed + "\n";
     }
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
@@ -329,7 +331,7 @@ public class ChessGameState extends GameState implements Serializable {
         if(currPlayer == 1){
             currPlayer = 0;
         }
-        else{
+        else {
             currPlayer = 1;
         }
     }
@@ -409,8 +411,7 @@ public class ChessGameState extends GameState implements Serializable {
     //forfeitInitiated would turn true or false based on button onClick
     public boolean isForfeitPressed(){
         if(isForfeitPressed){
-            //this will be implemented using game framework; not required for game
-            //state assignment
+            System.out.println("forfeit pressed in game state");
             return true;
         } else {
             return false;

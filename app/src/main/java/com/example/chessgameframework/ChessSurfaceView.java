@@ -57,11 +57,6 @@ public class ChessSurfaceView extends SurfaceView{
         if (gameState == null) {
             return;
         }
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                gameState.setPiece(row,col, new Pawn(false));
-            }
-        }
 
         updateDimensions(g);
 
@@ -73,9 +68,6 @@ public class ChessSurfaceView extends SurfaceView{
                 drawPiece(g, result, row, col);
             }
         }
-        drawHighlightedSquare(g, 1, 3);
-        drawHighlightedSquare(g, 0, 3);
-        drawHighlightedSquare(g, 7, 7);
 
         //add images corresponding to drawables
 

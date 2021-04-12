@@ -21,6 +21,8 @@ import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
+import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
@@ -98,21 +100,28 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
      */
     @Override
     public void onClick(View button) {
-        ChessGameState newChessGameState = new ChessGameState();
+        ChessGameState gameState = (ChessGameState) game.getGameState();
+
         if(button == quitButton){
-            newChessGameState.isQuitPressed = true;
-        }
-        if(button == forfeitButton){
-            newChessGameState.isForfeitPressed = true;
-        }
-        if(button == offerDrawButton){
-            newChessGameState.isDrawPressed = true;
-        }
-        if(button == pauseButton){
-            newChessGameState.isPaused = true;
-        }
-        if(button == undoButton){
-            newChessGameState.isUndoPressed = true;
+            gameState.isQuitPressed = true;
+            game.sendAction(new ChessButtonAction(this));
+
+
+        } else if(button == forfeitButton){
+            gameState.isForfeitPressed = true;
+            game.sendAction(new ChessButtonAction(this));
+
+        } else if(button == offerDrawButton){
+            gameState.isDrawPressed = true;
+            game.sendAction(new ChessButtonAction(this));
+
+        } else if(button == pauseButton){
+            gameState.isPaused = true;
+            game.sendAction(new ChessButtonAction(this));
+
+        } else if(button == undoButton){
+            gameState.isUndoPressed = true;
+            game.sendAction(new ChessButtonAction(this));
         }
     }
 
