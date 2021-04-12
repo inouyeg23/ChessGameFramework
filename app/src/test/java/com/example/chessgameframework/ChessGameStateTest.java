@@ -42,7 +42,7 @@ public class ChessGameStateTest {
     public void gameStart() {
         ChessGameState gameState = new ChessGameState();
         assertTrue(!gameState.gameStarted);
-        gameState.gameStart();
+        gameState.isStartPressed();
         assertTrue(gameState.gameStarted);
 
     }
