@@ -43,7 +43,7 @@ public class ChessMainActivity extends GameMainActivity {
         //Adds the allowed player types
         playerTypes.add(new GamePlayerType("Local Human Player") {
             public GamePlayer createPlayer(String name) {
-                return new ChessHumanPlayer(name);
+                return new ChessHumanPlayer(name, R.id.chessSurfaceView);
             }});
         playerTypes.add(new GamePlayerType("Easy Computer") {
             public GamePlayer createPlayer(String name) { return new ChessComputerPlayerEasy(name); }});

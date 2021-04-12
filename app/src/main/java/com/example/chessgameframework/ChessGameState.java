@@ -23,6 +23,7 @@ public class ChessGameState extends GameState implements Serializable {
     //8x8 array of pieces
     private Piece[][] board;
 
+
     //whose turn it is
     private int playerTurn;
 
@@ -224,7 +225,7 @@ public class ChessGameState extends GameState implements Serializable {
         if(row < 0 || col < 0) {
             return;
         }
-        if(row >= board.length || col >= board[row].length) {
+        if(row >= 8 || col >= 8) {
             return;
         }
         board[row][col] = piece;
@@ -235,10 +236,11 @@ public class ChessGameState extends GameState implements Serializable {
           int[] kingLoc =  new int[2];
         for (int row1 = 0; row1 < 8; row1++) {
             for (int col1 = 0; col1 < 8; col1++) {
-                if (getPiece(row1, col1).equals(kings[k])) {
-                    kingLoc[0] = row1;
-                    kingLoc[1] = col1;
-                }
+                if(board[row1][col1] != null)
+                    if (getPiece(row1, col1).equals(kings[k])) {
+                        kingLoc[0] = row1;
+                        kingLoc[1] = col1;
+                    }
             }
         }
         return kingLoc;
@@ -342,7 +344,7 @@ public class ChessGameState extends GameState implements Serializable {
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
 
-        setPiece(selectedRow,selectedCol,piece);
+        setPiece(selectedRow,selectedCol,board[row][col]);
         setPiece(row,col,null);
 
 

@@ -75,10 +75,7 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean canMove(int playerIdx) {
-        if(playerIdx == state.getPlayerTurn()){
-            return true;
-        }
-        return false;
+        return playerIdx == ((ChessGameState)state).getPlayerTurn();
     }
 
     /**
@@ -113,10 +110,14 @@ public class ChessLocalGame extends LocalGame {
             int playerTurn = CGS.getPlayerTurn();
 
             // place the player's piece on the selected square
-            state.movePiece(col, row, selectedCol, selectedRow, piece);
-
+            if(playerID != playerTurn)
+                return false;
+            CGS.movePiece(col, row, selectedCol, selectedRow, piece);
+            if(!CGS.gameStarted)
+                CGS.gameStarted = true;
             // make it the other player's turn
-            state.setPlayerTurn(1 - playerTurn);
+
+            CGS.setPlayerTurn(1 - playerTurn);
 
 
             // return true, indicating the it was a legal move

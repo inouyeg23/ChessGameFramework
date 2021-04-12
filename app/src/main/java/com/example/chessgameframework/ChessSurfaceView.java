@@ -66,6 +66,7 @@ public class ChessSurfaceView extends SurfaceView{
             for (int col = 0; col < 8; col++) {
                 Piece result = gameState.getPiece(row, col); // get piece
                 drawPiece(g, result, row, col);
+
             }
         }
 

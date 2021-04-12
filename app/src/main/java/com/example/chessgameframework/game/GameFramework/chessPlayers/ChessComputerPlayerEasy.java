@@ -38,7 +38,9 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
         //if (!(info instanceof ChessGameState)) return;
-
+        boolean shouldBeBlack = false;
+        if(playerNum == 1)
+            shouldBeBlack = true;
         ChessGameState gameState = new ChessGameState((ChessGameState) info);
         // move a piece at random
         Piece randomPiece = null;
@@ -47,10 +49,14 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
             int randomRow = -1;
             int randomCol = -1;
             // select the random piece
-            while (randomPiece == null) {
+            while (randomPiece == null ) {
                 randomRow = (int) (Math.random() * 8);
                 randomCol = (int) (Math.random() * 8);
                 randomPiece = gameState.getPiece(randomRow, randomCol);
+                if(randomPiece != null)
+                    if(randomPiece.isBlack() != shouldBeBlack)
+                        randomPiece = null;
+
             }
 
             MoveBoard moveBoard = new MoveBoard();
