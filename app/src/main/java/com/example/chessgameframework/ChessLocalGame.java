@@ -3,6 +3,7 @@ package com.example.chessgameframework;
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
+import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
@@ -10,6 +11,7 @@ public class ChessLocalGame extends LocalGame {
     /**
      * Constructor for the TTTLocalGame.
      */
+
     public ChessLocalGame() {
 
         // perform superclass initialization
@@ -38,7 +40,7 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected void sendUpdatedStateTo(GamePlayer p) {
-        p.sendInfo(new ChessGameState((ChessGameState) state));
+        p.sendInfo(new ChessGameState(state));
     }
 
     /**
@@ -51,7 +53,15 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected String checkIfGameOver() {
-        return null;
+        if(state.isForfeitPressed()){
+            return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
+        } else if(state.isQuitPressed()) {
+            return playerNames[0] + " quit. ";
+        } else if(state.isDrawPressed()) {
+            return playerNames[0] + " has offered draw. ";
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -65,8 +75,7 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean canMove(int playerIdx) {
-
-        if(playerIdx == 0){
+        if(playerIdx == state.getPlayerTurn()){
             return true;
         }
         return false;
@@ -82,37 +91,40 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected boolean makeMove(GameAction action) {
+        if(action instanceof ChessButtonAction){
+            return true;
+        } else if ( action instanceof ChessMoveAction) {
+            ChessGameState CGS = (ChessGameState) super.state;
+            ChessMoveAction CMA = (ChessMoveAction) action;
 
-        ChessGameState CGS = (ChessGameState) super.state;
-        ChessMoveAction CMA = (ChessMoveAction) action;
+            int row = CMA.getRow();
+            int col = CMA.getCol();
+            int selectedCol = CMA.getSelectedCol();
+            int selectedRow = CMA.getSelectedRow();
+            Piece piece = CMA.getSelectedPiece();
 
-        int row = CMA.getRow();
-        int col = CMA.getCol();
-        int selectedCol = CMA.getSelectedCol();
-        int selectedRow = CMA.getSelectedRow();
-        Piece piece = CMA.getSelectedPiece();
+            // get the ID of our player
+            int playerID = getPlayerIdx(CMA.getPlayer());
 
-        // get the ID of our player
-        int playerID = getPlayerIdx(CMA.getPlayer());
+            // if there is a friendly piece, return false
+            if (CGS.getPiece(row, col) == null) {
+                return false;
+            }
 
-        // if there is a friendly piece, return false
-        if (CGS.getPiece(row, col) == null) {
-            return false;
+            // get the 0/1 id of the player whose move it is
+            int playerTurn = CGS.getPlayerTurn();
+
+            // place the player's piece on the selected square
+            state.movePiece(col, row, selectedCol, selectedRow, piece);
+
+            // make it the other player's turn
+            state.setPlayerTurn(1 - playerTurn);
+
+
+            // return true, indicating the it was a legal move
+            return true;
         }
 
-        // get the 0/1 id of the player whose move it is
-        int playerTurn = CGS.getPlayerTurn();
-
-        // place the player's piece on the selected square
-        state.movePiece(col, row, selectedCol, selectedRow, piece);
-
-        // make it the other player's turn
-        state.setPlayerTurn(1 - playerTurn);
-
-
-        // return true, indicating the it was a legal move
-        return true;
-
-
-    }
+        return false;
+    } //makeMove
 }

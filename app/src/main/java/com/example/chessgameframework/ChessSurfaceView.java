@@ -68,9 +68,6 @@ public class ChessSurfaceView extends SurfaceView{
                 drawPiece(g, result, row, col);
             }
         }
-        drawHighlightedSquare(g, 1, 3);
-        drawHighlightedSquare(g, 0, 3);
-        drawHighlightedSquare(g, 7, 7);
 
         //add images corresponding to drawables
 
