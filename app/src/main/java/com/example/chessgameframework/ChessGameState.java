@@ -236,11 +236,12 @@ public class ChessGameState extends GameState implements Serializable {
           int[] kingLoc =  new int[2];
         for (int row1 = 0; row1 < 8; row1++) {
             for (int col1 = 0; col1 < 8; col1++) {
-                if(board[row1][col1] != null)
+                if(board[row1][col1] != null) {
                     if (getPiece(row1, col1).equals(kings[k])) {
                         kingLoc[0] = row1;
                         kingLoc[1] = col1;
                     }
+                }
             }
         }
         return kingLoc;
