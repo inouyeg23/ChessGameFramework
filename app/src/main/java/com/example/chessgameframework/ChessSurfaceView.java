@@ -57,11 +57,6 @@ public class ChessSurfaceView extends SurfaceView{
         if (gameState == null) {
             return;
         }
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                gameState.setPiece(row,col, new Pawn(false));
-            }
-        }
 
         updateDimensions(g);
 

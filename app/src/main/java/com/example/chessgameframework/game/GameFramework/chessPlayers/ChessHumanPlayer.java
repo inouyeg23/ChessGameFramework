@@ -48,6 +48,11 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button      pauseButton             = null;
     private Button      undoButton              = null;
     private ChessSurfaceView chessView          = null;
+    private boolean     pieceSelected           = false;
+    private int         selX                    = -1;
+    private int         selY                    = -1;
+    private MoveBoard   selectedPieceMB         = null;
+    private boolean doubleClick = false;
 
 
     // the android activity that we are running
@@ -126,45 +131,58 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        //check if a piece was pressed
-        float x = event.getX();
-        float y = event.getY();
+        if(doubleClick){
+            doubleClick = false;
+            return true;
+        }
+        else {
+            //check if a piece was pressed
+            float x = event.getX();
+            float y = event.getY();
 
-        float boxWidth = v.getWidth()/8;
-        float boxHeight = v.getHeight()/8;
+            float boxWidth = v.getWidth() / 8;
+            float boxHeight = v.getHeight() / 8;
 
-        int xsquare = (int) (x/boxWidth);
-        int ysquare = (int) (y/boxHeight);
+            int ysquare = (int) (x / boxWidth);
+            int xsquare = (int) (y / boxHeight);
 
-        System.out.println("clicked on box :" + xsquare + ", " + ysquare);
+            System.out.println("clicked on box :" + xsquare + ", " + ysquare);
 
-        ChessGameState gameState = (ChessGameState) game.getGameState();
-        if(gameState.getPiece(xsquare,ysquare) != null) {
-            //we have a piece so now we want to draw all of the possible moves
-            System.out.println("we found a piece");
-            if(gameState.getPiece(xsquare,ysquare).isBlack()){
-                System.out.println("the piece we found was black");
-            }
-            MoveBoard board = new MoveBoard();
-            board.findMoves(gameState, xsquare, ysquare);
-
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-
-                    if (board.getCanMove(i, j)) {
-                        System.out.println("we could move to: " + i + ", " + j);
-                        //draw a circle or something idk yet
-                        ChessMoveAction action = new ChessMoveAction(this, xsquare,ysquare,i, j, gameState.getPiece(xsquare,ysquare));
-                        game.sendAction(action);
-                        chessView.invalidate();
+            ChessGameState gameState = (ChessGameState) game.getGameState();
+            if (!pieceSelected) {
+                if (gameState.getPiece(xsquare, ysquare) != null) {
+                    //we have a piece so now we want to draw all of the possible moves
+                    System.out.println("we found a piece");
+                    if (gameState.getPiece(xsquare, ysquare).isBlack()) {
+                        System.out.println("the piece we found was black");
                     }
+                    selX = xsquare;
+                    selY = ysquare;
+                    selectedPieceMB = new MoveBoard();
+                    selectedPieceMB.findMoves(gameState, xsquare, ysquare);
+
+
+                    if (selectedPieceMB.getNumMoves() > 0) {
+                        pieceSelected = true;
+                        System.out.println("we successfully selected a piece that has moves");
+
+                        //add highlighting code here
+
+                    }
+                }
+            } else {
+                //we clicked where we want the piece to go
+                if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
+                    System.out.println("send a move to: " + xsquare + ", " + ysquare);
+                    ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
 
                 }
-            }
 
+            }
+            doubleClick = true;
+            return true;
 
         }
-        return true;
     }
 
     /**

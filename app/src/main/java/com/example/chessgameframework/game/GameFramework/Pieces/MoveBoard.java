@@ -8,9 +8,11 @@ public class MoveBoard {
     //8 by 8 array containing true or false if the piece can move there
     //initiallized to all false and is updated when we call getMoves
     private boolean[][] board;
+    private int numMoves;
 
 
     public MoveBoard(){
+        numMoves = 0;
         board = new boolean[8][8];
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -34,63 +36,93 @@ public class MoveBoard {
         }
         else if(piece instanceof Pawn){
             //pawns can move in the three spaces infront of them
-            if(piece.isBlack()){
+            if(piece.isBlack()) {
                 //moves are +1+1, +0+1, +0+2, -1+1
-                if(row == 1 && gameState.getPiece(row+1,col) == null && gameState.getPiece(row+2,col) == null)
-                    board[row+2][col] = true;
+                if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
+                    board[row + 2][col] = true;
+                    numMoves++;
+                }
 
-                if(row < 7 && gameState.getPiece(row+1,col) == null)
-                    board[row+1][col] = true;
+                if (row < 7 && gameState.getPiece(row + 1, col) == null){
+                    board[row + 1][col] = true;
+                    numMoves++;
+                }
 
-                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && !gameState.getPiece(row+1,col+1).isBlack())
-                    board[row+1][col+1] = true;
+                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && !gameState.getPiece(row+1,col+1).isBlack()) {
+                    board[row + 1][col + 1] = true;
+                    numMoves++;
+                }
 
-                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && !gameState.getPiece(row+1,col-1).isBlack())
-                    board[row+1][col-1] = true;
-
+                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && !gameState.getPiece(row+1,col-1).isBlack()) {
+                    board[row + 1][col - 1] = true;
+                    numMoves++;
+                }
             }
             else{
                 //moves are -1-1, +0-1,+0-2, +1,-1
 
-                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null)
-                    board[row-2][col] = true;
+                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null) {
+                    board[row - 2][col] = true;
+                    numMoves++;
+                }
 
-                if(row > 0 && gameState.getPiece(row-1,col) == null)
-                    board[row-1][col] = true;
+                if(row > 0 && gameState.getPiece(row-1,col) == null) {
+                    board[row - 1][col] = true;
+                    numMoves++;
+                }
+                if(row > 0 && col < 7 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col+1).isBlack()) {
+                    board[row - 1][col + 1] = true;
+                    numMoves++;
+                }
 
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col+1).isBlack())
-                    board[row-1][col+1] = true;
-
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col-1).isBlack())
-                    board[row-1][col-1] = true;
+                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && !gameState.getPiece(row-1,col-1).isBlack()) {
+                    board[row - 1][col - 1] = true;
+                    numMoves++;
+                }
 
             }
         }
         else if(piece instanceof King){
             //up
-            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack()))
-                board[row-1][col] = true;
+            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
+                board[row - 1][col] = true;
+                numMoves++;
+            }
             //down
-            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack()))
-                board[row+1][col] = true;
+            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
+                board[row + 1][col] = true;
+                numMoves++;
+            }
             //right
-            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack()))
+            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
                 board[row][col + 1] = true;
+                numMoves++;
+            }
             //left
-            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack()))
+            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
                 board[row][col - 1] = true;
+                numMoves++;
+            }
             //up right
-            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack()))
-                board[row-1][col + 1] = true;
+            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
+                board[row - 1][col + 1] = true;
+                numMoves++;
+            }
             //up left
-            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack()))
+            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
                 board[row - 1][col - 1] = true;
+                numMoves++;
+            }
             //down right
-            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack()))
+            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
                 board[row + 1][col + 1] = true;
+                numMoves++;
+            }
             //down left
-            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack()))
+            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
                 board[row + 1][col - 1] = true;
+                numMoves++;
+            }
 
         }
         else if(piece instanceof Queen){
@@ -101,10 +133,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
                         break;
                     board[row + i][col + i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row + i][col + i] = true;
+                    numMoves++;
+                }
             }
             //down left
             for(int i = 1; row+i < 8 && col - i > -1; i++){
@@ -113,10 +148,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
                         break;
                     board[row + i][col - i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row + i][col - i] = true;
+                    numMoves++;
+                }
             }
             //up left
             for(int i = 1; row-i > -1 && col - i > -1; i++){
@@ -125,10 +163,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
                         break;
                     board[row - i][col - i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row - i][col - i] = true;
+                    numMoves++;
+                }
             }
             //up right
             for(int i = 1; row-i > -1 && col + i < 8; i++){
@@ -137,10 +178,14 @@ public class MoveBoard {
                     if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
                         break;
                     board[row - i][col + i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row - i][col + i] = true;
+                    numMoves++;
+                }
+
             }
 
             for(int i = row + 1; i <= 7; i++){
@@ -149,10 +194,13 @@ public class MoveBoard {
                     if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
                         break;
                     board[i][col] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[i][col] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = row - 1; i >= 0; i--){
@@ -161,10 +209,13 @@ public class MoveBoard {
                     if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
                         break;
                     board[i][col] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[i][col] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = col + 1; i <= 7; i++){
@@ -174,10 +225,13 @@ public class MoveBoard {
                         break;
                     }
                     board[row][i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row][i] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = col - 1; i >= 0; i--){
@@ -186,10 +240,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
                         break;
                     board[row][i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row][i] = true;
+                    numMoves++;
+                }
             }
 
         }
@@ -201,10 +258,13 @@ public class MoveBoard {
                     if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
                         break;
                     board[i][col] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[i][col] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = row - 1; i >= 0; i--){
@@ -213,10 +273,13 @@ public class MoveBoard {
                     if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
                         break;
                     board[i][col] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[i][col] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = col + 1; i <= 7; i++){
@@ -226,10 +289,13 @@ public class MoveBoard {
                         break;
                     }
                     board[row][i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row][i] = true;
+                    numMoves++;
+                }
             }
 
             for(int i = col - 1; i >= 0; i--){
@@ -238,10 +304,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
                         break;
                     board[row][i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row][i] = true;
+                    numMoves++;
+                }
             }
         }
         else if(piece instanceof Bishop){
@@ -252,10 +321,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
                         break;
                     board[row + i][col + i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row + i][col + i] = true;
+                    numMoves++;
+                }
             }
             //down left
             for(int i = 1; row+i < 8 && col - i > -1; i++){
@@ -264,10 +336,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
                         break;
                     board[row + i][col - i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row + i][col - i] = true;
+                    numMoves++;
+                }
             }
             //up left
             for(int i = 1; row-i > -1 && col - i > -1; i++){
@@ -276,10 +351,13 @@ public class MoveBoard {
                     if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
                         break;
                     board[row - i][col - i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row - i][col - i] = true;
+                    numMoves++;
+                }
             }
             //up right
             for(int i = 1; row-i > -1 && col + i < 8; i++){
@@ -288,38 +366,57 @@ public class MoveBoard {
                     if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
                         break;
                     board[row - i][col + i] = true;
+                    numMoves++;
                     break;
                 }
-                else
+                else {
                     board[row - i][col + i] = true;
+                    numMoves++;
+                }
             }
 
         }
         else if(piece instanceof Knight){
             //left up
-            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack()))
-                board[row-1][col - 2] = true;
+            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
+                board[row - 1][col - 2] = true;
+                numMoves++;
+            }
             //left down
-            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack()))
-                board[row+1][col - 2] = true;
+            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
+                board[row + 1][col - 2] = true;
+                numMoves++;
+            }
             //right up
-            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack()))
+            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
                 board[row-1][col + 2] = true;
+                numMoves++;
+            }
             //right down
-            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack()))
+            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
                 board[row+1][col + 2] = true;
+                numMoves++;
+            }
             //up right
-            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack()))
+            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
                 board[row-2][col + 1] = true;
+                numMoves++;
+            }
             //up left
-            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack()))
+            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
                 board[row - 2][col - 1] = true;
+                numMoves++;
+            }
             //down right
-            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack()))
+            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
                 board[row + 2][col + 1] = true;
+                numMoves++;
+            }
             //down left
-            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack()))
+            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
                 board[row + 2][col - 1] = true;
+                numMoves++;
+            }
         }
 
 
@@ -327,5 +424,9 @@ public class MoveBoard {
 
     public boolean getCanMove(int row,int col){
         return board[row][col];
+    }
+
+    public int getNumMoves(){
+        return this.numMoves;
     }
 }
