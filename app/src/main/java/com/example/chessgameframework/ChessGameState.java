@@ -279,24 +279,41 @@ public class ChessGameState extends GameState implements Serializable {
 
     public boolean inCheckMate(int[] kingLocation) {
         Piece king = getPiece(kingLocation[0], kingLocation[1]);
-        for (int row1 = 0; row1 < 8; row1++) {
-            for (int col1 = 0; col1 < 8; col1++) {
-                if (king.canMove(kingLocation[0], kingLocation[1], row1, col1)) {
-                    int[] kingLocation2 = new int[0];
-                    kingLocation2[0] = row1;
-                    kingLocation2[1] = col1;
-                    if (!inCheck(kingLocation2)) {
-                        return false;
-                    }
+        //inorder for a king to not be checkmated there needs to be a move that any piece of that
+        //color that can be made so the king is not in check
+
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j] != null && board[i][j].isBlack() == king.isBlack() ){
+                    //this is a piece that we want to see if it can do something to get the king out of check
+                    MoveBoard mb = new MoveBoard();
+                    mb.findMoves(this,i,j);
+                    if(mb.getNumMoves() > 0)
+                        for(int k = 0; k < 8; k++){
+                            for(int l = 0; l < 8; l++){
+                                if(mb.getCanMove(k,l)){
+                                    //the piece can move here so lets see what happens if we make this move. is the king going to be in check still?
+                                    ChessGameState gs = new ChessGameState(this);
+                                    gs.movePiece(i,j,k,l,this.board[i][j]);
+                                    if(king.isBlack()) {
+                                        if (!gs.isCheckedBlack()) {
+                                            return false;
+                                        }
+                                    }
+                                    else
+                                        if(!gs.isCheckedWhite())
+                                            return false;
+                                }
+                            }
+                        }
                 }
             }
-
         }
         if (king.isBlack()){
-            setCheckedmateBlack(true);
+            isCheckedmateBlack = true;
         }
         else{
-            setCheckedmateWhite(true);
+            isCheckedmateWhite = true;
         }
         return true;
     }
@@ -342,8 +359,7 @@ public class ChessGameState extends GameState implements Serializable {
      */
     public boolean isStartPressed(){
         if(gameStarted){
-            //this will be implemented using game framework; not required for game
-            //state assignment
+
             return true;
         } else {
             return false;
@@ -351,11 +367,9 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     public boolean isPausePressed(){
-        //this will be implemented using game framework; not required for game
-        //state assignment
+
         if(isPaused){
-            //this will be implemented using game framework; not required for game
-            //state assignment
+
             return true;
         } else {
             return false;
