@@ -20,8 +20,14 @@ import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
+import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
+import com.example.chessgameframework.game.GameFramework.Pieces.King;
+import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
+import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
@@ -53,11 +59,15 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button pauseButton = null;
     private Button undoButton = null;
     private ChessSurfaceView chessView = null;
+
+
     private boolean pieceSelected = false;
     private int selX = -1;
     private int selY = -1;
     private MoveBoard selectedPieceMB = null;
     private boolean doubleClick = false;
+
+
 
 
     // the android activity that we are running
@@ -151,9 +161,14 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         int ysquare = (int) (x / boxWidth);
         int xsquare = (int) (y / boxHeight);
 
+
+
         System.out.println("clicked on box :" + xsquare + ", " + ysquare);
 
         ChessGameState gameState = (ChessGameState) game.getGameState();
+
+
+
         if (!pieceSelected) {
             if (gameState.getPiece(xsquare, ysquare) != null) {
                 if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
@@ -164,6 +179,9 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                     selectedPieceMB = new MoveBoard();
                     selectedPieceMB.findMoves(gameState, xsquare, ysquare);
 
+                    chessView.setPlayerTouched(selX, selY);
+                    chessView.setPieceTouched(gameState.getPiece(selX, selY));
+                    chessView.invalidate();
 
                     if (selectedPieceMB.getNumMoves() > 0) {
                         pieceSelected = true;

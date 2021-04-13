@@ -74,6 +74,11 @@ public class ChessGameState extends GameState implements Serializable {
     public int[] kingLocationWhite = new int[2];
     public int[] kingLocationBlack = new int[2];
 
+    // public piece variable to tell surface view what piece is clicked
+    public Piece clickedPiece;
+
+
+
     /**
      * Constructor for class ChessGameState
      */
@@ -213,7 +218,12 @@ public class ChessGameState extends GameState implements Serializable {
           highlightedQueenMove = original.highlightedQueenMove;
       }// copy constructor
 
-
+    /**
+     * getPiece returns the specific piece at the place in the board
+     * @param row
+     * @param col
+     * @return
+     */
     public Piece getPiece(int row, int col){
         if(board[row][col] == null|| row < 0 || col < 0) {
             return null;
@@ -224,6 +234,12 @@ public class ChessGameState extends GameState implements Serializable {
         return board[row][col];
     }
 
+    /**
+     * setPiece sets the piece given as a parameter on a place in the board
+     * @param row
+     * @param col
+     * @param piece
+     */
     public void setPiece(int row, int col, Piece piece){
         if(row < 0 || col < 0) {
             return;
@@ -234,10 +250,17 @@ public class ChessGameState extends GameState implements Serializable {
         board[row][col] = piece;
     }
 
+    /**
+     * setKingLocation keeps track of where the king is for each color
+     * @param row
+     * @param col
+     */
     public void setKingLocation(int row, int col){
           kingLocationWhite[0] = row;
           kingLocationWhite[1] = col;
     }
+
+
 
     public boolean checkIfTwoKings(){
           int c = 0;
