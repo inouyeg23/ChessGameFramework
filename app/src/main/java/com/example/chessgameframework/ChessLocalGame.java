@@ -44,29 +44,6 @@ public class ChessLocalGame extends LocalGame {
     }
 
     /**
-     * Check if the game is over. It is over, return a string that tells
-     * who the winner(s), if any, are. If the game is not over, return null;
-     *
-     * @return
-     * 		a message that tells who has won the game, or null if the
-     * 		game is not over
-     */
-    @Override
-    protected String checkIfGameOver() {
-        if(!state.checkIfTwoKings()) {
-            return "Game Over. ";
-        } else if(state.isForfeitPressed()){
-            return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
-        } else if(state.isQuitPressed()) {
-            return playerNames[0] + " quit. ";
-        } else if(state.isDrawPressed()) {
-            return playerNames[0] + " has offered draw. ";
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Tell whether the given player is allowed to make a move at the
      * present point in the game.
      *
@@ -128,4 +105,27 @@ public class ChessLocalGame extends LocalGame {
 
         return false;
     } //makeMove
+
+    /**
+     * Check if the game is over. It is over, return a string that tells
+     * who the winner(s), if any, are. If the game is not over, return null;
+     *
+     * @return
+     * 		a message that tells who has won the game, or null if the
+     * 		game is not over
+     */
+    @Override
+    protected String checkIfGameOver() {
+        if(!state.checkIfTwoKings()) {
+            return "Game Over. ";
+        } else if(state.isForfeitPressed()){
+            return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
+        } else if(state.isQuitPressed()) {
+            return playerNames[0] + " quit. ";
+        } else if(state.isDrawPressed()) {
+            return playerNames[0] + " has offered draw. ";
+        } else {
+            return null;
+        }
+    }
 }
