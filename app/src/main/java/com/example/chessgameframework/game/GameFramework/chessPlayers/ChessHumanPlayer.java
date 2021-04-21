@@ -139,72 +139,71 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_UP)
-            return true;
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 
-        float x = event.getX();
-        float y = event.getY();
+            float x = event.getX();
+            float y = event.getY();
 
-        float boxWidth = chessView.getScaledDim() / 8;
-        float boxHeight = chessView.getScaledDim() / 8;
+            float boxWidth = chessView.getScaledDim() / 8;
+            float boxHeight = chessView.getScaledDim() / 8;
 
-        int xsquare = (int) ((y - chessView.getScaledRow())/ boxHeight);
-        int ysquare = (int) ((x - chessView.getScaledCol()) / boxWidth);
-
+            int xsquare = (int) ((y - chessView.getScaledRow()) / boxHeight);
+            int ysquare = (int) ((x - chessView.getScaledCol()) / boxWidth);
 
 
-        System.out.println("clicked on box :" + xsquare + ", " + ysquare);
+            System.out.println("clicked on box :" + xsquare + ", " + ysquare);
 
-        ChessGameState gameState = (ChessGameState) game.getGameState();
+            ChessGameState gameState = (ChessGameState) game.getGameState();
 
-        // check if the player ever clicks off the board but still on the
-        // surface view
-        if(xsquare < 0 || xsquare > 7 || ysquare < 0 || ysquare > 7){
-            return false;
-        }
-
-
-
-        if (!pieceSelected) {
-            if (gameState.getPiece(xsquare, ysquare) != null) {
-                if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
-                    //we have a piece so now we want to draw all of the possible moves
-                    selX = xsquare;
-                    selY = ysquare;
-
-                    selectedPieceMB = new MoveBoard();
-                    selectedPieceMB.findMoves(gameState, xsquare, ysquare);
+            // check if the player ever clicks off the board but still on the
+            // surface view
+            if (xsquare < 0 || xsquare > 7 || ysquare < 0 || ysquare > 7) {
+                return false;
+            }
 
 
-                    if (selectedPieceMB.getNumMoves() > 0) {
-                        pieceSelected = true;
-                        chessView.drawHighlight = true;
+            if (!pieceSelected) {
+                if (gameState.getPiece(xsquare, ysquare) != null) {
+                    if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
+                        //we have a piece so now we want to draw all of the possible moves
+                        selX = xsquare;
+                        selY = ysquare;
 
-                        chessView.setPlayerTouched(selX, selY);
-                        chessView.setPieceTouched(gameState.getPiece(selX, selY));
+                        selectedPieceMB = new MoveBoard();
+                        selectedPieceMB.findMoves(gameState, xsquare, ysquare);
 
-                        System.out.println("we successfully selected a piece that has moves");
 
+                        if (selectedPieceMB.getNumMoves() > 0) {
+                            pieceSelected = true;
+                            chessView.drawHighlight = true;
+
+                            chessView.setPlayerTouched(selX, selY);
+                            chessView.setPieceTouched(gameState.getPiece(selX, selY));
+
+                            System.out.println("we successfully selected a piece that has moves");
+
+                        }
                     }
                 }
-            }
-        } else {
-            //we clicked where we want the piece to go
-            if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
-                System.out.println("send a move to: " + xsquare + ", " + ysquare);
-                ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
-                game.sendAction(action);
+            } else {
+                //we clicked where we want the piece to go
+                if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
+                    System.out.println("send a move to: " + xsquare + ", " + ysquare);
+                    ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
+                    game.sendAction(action);
 
-                System.out.println("we have sent a move");
+                    System.out.println("we have sent a move");
 
+                }
+                pieceSelected = false;
+                chessView.drawHighlight = false;
             }
-            pieceSelected = false;
-            chessView.drawHighlight = false;
+
+            chessView.invalidate();
         }
-
-        chessView.invalidate();
         return true;
     }
+
 
     /**
      * callback method--our game has been chosen/rechosen to be the GUI,
