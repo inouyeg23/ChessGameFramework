@@ -1,6 +1,7 @@
 package com.example.chessgameframework;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -36,6 +37,8 @@ public class ChessMainActivity extends GameMainActivity {
      */
     @Override
     public GameConfig createDefaultConfig() {
+        //locks the screen to be portrait all the time
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Define allowed player types
         ArrayList<GamePlayerType> playerTypes = new ArrayList<GamePlayerType>();
@@ -73,41 +76,6 @@ public class ChessMainActivity extends GameMainActivity {
         if(gameState == null) return new ChessLocalGame();
         return new ChessLocalGame((ChessGameState) gameState);
      }
-
-    /*
-    /**
-     * createLocalGame
-     *
-     * Creates a new game that runs on the server tablet,
-     * @param gameState
-     * 				the gameState for this game or null for a new game
-     *
-     * @return a new, game-specific instance of a sub-class of the LocalGame
-     *         class.
-
-    @Override
-    public LocalGame createLocalGame(GameState gameState) {
-        if(gameState == null) return new ChessLocalGame();
-        return new LocalGame() {
-            @Override
-            protected void sendUpdatedStateTo(GamePlayer p) { }
-
-            @Override
-            protected boolean canMove(int playerIdx) {
-                return false;
-            }
-
-            @Override
-            protected String checkIfGameOver() { return null; }
-
-            @Override
-            protected boolean makeMove(GameAction action) {
-                return false;
-            }
-        };
-    }
-    */
-
 
 
 }

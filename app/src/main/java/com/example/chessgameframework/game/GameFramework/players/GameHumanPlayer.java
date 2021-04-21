@@ -306,7 +306,8 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
                         new DialogInterface.OnClickListener(){
                             public void onClick(DialogInterface di, int val) {
                                 // perform the "gave over" behavior--by default, to show pop-up message
-                                gameIsOver(((GameOverInfo)myInfo).getMessage());
+                                //gameIsOver(((GameOverInfo)myInfo).getMessage());
+                                gameIsOver("Game ended.  Please quit the app.");
                             }},
                         myActivity);
             }

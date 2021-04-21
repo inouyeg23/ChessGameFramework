@@ -6,7 +6,6 @@ import com.example.chessgameframework.game.GameFramework.Pieces.King;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
@@ -49,7 +48,7 @@ public class ChessGameState extends GameState implements Serializable {
     //booleans to work with onClick method and check if valid
 
     public boolean gameStarted;
-    public boolean isQuitPressed;
+    public boolean isRestartPressed;
     public boolean isDrawPressed;
     public boolean isForfeitPressed;
     public boolean isUndoPressed;
@@ -206,7 +205,7 @@ public class ChessGameState extends GameState implements Serializable {
           isDrawPressed = original.isDrawPressed;
           isForfeitPressed = original.isForfeitPressed;
           isUndoPressed = original.isUndoPressed;
-          isQuitPressed = original.isQuitPressed;
+          isRestartPressed = original.isRestartPressed;
 
           currPlayer = original.currPlayer;
 
@@ -446,9 +445,9 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-    public boolean isQuitPressed(){
+    public boolean isRestartPressed(){
         //quitInitiated would turn true or false based on button onClick
-        if(isQuitPressed){
+        if(isRestartPressed){
             //this will be implemented using game framework; not required for game
             //state assignment
             return true;
