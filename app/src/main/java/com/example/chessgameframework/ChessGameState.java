@@ -48,7 +48,7 @@ public class ChessGameState extends GameState implements Serializable {
     //booleans to work with onClick method and check if valid
 
     public boolean gameStarted;
-    public boolean isRestartPressed;
+    public boolean isQuitPressed;
     public boolean isDrawPressed;
     public boolean isForfeitPressed;
     public boolean isUndoPressed;
@@ -205,7 +205,7 @@ public class ChessGameState extends GameState implements Serializable {
           isDrawPressed = original.isDrawPressed;
           isForfeitPressed = original.isForfeitPressed;
           isUndoPressed = original.isUndoPressed;
-          isRestartPressed = original.isRestartPressed;
+          isQuitPressed = original.isQuitPressed;
 
           currPlayer = original.currPlayer;
 
@@ -445,9 +445,9 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-    public boolean isRestartPressed(){
+    public boolean isQuitPressed(){
         //quitInitiated would turn true or false based on button onClick
-        if(isRestartPressed){
+        if(isQuitPressed){
             //this will be implemented using game framework; not required for game
             //state assignment
             return true;

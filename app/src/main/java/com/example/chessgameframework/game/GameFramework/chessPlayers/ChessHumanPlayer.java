@@ -1,7 +1,6 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +22,7 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMove
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
-;
+;import java.util.Random;
 
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
 
@@ -34,7 +33,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     // These variables will reference widgets that will be modified during play
     private TextView playerNameTextView = null;
     private TextView opposingNameTextView = null;
-    private Button restartButton = null;
+    private Button quitButton = null;
     private Button forfeitButton = null;
     private Button offerDrawButton = null;
     private Button pauseButton = null;
@@ -48,7 +47,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private MoveBoard selectedPieceMB = null;
     private boolean doubleClick = false;
 
-
+    private int random;
 
 
     // the android activity that we are running
@@ -89,8 +88,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
 
     /**
-     * this method gets called when the user clicks the die or hold button. It
-     * creates a new PigRollAction or PigHoldAction and sends it to the game.
+     * this method gets called when the user clicks any button. It
+     * creates a new ChessButtonAction and sends it to the game.
      *
      * @param button the button that was clicked
      */
@@ -98,24 +97,34 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     public void onClick(View button) {
         ChessGameState gameState = (ChessGameState) game.getGameState();
 
-        if (button == restartButton) {
-            gameState.isRestartPressed = true;
+
+        if (button == quitButton) {
+            // the quit button has been pressed
+            gameState.isQuitPressed = true;
             game.sendAction(new ChessButtonAction(this));
-
-
         } else if (button == forfeitButton) {
+            // the forfeit button has been pressed
             gameState.isForfeitPressed = true;
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == offerDrawButton) {
-            gameState.isDrawPressed = true;
+            // 50/50 chance to either accept the draw or decline it
+            random = new Random().nextInt(2);
+            if (random == 0){
+                //using gameIsOver to display a message
+                gameIsOver(allPlayerNames[1] + " has declined your draw offer.");
+            } else {
+                gameState.isDrawPressed = true;
+            }
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == pauseButton) {
+            // the pause button has been pressed
             gameState.isPaused = true;
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == undoButton) {
+            // the undo button has been pressed
             gameState.isUndoPressed = true;
             game.sendAction(new ChessButtonAction(this));
         }
@@ -217,7 +226,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         //Initialize the widget reference member variables
         this.playerNameTextView = (TextView) activity.findViewById(R.id.playerName);
         this.opposingNameTextView = (TextView) activity.findViewById(R.id.opposingName);
-        this.restartButton = (Button) activity.findViewById(R.id.restartButton);
+        this.quitButton = (Button) activity.findViewById(R.id.restartButton);
         this.forfeitButton = (Button) activity.findViewById(R.id.forfeitButton);
         this.offerDrawButton = (Button) activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button) activity.findViewById(R.id.pauseButton);
@@ -225,7 +234,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.chessView = (ChessSurfaceView) activity.findViewById(R.id.chessSurfaceView);
 
         //Listen for button presses
-        restartButton.setOnClickListener(this);
+        quitButton.setOnClickListener(this);
         forfeitButton.setOnClickListener(this);
         offerDrawButton.setOnClickListener(this);
         pauseButton.setOnClickListener(this);

@@ -1,14 +1,11 @@
 package com.example.chessgameframework.game.GameFramework.players;
 
 import com.example.chessgameframework.ChessGameState;
-import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.Game;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
-import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameOverAckAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.MyNameIsAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.ReadyAction;
-import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.BindGameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameOverInfo;
@@ -296,8 +293,9 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
                 // set our instance variable, to indicate the game as over
                 gameOver = true;
 
+                //call the game state to do different things for different buttons
                 ChessGameState state = (ChessGameState)game.getGameState();
-                if(state.isRestartPressed()){
+                if(state.isQuitPressed()){
                     //recreate the app, bringing us back to the start screen
                     myActivity.recreate();
                 } else {
@@ -316,7 +314,6 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface di, int val) {
                                     // perform the "gave over" behavior--by default, to show pop-up message
-                                    //
                                     myActivity.recreate();
 
                                 }

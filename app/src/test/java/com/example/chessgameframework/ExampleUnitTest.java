@@ -49,10 +49,10 @@ public class ExampleUnitTest {
     @Test
     public void isQuitPressed(){
         ChessGameState gameState = new ChessGameState();
-        assertTrue(!gameState.isRestartPressed());
+        assertTrue(!gameState.isQuitPressed());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isRestartPressed = true;
-        assertTrue(gameState.isRestartPressed());
+        gameState.isQuitPressed = true;
+        assertTrue(gameState.isQuitPressed());
     }
 
     @Test
