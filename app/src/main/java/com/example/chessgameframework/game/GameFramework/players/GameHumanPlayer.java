@@ -1,11 +1,14 @@
 package com.example.chessgameframework.game.GameFramework.players;
 
+import com.example.chessgameframework.ChessGameState;
+import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.Game;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameOverAckAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.MyNameIsAction;
 import com.example.chessgameframework.game.GameFramework.actionMessage.ReadyAction;
+import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.BindGameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameOverInfo;
@@ -51,6 +54,7 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
     private Handler saveMe;
     private GameTimer myTimer = new GameTimer(this); // my player's timer
     private boolean gameOver; // whether the game is over
+
 
     /**
      * constructor
@@ -292,24 +296,33 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
                 // set our instance variable, to indicate the game as over
                 gameOver = true;
 
-                //Since the game is over, we will ask the player if they would like to restart the game
-                String quitQuestion = ((GameOverInfo)myInfo).getMessage() + "Would you like to restart the game?";
-                String posLabel = "Yes!";
-                String negLabel = "No";
-                MessageBox.popUpChoice(quitQuestion, posLabel, negLabel,
-                        //If they want to restart the game, restart it
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface di, int val) {
-                                myActivity.restartGame();
-                            }},
-                        //If not, then just display who won the game
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface di, int val) {
-                                // perform the "gave over" behavior--by default, to show pop-up message
-                                //gameIsOver(((GameOverInfo)myInfo).getMessage());
-                                gameIsOver("Game ended.  Please quit the app.");
-                            }},
-                        myActivity);
+                ChessGameState state = (ChessGameState)game.getGameState();
+                if(state.isRestartPressed()){
+                    //recreate the app, bringing us back to the start screen
+                    myActivity.recreate();
+                } else {
+                    //Since the game is over, we will ask the player if they would like to restart the game
+                    String quitQuestion = ((GameOverInfo) myInfo).getMessage() + "Would you like a rematch?";
+                    String posLabel = "Yes!";
+                    String negLabel = "No";
+                    MessageBox.popUpChoice(quitQuestion, posLabel, negLabel,
+                            //If they want to restart the game, restart it
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface di, int val) {
+                                    myActivity.restartGame();
+                                }
+                            },
+                            //If not, then just display who won the game
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface di, int val) {
+                                    // perform the "gave over" behavior--by default, to show pop-up message
+                                    //
+                                    myActivity.recreate();
+
+                                }
+                            },
+                            myActivity);
+                }
             }
             else if (myInfo instanceof TimerInfo) {
                 // if we have a timer-tick, and it's our timer object,

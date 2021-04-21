@@ -148,6 +148,12 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
 
         ChessGameState gameState = (ChessGameState) game.getGameState();
 
+        // check if the player ever clicks off the board but still on the
+        // surface view
+        if(xsquare < 0 || xsquare > 7 || ysquare < 0 || ysquare > 7){
+            return false;
+        }
+
 
 
         if (!pieceSelected) {
@@ -160,12 +166,14 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                     selectedPieceMB = new MoveBoard();
                     selectedPieceMB.findMoves(gameState, xsquare, ysquare);
 
-                    chessView.setPlayerTouched(selX, selY);
-                    chessView.setPieceTouched(gameState.getPiece(selX, selY));
-                    chessView.invalidate();
 
                     if (selectedPieceMB.getNumMoves() > 0) {
                         pieceSelected = true;
+                        chessView.drawHighlight = true;
+
+                        chessView.setPlayerTouched(selX, selY);
+                        chessView.setPieceTouched(gameState.getPiece(selX, selY));
+
                         System.out.println("we successfully selected a piece that has moves");
 
                     }
@@ -177,16 +185,16 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 System.out.println("send a move to: " + xsquare + ", " + ysquare);
                 ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
                 game.sendAction(action);
-                chessView.invalidate();
+
                 System.out.println("we have sent a move");
 
             }
             pieceSelected = false;
+            chessView.drawHighlight = false;
         }
 
+        chessView.invalidate();
         return true;
-
-
     }
 
     /**

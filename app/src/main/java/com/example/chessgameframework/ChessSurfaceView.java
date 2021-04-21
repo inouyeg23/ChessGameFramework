@@ -45,17 +45,16 @@ public class ChessSurfaceView extends SurfaceView {
     private int setPixelToRow;
     private int setPixelToColumn;
 
-
-
     //private int to show where the player touched
     private int[] squareTouched = new int[2];
-
 
     //private piece class to determine the piece that's selected
     private Piece touchedPiece;
 
     // the game's state
     protected ChessGameState gameState;
+
+    public boolean drawHighlight;
 
     public ChessSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,31 +66,10 @@ public class ChessSurfaceView extends SurfaceView {
         this.gameState = state;
     }
 
-    public void setPlayerTouched(int row, int col){
-        squareTouched[0] = row;
-        squareTouched[1] = col;
-    }
-
-    public void setPieceTouched(Piece piece){
-        if(piece instanceof Pawn){
-            touchedPiece = piece;
-        }
-        if(piece instanceof Knight){
-            touchedPiece = piece;
-        }
-        if(piece instanceof Rook){
-            touchedPiece = piece;
-        }
-        if(piece instanceof Bishop){
-            touchedPiece = piece;
-        }
-        if(piece instanceof King){
-            touchedPiece = piece;
-        }
-        if(piece instanceof Queen){
-            touchedPiece = piece;
-        }
-    }
+    /**
+     * main method for drawing on the surfaceView
+     * @param g
+     */
 
     protected void onDraw(Canvas g){
         // if we don't have any state, there's nothing more to draw, so return
@@ -114,8 +92,12 @@ public class ChessSurfaceView extends SurfaceView {
             }
         }
 
-        //draws all highlighted squares based on possible moves
-        drawAllHighlightedSquares(g);
+
+        if(drawHighlight) {
+            //draws all highlighted squares based on possible moves
+            drawAllHighlightedSquares(g);
+        }
+
     }
 
     /**
@@ -126,10 +108,12 @@ public class ChessSurfaceView extends SurfaceView {
      */
     private void updateDimensions(Canvas g) {
 
+        //variables to get the width and height of the surfaceView
         int width = g.getWidth();
         int height = g.getHeight();
 
-        //use both width or height to create a perfect square
+        // use both width or height to create a perfect square and determine the border
+        // or extra space in the surfaceView
         if (width > height) {
             viewDim = height;
             vBase = 0;
@@ -140,16 +124,20 @@ public class ChessSurfaceView extends SurfaceView {
             vBase = (height - width) / 2;
         }
 
+        // variables to help with scaling the shape correcting to fit the size of the board
         scaleOffset = 20;
         scaleShape = (viewDim /8) - 20;
 
     }
 
+    /**
+     * helper methods to convert the pixel width and height to simple row and col numbers
+     * @return
+     */
     protected int convertPixelToRow(int row){
         setPixelToRow = (viewDim /8)*row + (scaleOffset/2) + vBase;
         return setPixelToRow;
     }
-
     protected int convertPixelToCol(int col){
         setPixelToColumn = (viewDim /8)*col + (scaleOffset/2) + hBase;
         return setPixelToColumn;
@@ -167,6 +155,43 @@ public class ChessSurfaceView extends SurfaceView {
 
         Bitmap resizedchessboard = Bitmap.createScaledBitmap(chessBoard, viewDim, viewDim, false);
         g.drawBitmap(resizedchessboard, hBase, vBase, background);
+    }
+
+    /**
+     * method that works in conjunction with ChessHumanPlayer to return the spot the player
+     * touched
+     * @param row
+     * @param col
+     */
+    public void setPlayerTouched(int row, int col){
+        squareTouched[0] = row;
+        squareTouched[1] = col;
+    }
+
+    /**
+     * method that works in conjunction with ChessHumanPlayer to return the piece the player
+     * touched
+     * @param piece
+     */
+    public void setPieceTouched(Piece piece){
+        if(piece instanceof Pawn){
+            touchedPiece = piece;
+        }
+        if(piece instanceof Knight){
+            touchedPiece = piece;
+        }
+        if(piece instanceof Rook){
+            touchedPiece = piece;
+        }
+        if(piece instanceof Bishop){
+            touchedPiece = piece;
+        }
+        if(piece instanceof King){
+            touchedPiece = piece;
+        }
+        if(piece instanceof Queen){
+            touchedPiece = piece;
+        }
     }
 
     /**
@@ -219,6 +244,7 @@ public class ChessSurfaceView extends SurfaceView {
         g.drawCircle(((dimen/8)*col)+(dimen/8)/2, ((dimen/8)*row)+(dimen/8)/2, radius, black);
         */
     }
+
 
     /**
      * draws a piece from the other draw methods below based on the piece
@@ -283,6 +309,13 @@ public class ChessSurfaceView extends SurfaceView {
         }
     }
 
+    /**
+     * specific methods dealing with drawing the specific piece in the drawPiece method
+     * @param g
+     * @param color
+     * @param row
+     * @param col
+     */
     // draws a pawn piece
     protected void drawPawn(Canvas g, char color, int row, int col){
         Paint background = new Paint();
@@ -398,15 +431,16 @@ public class ChessSurfaceView extends SurfaceView {
     } //drawQueen
 
 
-    // getter method for the correct scaling
+    /**
+     * getter methods to help scale the onTouch in HumanPlayer the same way
+     * it was scaled here
+     *
+     * @return
+     */
     public int getScaledDim() { return viewDim; }
 
-    public int getScaledRow(){
-        return vBase;
-    }
+    public int getScaledRow(){ return vBase; }
 
-    public int getScaledCol(){
-        return hBase;
-    }
+    public int getScaledCol(){ return hBase; }
 
 }
