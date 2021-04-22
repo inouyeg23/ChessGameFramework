@@ -1,18 +1,10 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.nfc.Tag;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -20,33 +12,21 @@ import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
-import com.example.chessgameframework.game.GameFramework.Piece;
-import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
-import com.example.chessgameframework.game.GameFramework.Pieces.King;
-import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
-import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
-import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
-import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 
 
-import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMoveInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
-import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
-import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
-;
+;import java.util.Random;
 
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
 
     private static final String TAG = "ChessHumanPlayer";
-
 
     private int layoutId;
 
@@ -67,7 +47,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private MoveBoard selectedPieceMB = null;
     private boolean doubleClick = false;
 
-
+    private int random;
 
 
     // the android activity that we are running
@@ -108,8 +88,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     }
 
     /**
-     * this method gets called when the user clicks the die or hold button. It
-     * creates a new PigRollAction or PigHoldAction and sends it to the game.
+     * this method gets called when the user clicks any button. It
+     * creates a new ChessButtonAction and sends it to the game.
      *
      * @param button the button that was clicked
      */
@@ -117,24 +97,34 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     public void onClick(View button) {
         ChessGameState gameState = (ChessGameState) game.getGameState();
 
+
         if (button == quitButton) {
+            // the quit button has been pressed
             gameState.isQuitPressed = true;
             game.sendAction(new ChessButtonAction(this));
-
-
         } else if (button == forfeitButton) {
+            // the forfeit button has been pressed
             gameState.isForfeitPressed = true;
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == offerDrawButton) {
-            gameState.isDrawPressed = true;
+            // 50/50 chance to either accept the draw or decline it
+            random = new Random().nextInt(2);
+            if (random == 0){
+                //using gameIsOver to display a message
+                gameIsOver(allPlayerNames[1] + " has declined your draw offer.");
+            } else {
+                gameState.isDrawPressed = true;
+            }
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == pauseButton) {
+            // the pause button has been pressed
             gameState.isPaused = true;
             game.sendAction(new ChessButtonAction(this));
 
         } else if (button == undoButton) {
+            // the undo button has been pressed
             gameState.isUndoPressed = true;
             game.sendAction(new ChessButtonAction(this));
         }
@@ -149,64 +139,71 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_UP)
-            return true;
-        //check if a piece was pressed
-        float x = event.getX();
-        float y = event.getY();
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 
-        float boxWidth = v.getWidth() / 8;
-        float boxHeight = v.getHeight() / 8;
+            float x = event.getX();
+            float y = event.getY();
 
-        int ysquare = (int) (x / boxWidth);
-        int xsquare = (int) (y / boxHeight);
+            float boxWidth = chessView.getScaledDim() / 8;
+            float boxHeight = chessView.getScaledDim() / 8;
 
+            int xsquare = (int) ((y - chessView.getScaledRow()) / boxHeight);
+            int ysquare = (int) ((x - chessView.getScaledCol()) / boxWidth);
 
 
-        System.out.println("clicked on box :" + xsquare + ", " + ysquare);
+            System.out.println("clicked on box :" + xsquare + ", " + ysquare);
 
-        ChessGameState gameState = (ChessGameState) game.getGameState();
+            ChessGameState gameState = (ChessGameState) game.getGameState();
+
+            // check if the player ever clicks off the board but still on the
+            // surface view
+            if (xsquare < 0 || xsquare > 7 || ysquare < 0 || ysquare > 7) {
+                return false;
+            }
 
 
+            if (!pieceSelected) {
+                if (gameState.getPiece(xsquare, ysquare) != null) {
+                    if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
+                        //we have a piece so now we want to draw all of the possible moves
+                        selX = xsquare;
+                        selY = ysquare;
 
-        if (!pieceSelected) {
-            if (gameState.getPiece(xsquare, ysquare) != null) {
-                if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
-                    //we have a piece so now we want to draw all of the possible moves
+                        selectedPieceMB = new MoveBoard();
+                        selectedPieceMB.findMoves(gameState, xsquare, ysquare);
 
-                    selX = xsquare;
-                    selY = ysquare;
-                    selectedPieceMB = new MoveBoard();
-                    selectedPieceMB.findMoves(gameState, xsquare, ysquare);
 
-                    chessView.setPlayerTouched(selX, selY);
-                    chessView.setPieceTouched(gameState.getPiece(selX, selY));
-                    chessView.invalidate();
+                        if (selectedPieceMB.getNumMoves() > 0) {
+                            pieceSelected = true;
+                            chessView.drawHighlight = true;
 
-                    if (selectedPieceMB.getNumMoves() > 0) {
-                        pieceSelected = true;
-                        System.out.println("we successfully selected a piece that has moves");
+                            chessView.setPlayerTouched(selX, selY);
+                            chessView.setPieceTouched(gameState.getPiece(selX, selY));
 
+                            System.out.println("we successfully selected a piece that has moves");
+
+                        }
                     }
                 }
-            }
-        } else {
-            //we clicked where we want the piece to go
-            if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
-                System.out.println("send a move to: " + xsquare + ", " + ysquare);
-                ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
-                game.sendAction(action);
-                chessView.invalidate();
-                System.out.println("we have sent a move");
+            } else {
+                //we clicked where we want the piece to go
+                if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
+                    System.out.println("send a move to: " + xsquare + ", " + ysquare);
+                    ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
+                    game.sendAction(action);
 
+                    System.out.println("we have sent a move");
+
+                }
+                pieceSelected = false;
+                chessView.drawHighlight = false;
             }
-            pieceSelected = false;
+
+            chessView.invalidate();
         }
-
         return true;
-
-
     }
+
 
     /**
      * callback method--our game has been chosen/rechosen to be the GUI,
@@ -228,7 +225,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         //Initialize the widget reference member variables
         this.playerNameTextView = (TextView) activity.findViewById(R.id.playerName);
         this.opposingNameTextView = (TextView) activity.findViewById(R.id.opposingName);
-        this.quitButton = (Button) activity.findViewById(R.id.quitButton);
+        this.quitButton = (Button) activity.findViewById(R.id.restartButton);
         this.forfeitButton = (Button) activity.findViewById(R.id.forfeitButton);
         this.offerDrawButton = (Button) activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button) activity.findViewById(R.id.pauseButton);
@@ -242,8 +239,14 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         pauseButton.setOnClickListener(this);
         undoButton.setOnClickListener(this);
 
+        //sets the surfaceView background color to be a specific shade of green to match
+        //the background
+        chessView.setBackgroundColor(Color.rgb(78, 110, 87));
+
         //Listen for touch presses
         chessView.setOnTouchListener(this);
+
+
 
     }
 

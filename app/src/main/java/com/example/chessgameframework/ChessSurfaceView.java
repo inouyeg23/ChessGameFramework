@@ -18,7 +18,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 
-public class ChessSurfaceView extends SurfaceView{
+public class ChessSurfaceView extends SurfaceView {
     // Initializing each drawable image with a variable
     private Bitmap blackPawn =      BitmapFactory.decodeResource(getResources(), R.drawable.black_pawn);
     private Bitmap blackKnight =    BitmapFactory.decodeResource(getResources(), R.drawable.black_knight);
@@ -35,20 +35,26 @@ public class ChessSurfaceView extends SurfaceView{
     private Bitmap chessBoard =     BitmapFactory.decodeResource(getResources(), R.drawable.chessemptyboard);
 
     // Variables to assist with scaling chessboard and drawables
-    private int dimen;
+    private int viewDim;
     private int scaleShape;
     private int scaleOffset;
 
+    private int hBase;
+    private int vBase;
+
+    private int setPixelToRow;
+    private int setPixelToColumn;
+
     //private int to show where the player touched
     private int[] squareTouched = new int[2];
-    private int touchedRow;
-    private int touchedCol;
 
     //private piece class to determine the piece that's selected
     private Piece touchedPiece;
 
     // the game's state
     protected ChessGameState gameState;
+
+    public boolean drawHighlight;
 
     public ChessSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,11 +66,113 @@ public class ChessSurfaceView extends SurfaceView{
         this.gameState = state;
     }
 
+    /**
+     * main method for drawing on the surfaceView
+     * @param g
+     */
+
+    protected void onDraw(Canvas g){
+        // if we don't have any state, there's nothing more to draw, so return
+        if (gameState == null) {
+            return;
+        }
+
+        //update dimensions of canvas to match the surface view
+        updateDimensions(g);
+
+        //draw the chess board based on surface view
+        drawBoard(g);
+
+        //draw all pieces based on getPiece
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece result = gameState.getPiece(row, col); // get piece
+                drawPiece(g, result, row, col);
+
+            }
+        }
+
+
+        if(drawHighlight) {
+            //draws all highlighted squares based on possible moves
+            drawAllHighlightedSquares(g);
+        }
+
+    }
+
+    /**
+     * update the instance variables that relate to the drawing surface
+     *
+     * @param g
+     * 		an object that references the drawing surface
+     */
+    private void updateDimensions(Canvas g) {
+
+        //variables to get the width and height of the surfaceView
+        int width = g.getWidth();
+        int height = g.getHeight();
+
+        // use both width or height to create a perfect square and determine the border
+        // or extra space in the surfaceView
+        if (width > height) {
+            viewDim = height;
+            vBase = 0;
+            hBase = (width - height) / 2;
+        } else {
+            viewDim = width;
+            hBase = 0;
+            vBase = (height - width) / 2;
+        }
+
+        // variables to help with scaling the shape correcting to fit the size of the board
+        scaleOffset = 20;
+        scaleShape = (viewDim /8) - 20;
+
+    }
+
+    /**
+     * helper methods to convert the pixel width and height to simple row and col numbers
+     * @return
+     */
+    protected int convertPixelToRow(int row){
+        setPixelToRow = (viewDim /8)*row + (scaleOffset/2) + vBase;
+        return setPixelToRow;
+    }
+    protected int convertPixelToCol(int col){
+        setPixelToColumn = (viewDim /8)*col + (scaleOffset/2) + hBase;
+        return setPixelToColumn;
+    }
+
+    /**
+     * draws the chess board using a bitmap and resizes
+     * using the updated dimensions
+     *
+     * @param g
+     */
+    protected void drawBoard(Canvas g) {
+        Paint background = new Paint();
+        background.setColor(Color.WHITE);
+
+        Bitmap resizedchessboard = Bitmap.createScaledBitmap(chessBoard, viewDim, viewDim, false);
+        g.drawBitmap(resizedchessboard, hBase, vBase, background);
+    }
+
+    /**
+     * method that works in conjunction with ChessHumanPlayer to return the spot the player
+     * touched
+     * @param row
+     * @param col
+     */
     public void setPlayerTouched(int row, int col){
         squareTouched[0] = row;
         squareTouched[1] = col;
     }
 
+    /**
+     * method that works in conjunction with ChessHumanPlayer to return the piece the player
+     * touched
+     * @param piece
+     */
     public void setPieceTouched(Piece piece){
         if(piece instanceof Pawn){
             touchedPiece = piece;
@@ -84,347 +192,48 @@ public class ChessSurfaceView extends SurfaceView{
         if(piece instanceof Queen){
             touchedPiece = piece;
         }
-
-    }
-
-    protected void onDraw(Canvas g){
-        // if we don't have any state, there's nothing more to draw, so return
-        if (gameState == null) {
-            return;
-        }
-
-        updateDimensions(g);
-
-        drawBoard(g);
-
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece result = gameState.getPiece(row, col); // get piece
-                drawPiece(g, result, row, col);
-
-            }
-        }
-
-        drawAllHighlightedSquares(g);
-
-
     }
 
     /**
-     * update the instance variables that relate to the drawing surface
+     * draws all the highlighted squares based on
+     * possible moves from the moveBoard class
      *
      * @param g
-     * 		an object that references the drawing surface
      */
-    private void updateDimensions(Canvas g) {
-
-        int width = g.getWidth();
-        int height = g.getHeight();
-
-        //use both width or height to create a perfect square
-        if (width > height) {
-            dimen = height;
-        } else {
-            dimen = width;
-        }
-
-        scaleOffset = 20;
-        scaleShape = (dimen/8) - scaleOffset;
-    }
-
-    protected void drawBoard(Canvas g) {
-        Paint background = new Paint();
-        background.setColor(Color.WHITE);
-
-        Bitmap resizedchessboard = Bitmap.createScaledBitmap(chessBoard, dimen, dimen, false);
-        g.drawBitmap(resizedchessboard, 0.0f, 0.0f, background);
-    }
-
     public void drawAllHighlightedSquares(Canvas g){
-        touchedRow = squareTouched[0];
-        touchedCol = squareTouched[1];
 
         if(touchedPiece == null || gameState == null){
             return;
-        } else if(touchedPiece instanceof Pawn){
-            //pawns can move in the three spaces in front of them
-            if(touchedPiece.isBlack()) {
-                //moves are +1+1, +0+1, +0+2, -1+1
-                if (touchedRow == 1 && gameState.getPiece(touchedRow + 1, touchedCol) == null && gameState.getPiece(touchedRow + 2, touchedCol) == null) {
-                    drawHighlightedSquare(g, touchedRow+2, touchedCol);
-                }
-                if (touchedRow < 7 && gameState.getPiece(touchedRow + 1, touchedCol) == null){
-                    drawHighlightedSquare(g, touchedRow+1, touchedCol);
-                }
-                if(touchedRow < 7 && touchedCol < 7 && gameState.getPiece(touchedRow+1,touchedCol+1) != null && gameState.getPiece(touchedRow+1,touchedCol+1).isBlack() != gameState.getPiece(touchedRow,touchedCol).isBlack()) {
-                    drawHighlightedSquare(g, touchedRow+1, touchedCol+1);
-                }
-                if(touchedRow < 7 && touchedCol > 0 && gameState.getPiece(touchedRow+1,touchedCol-1) != null && gameState.getPiece(touchedRow+1,touchedCol-1).isBlack() != gameState.getPiece(touchedRow,touchedCol).isBlack()) {
-                    drawHighlightedSquare(g, touchedRow+1, touchedCol-1);
-                }
-            } else{
-                //moves are -1-1, +0-1,+0-2, +1,-1
-                if(touchedRow == 6 && gameState.getPiece(touchedRow-1,touchedCol) == null && gameState.getPiece(touchedRow-2,touchedCol) == null) {
-                    drawHighlightedSquare(g, touchedRow-2, touchedCol);
-                }
-                if(touchedRow > 0 && gameState.getPiece(touchedRow-1,touchedCol) == null) {
-                    drawHighlightedSquare(g, touchedRow-1, touchedCol);
-                }
-                if(touchedRow > 0 && touchedCol < 7 && gameState.getPiece(touchedRow-1,touchedCol+1) != null && gameState.getPiece(touchedRow-1,touchedCol+1).isBlack() != gameState.getPiece(touchedRow,touchedCol).isBlack()) {
-                    drawHighlightedSquare(g, touchedRow-1, touchedCol+1);
-                }
-                if(touchedRow > 0 && touchedCol > 0 && gameState.getPiece(touchedRow-1,touchedCol-1) != null && gameState.getPiece(touchedRow-1,touchedCol-1).isBlack() != gameState.getPiece(touchedRow,touchedCol).isBlack()) {
-                    drawHighlightedSquare(g, touchedRow-1, touchedCol-1);
-                }
-            }
-        }
-        else if(touchedPiece instanceof King){
-            //up
-            if(touchedRow > 0 && (gameState.getPiece(touchedRow - 1,touchedCol) == null || gameState.getPiece(touchedRow - 1,touchedCol).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow-1, touchedCol);
-            }
-            //down
-            if(touchedRow < 7 && (gameState.getPiece(touchedRow + 1,touchedCol) == null || gameState.getPiece(touchedRow + 1,touchedCol).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow+1, touchedCol);
-            }
-            //right
-            if(touchedCol < 7 && (gameState.getPiece(touchedRow ,touchedCol + 1) == null || gameState.getPiece(touchedRow,touchedCol + 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow, touchedCol+1);
-            }
-            //left
-            if(touchedCol > 0 && (gameState.getPiece(touchedRow ,touchedCol - 1) == null || gameState.getPiece(touchedRow,touchedCol - 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow, touchedCol-1);
-            }
-            //up right
-            if(touchedRow > 0 && touchedCol < 7 && (gameState.getPiece(touchedRow - 1,touchedCol + 1) == null || gameState.getPiece(touchedRow - 1,touchedCol + 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow-1, touchedCol+1);
-            }
-            //up left
-            if(touchedRow > 0 && touchedCol > 0 && (gameState.getPiece(touchedRow - 1,touchedCol - 1) == null || gameState.getPiece(touchedRow - 1,touchedCol - 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow-1, touchedCol-1);
-            }
-            //down right
-            if(touchedRow < 7 && touchedCol< 7 && (gameState.getPiece(touchedRow + 1,touchedCol + 1) == null || gameState.getPiece(touchedRow + 1,touchedCol + 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow+1, touchedCol+1);
-            }
-            //down left
-            if(touchedRow < 7 && touchedCol > 0 && (gameState.getPiece(touchedRow + 1,touchedCol - 1) == null || gameState.getPiece(touchedRow + 1,touchedCol - 1).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow+1, touchedCol-1);
-            }
+        } else {
+            MoveBoard moveBoard = new MoveBoard();
+            moveBoard.findMoves(gameState, squareTouched[0], squareTouched[1]);
 
-        }
-        else if(touchedPiece instanceof Queen){
-            //down right
-            for(int i = 1; touchedRow+i < 8 && touchedCol + i <8; i++){
-                if(gameState.getPiece(touchedRow + i,touchedCol + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow + i,touchedCol + i).isBlack() == touchedPiece.isBlack()) break;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (moveBoard.getCanMove(i, j)) {
+                        drawHighlightedSquare(g, i, j);
+                    }
                 }
-                else {
-                    drawHighlightedSquare(g, touchedRow+i, touchedCol+i);
-                }
-            }
-            //down left
-            for(int i = 1; touchedRow+i < 8 && touchedCol - i > -1; i++){
-                if(gameState.getPiece(touchedRow + i,touchedCol - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow + i,touchedCol - i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow+i, touchedCol-i);
-                }
-            }
-            //up left
-            for(int i = 1; touchedRow-i > -1 && touchedCol - i > -1; i++){
-                if(gameState.getPiece(touchedRow - i,touchedCol - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow - i,touchedCol - i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow-i, touchedCol-i);
-                }
-            }
-            //up right
-            for(int i = 1; touchedRow-i > -1 && touchedCol + i < 8; i++){
-                if(gameState.getPiece(touchedRow - i,touchedCol + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow - i,touchedCol + i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow-i, touchedCol+i);
-                }
-
-            }
-
-            for(int i = touchedRow + 1; i <= 7; i++){
-                if(gameState.getPiece(i,touchedCol) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,touchedCol).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, i, touchedCol);
-                }
-            }
-
-            for(int i = touchedRow - 1; i >= 0; i--){
-                if(gameState.getPiece(i,touchedCol) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,touchedCol).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, i, touchedCol);
-                }
-            }
-
-            for(int i = touchedCol + 1; i <= 7; i++){
-                if(gameState.getPiece(touchedRow,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow,i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow, i);
-                }
-            }
-
-            for(int i = touchedCol - 1; i >= 0; i--){
-                if(gameState.getPiece(touchedRow,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow,i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow, i);
-                }
-            }
-
-        }
-        else if(touchedPiece instanceof Rook){
-
-            for(int i = touchedRow + 1; i <= 7; i++){
-                if(gameState.getPiece(i,touchedCol) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,touchedCol).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, i, touchedCol);
-                }
-            }
-
-            for(int i = touchedRow - 1; i >= 0; i--){
-                if(gameState.getPiece(i,touchedCol) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,touchedCol).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, i, touchedCol);
-                }
-            }
-
-            for(int i = touchedCol + 1; i <= 7; i++){
-                if(gameState.getPiece(touchedRow,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow,i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow, i);
-                }
-            }
-
-            for(int i = touchedCol - 1; i >= 0; i--){
-                if(gameState.getPiece(touchedRow,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow,i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow, i);
-                }
-            }
-        }
-        else if(touchedPiece instanceof Bishop){
-            //down right
-            for(int i = 1; touchedRow+i < 8 && touchedCol + i <8; i++){
-                if(gameState.getPiece(touchedRow + i,touchedCol + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow + i,touchedCol + i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow+i, touchedCol+i);
-                }
-            }
-            //down left
-            for(int i = 1; touchedRow+i < 8 && touchedCol - i > -1; i++){
-                if(gameState.getPiece(touchedRow + i,touchedCol - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow + i,touchedCol - i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow+i, touchedCol-i);
-                }
-            }
-            //up left
-            for(int i = 1; touchedRow-i > -1 && touchedCol - i > -1; i++){
-                if(gameState.getPiece(touchedRow - i,touchedCol - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow - i,touchedCol - i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow-i, touchedCol-i);
-                }
-            }
-            //up right
-            for(int i = 1; touchedRow-i > -1 && touchedCol + i < 8; i++){
-                if(gameState.getPiece(touchedRow - i,touchedCol + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(touchedRow - i,touchedCol + i).isBlack() == touchedPiece.isBlack()) break;
-                }
-                else {
-                    drawHighlightedSquare(g, touchedRow-i, touchedCol+i);
-                }
-            }
-        }
-        else if(touchedPiece instanceof Knight){
-            //left up
-            if(touchedRow > 0 && touchedCol > 1 && (gameState.getPiece(touchedRow - 1,touchedCol - 2) == null || gameState.getPiece(touchedRow - 1,touchedCol - 2).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow-1, touchedCol+2);
-            }
-            //left down
-            if(touchedRow < 7 && touchedCol > 1 && (gameState.getPiece(touchedRow + 1,touchedCol - 2) == null || gameState.getPiece(touchedRow + 1,touchedCol - 2).isBlack() != touchedPiece.isBlack())) {
-                drawHighlightedSquare(g, touchedRow+1, touchedCol-2);
-            }
-            //right up
-            if(touchedRow < 0 && touchedCol < 6 && (gameState.getPiece(touchedRow - 1,touchedCol + 2) == null || gameState.getPiece(touchedRow - 1,touchedCol + 2).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow-1, touchedCol+2);
-            }
-            //right down
-            if(touchedRow > 7 && touchedCol < 6 && (gameState.getPiece(touchedRow + 1,touchedCol + 2) == null || gameState.getPiece(touchedRow + 1,touchedCol + 2).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow+1, touchedCol+2);
-            }
-            //up right
-            if(touchedRow > 1 && touchedCol < 7 && (gameState.getPiece(touchedRow - 2,touchedCol + 1) == null || gameState.getPiece(touchedRow - 2,touchedCol + 1).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow-2, touchedCol+1);
-            }
-            //up left
-            if(touchedRow > 1 && touchedCol > 0 && (gameState.getPiece(touchedRow - 2,touchedCol - 1) == null || gameState.getPiece(touchedRow - 2,touchedCol - 1).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow-2, touchedCol-1);
-            }
-            //down right
-            if(touchedRow < 6 && touchedCol < 7 && (gameState.getPiece(touchedRow + 2,touchedCol + 1) == null || gameState.getPiece(touchedRow + 2,touchedCol + 1).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow+2, touchedCol+1);
-            }
-            //down left
-            if(touchedRow < 6 && touchedCol > 0 && (gameState.getPiece(touchedRow + 2,touchedCol - 1) == null || gameState.getPiece(touchedRow + 2,touchedCol - 1).isBlack() != touchedPiece.isBlack())){
-                drawHighlightedSquare(g, touchedRow+2, touchedCol-1);
             }
         }
     }
 
+    /**
+     * draws a single highlighted square based on dimensions
+     *      possibility of drawing a circle dot instead of a highlighted square (preference)
+     *
+     * @param g
+     * @param row
+     * @param col
+     */
     public void drawHighlightedSquare(Canvas g, int row, int col){
         //setting up the transparent color
         Paint transparentPaint = new Paint();
         transparentPaint.setColor(Color.YELLOW);
         transparentPaint.setAlpha(75);
 
-        g.drawRect((dimen/8)*col + col/2, (dimen/8)*row + row/2,
-                (dimen/8)*col + (dimen/8), (dimen/8)*row + (dimen/8), transparentPaint );
+        g.drawRect((viewDim /8)*col + col/2 + hBase, (viewDim /8)*row + row/2 + vBase,
+                (viewDim /8)*col + (viewDim /8) + hBase, (viewDim /8)*row + (viewDim /8) + vBase, transparentPaint );
 
         /*
         //drawing the circle
@@ -436,6 +245,16 @@ public class ChessSurfaceView extends SurfaceView{
         */
     }
 
+
+    /**
+     * draws a piece from the other draw methods below based on the piece
+     * that is given in the parameter
+     *
+     * @param g
+     * @param piece
+     * @param row
+     * @param col
+     */
     protected void drawPiece(Canvas g, Piece piece, int row, int col){
         if(piece == null){
             return;
@@ -490,6 +309,14 @@ public class ChessSurfaceView extends SurfaceView{
         }
     }
 
+    /**
+     * specific methods dealing with drawing the specific piece in the drawPiece method
+     * @param g
+     * @param color
+     * @param row
+     * @param col
+     */
+    // draws a pawn piece
     protected void drawPawn(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -504,10 +331,11 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedpawn= Bitmap.createScaledBitmap(whitePawn, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedpawn, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedpawn, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawPawn
 
+    //draws a knight piece
     protected void drawKnight(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -522,10 +350,11 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedknight= Bitmap.createScaledBitmap(whiteKnight, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedknight, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedknight, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawKnight
 
+    //draws a rook piece
     protected void drawRook(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -540,10 +369,11 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedrook= Bitmap.createScaledBitmap(whiteRook, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedrook, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedrook, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawRook
 
+    //draws a bishop piece
     protected void drawBishop(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -558,10 +388,11 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedbishop= Bitmap.createScaledBitmap(whiteBishop, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedbishop, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedbishop, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawBishop
 
+    //draws a king piece
     protected void drawKing(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -576,10 +407,11 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedking= Bitmap.createScaledBitmap(whiteKing, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedking, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedking, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawKing
 
+    //draws a queen piece
     protected void drawQueen(Canvas g, char color, int row, int col){
         Paint background = new Paint();
         background.setColor(Color.WHITE);
@@ -594,10 +426,21 @@ public class ChessSurfaceView extends SurfaceView{
                 resizedqueen= Bitmap.createScaledBitmap(whiteQueen, scaleShape, scaleShape, false);
                 break;
         }
-        g.drawBitmap(resizedqueen, (dimen/8)*col + (scaleOffset/2), (dimen/8)*row + (scaleOffset/2), background);
+        g.drawBitmap(resizedqueen, convertPixelToCol(col), convertPixelToRow(row), background);
 
     } //drawQueen
 
 
+    /**
+     * getter methods to help scale the onTouch in HumanPlayer the same way
+     * it was scaled here
+     *
+     * @return
+     */
+    public int getScaledDim() { return viewDim; }
+
+    public int getScaledRow(){ return vBase; }
+
+    public int getScaledCol(){ return hBase; }
 
 }

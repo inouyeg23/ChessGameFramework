@@ -121,9 +121,9 @@ public class ChessLocalGame extends LocalGame {
         } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {
-            return playerNames[0] + " quit. ";
+            return "";
         } else if(state.isDrawPressed()) {
-            return playerNames[0] + " has offered draw. ";
+            return playerNames[1] + " has accepted your draw offer. ";
         } else {
             return null;
         }
