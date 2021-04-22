@@ -10,11 +10,7 @@ import com.example.chessgameframework.game.GameFramework.players.GameComputerPla
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 /**
- * This is a really dumb computer player that always just makes a random move
- * it's so stupid that it sometimes tries to make moves on non-blank spots.
- *
- * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Logan Machida
  */
 public class ChessComputerPlayerEasy extends GameComputerPlayer {
     /*
@@ -24,7 +20,6 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         // invoke superclass constructor
         super(name); // invoke superclass constructor
     }
-
 
     /**
      * Called when the player receives a game-state (or other info) from the
@@ -56,9 +51,7 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
                 if(randomPiece != null)
                     if(randomPiece.isBlack() != shouldBeBlack)
                         randomPiece = null;
-
             }
-
             MoveBoard moveBoard = new MoveBoard();
             moveBoard.findMoves(gameState, randomRow, randomCol);
             for (int moveRow = 0; moveRow < 8; moveRow++) {

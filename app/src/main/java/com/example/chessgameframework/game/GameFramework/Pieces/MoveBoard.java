@@ -12,12 +12,12 @@ public class MoveBoard {
     private int numMoves;
     private int kingMoves;
 
-
+    /**
+     * creates a boolean board to represent where a piece can move
+     */
     public MoveBoard(){
         numMoves = 0;
         kingMoves = 0;
-
-
         board = new boolean[8][8];
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -26,13 +26,17 @@ public class MoveBoard {
         }
     }
 
+    /**
+     * finds the moves of the piece at the row and col
+     * @param gameState
+     * @param row
+     * @param col
+     */
     public void findMoves(ChessGameState gameState, int row, int col){
-
         //check the color
         //figure out the normal moves that it would be able to make with no conditionals
         //check if the player is in check then the move would need to get rid of check
         //check if moving the piece would cause the player to be in check
-
 
         //check what piece it is and figure out the possible moves accordingly
         Piece piece = gameState.getPiece(row,col);
@@ -43,7 +47,8 @@ public class MoveBoard {
             //pawns can move in the three spaces infront of them
             if(piece.isBlack()) {
                 //moves are +1+1, +0+1, +0+2, -1+1
-                if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
+                if (row == 1 && gameState.getPiece(row + 1, col) == null &&
+                        gameState.getPiece(row + 2, col) == null) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col,gameState.getPlayerTurn())) {
                         board[row + 2][col] = true;
                         numMoves++;
@@ -57,14 +62,16 @@ public class MoveBoard {
                     }
                 }
 
-                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null &&
+                        gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col + 1,gameState.getPlayerTurn())) {
                         board[row + 1][col + 1] = true;
                         numMoves++;
                     }
                 }
 
-                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null &&
+                        gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col - 1,gameState.getPlayerTurn())) {
                         board[row + 1][col - 1] = true;
                         numMoves++;
@@ -74,7 +81,8 @@ public class MoveBoard {
             else{
                 //moves are -1-1, +0-1,+0-2, +1,-1
 
-                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null) {
+                if(row == 6 && gameState.getPiece(row-1,col) == null &&
+                        gameState.getPiece(row-2,col) == null) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col,gameState.getPlayerTurn())) {
                         board[row - 2][col] = true;
                         numMoves++;
@@ -88,14 +96,16 @@ public class MoveBoard {
                     }
                 }
 
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null &&
+                        gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col+1,gameState.getPlayerTurn())) {
                         board[row - 1][col + 1] = true;
                         numMoves++;
                     }
                 }
 
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null &&
+                        gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
                     if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-1,gameState.getPlayerTurn())) {
                         board[row - 1][col - 1] = true;
                         numMoves++;
@@ -106,56 +116,64 @@ public class MoveBoard {
         }
         else if(piece instanceof King){
             //up
-            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
+            if(row > 0 && (gameState.getPiece(row - 1,col) == null ||
+                    gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col,gameState.getPlayerTurn())) {
                     board[row - 1][col] = true;
                     numMoves++;
                 }
             }
             //down
-            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
+            if(row < 7 && (gameState.getPiece(row + 1,col) == null ||
+                    gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col,gameState.getPlayerTurn())) {
                     board[row + 1][col] = true;
                     numMoves++;
                 }
             }
             //right
-            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
+            if(col < 7 && (gameState.getPiece(row ,col + 1) == null ||
+                    gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row,col+1,gameState.getPlayerTurn())) {
                     board[row][col + 1] = true;
                     numMoves++;
                 }
             }
             //left
-            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
+            if(col > 0 && (gameState.getPiece(row ,col - 1) == null ||
+                    gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row,col-1,gameState.getPlayerTurn())) {
                     board[row][col - 1] = true;
                     numMoves++;
                 }
             }
             //up right
-            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
+            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null ||
+                    gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col + 1,gameState.getPlayerTurn())) {
                     board[row - 1][col + 1] = true;
                     numMoves++;
                 }
             }
             //up left
-            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
+            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null ||
+                    gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-1,gameState.getPlayerTurn())) {
                     board[row - 1][col - 1] = true;
                     numMoves++;
                 }
             }
             //down right
-            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
+            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null ||
+                    gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col+1,gameState.getPlayerTurn())) {
                     board[row + 1][col + 1] = true;
                     numMoves++;
                 }
             }
             //down left
-            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
+            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null ||
+                    gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col-1,gameState.getPlayerTurn())) {
                     board[row + 1][col - 1] = true;
                     numMoves++;
@@ -481,56 +499,64 @@ public class MoveBoard {
         }
         else if(piece instanceof Knight){
             //left up
-            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
+            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null ||
+                    gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-2,gameState.getPlayerTurn())) {
                     board[row - 1][col - 2] = true;
                     numMoves++;
                 }
             }
             //left down
-            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
+            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null ||
+                    gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col-2,gameState.getPlayerTurn())) {
                     board[row + 1][col - 2] = true;
                     numMoves++;
                 }
             }
             //right up
-            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
+            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null ||
+                    gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col+2,gameState.getPlayerTurn())) {
                     board[row - 1][col + 2] = true;
                     numMoves++;
                 }
             }
             //right down
-            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
+            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null ||
+                    gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col+2,gameState.getPlayerTurn())) {
                     board[row + 1][col + 2] = true;
                     numMoves++;
                 }
             }
             //up right
-            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
+            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null ||
+                    gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col+1,gameState.getPlayerTurn())) {
                     board[row - 2][col + 1] = true;
                     numMoves++;
                 }
             }
             //up left
-            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
+            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null ||
+                    gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col-1,gameState.getPlayerTurn())) {
                     board[row - 2][col - 1] = true;
                     numMoves++;
                 }
             }
             //down right
-            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
+            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null ||
+                    gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col+1,gameState.getPlayerTurn())) {
                     board[row + 2][col + 1] = true;
                     numMoves++;
                 }
             }
             //down left
-            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
+            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null ||
+                    gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
                 if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col-1,gameState.getPlayerTurn())) {
                     board[row + 2][col - 1] = true;
                     numMoves++;
@@ -539,14 +565,42 @@ public class MoveBoard {
         }
     }
 
+    /**
+     * gets the boolean value of the location
+     * @param row
+     * @param col
+     * @return
+     *      returns true or false depending on whether the piece can move there or not
+     */
     public boolean getCanMove(int row,int col){
         return board[row][col];
     }
 
+    /**
+     * gets the number of moves
+     * @return
+     */
     public int getNumMoves(){
         return this.numMoves;
     }
 
+    /**
+     * checks to see the move will put the player in check
+     * @param gameState
+     *      gamestate
+     * @param row
+     *      current row
+     * @param col
+     *      current col
+     * @param destRow
+     *      destination row
+     * @param destCol
+     *      destination col
+     * @param playerNum
+     *      which player is there
+     * @return
+     *      boolean value whether it is in check or not
+     */
     private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
         /*
         if(gameState.kingLocationWhite[0] == destRow && gameState.kingLocationWhite[1] == destCol){
@@ -562,353 +616,4 @@ public class MoveBoard {
         System.out.println("no checks");
         return true;
     }
-
-    /*
-    private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
-        Piece piece = gameState.getPiece(row,col);
-
-        checkBoard = new boolean[8][8];
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                checkBoard[i][j] = false;
-            }
-        }
-
-        if(piece instanceof Pawn){
-            //pawns can move in the three spaces infront of them
-            if(piece.isBlack()) {
-                //moves are +1+1, +0+1, +0+2, -1+1
-                if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
-                        checkBoard[row + 2][col] = true;
-                }
-
-                if (row < 7 && gameState.getPiece(row + 1, col) == null){
-                       checkBoard[row + 1][col] = true;
-                }
-
-                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row + 1][col + 1] = true;
-                }
-
-                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row + 1][col - 1] = true;
-                }
-            }
-            else{
-                //moves are -1-1, +0-1,+0-2, +1,-1
-
-                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null) {
-                        checkBoard[row - 2][col] = true;
-                }
-
-                if(row > 0 && gameState.getPiece(row-1,col) == null) {
-                        checkBoard[row - 1][col] = true;
-                }
-
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row - 1][col + 1] = true;
-                }
-
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                       checkBoard[row - 1][col - 1] = true;
-                }
-
-            }
-        }
-        else if(piece instanceof King){
-            //up
-            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
-                    checkBoard[row - 1][col] = true;
-            }
-            //down
-            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col] = true;
-            }
-            //right
-            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row][col + 1] = true;
-            }
-            //left
-            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
-                   checkBoard[row][col - 1] = true;
-            }
-            //up right
-            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row - 1][col + 1] = true;
-            }
-            //up left
-            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
-                   checkBoard[row - 1][col - 1] = true;
-            }
-            //down right
-            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col + 1] = true;
-            }
-            //down left
-            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col - 1] = true;
-            }
-
-        }
-        else if(piece instanceof Queen){
-            //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col + i] = true;
-                    break;
-                }
-                else {
-                       checkBoard[row + i][col + i] = true;
-                }
-            }
-            //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col - i] = true;
-                    break;
-                }
-                else {
-                        checkBoard[row + i][col - i] = true;
-                }
-            }
-            //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row - i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col - i] = true;
-                    break;
-                }
-            }
-            //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack()) {
-                        checkBoard[row - i][col + i] = true;
-                    }
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col + i] = true;
-                }
-
-            }
-
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack()) {
-                        break;
-                    }
-                    checkBoard[i][col] = true;
-
-                    break;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    checkBoard[i][col] = true;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                    checkBoard[row][i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
-            }
-
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        break;
-                    else {
-                        checkBoard[row][i] = true;
-                    }
-                }
-            }
-
-        }
-        else if(piece instanceof Rook){
-
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        checkBoard[i][col] = true;
-                    break;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack()) {
-                        break;
-                    }
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
-            }
-
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        checkBoard[row][i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
-            }
-        }
-        else if(piece instanceof Bishop){
-            //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack()) {
-                        break;
-                    }
-                    checkBoard[row + i][col + i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row + i][col + i] = true;
-                }
-            }
-            //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row + i][col - i] = true;
-                }
-            }
-            //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row - i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col - i] = true;
-                }
-            }
-            //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    checkBoard[row - i][col + i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col + i] = true;
-                }
-
-            }
-
-        }
-        else if(piece instanceof Knight){
-            //left up
-            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
-                checkBoard[row - 1][col - 2] = true;
-            }
-            //left down
-            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
-                checkBoard[row + 1][col - 2] = true;
-
-            }
-            //right up
-            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
-                checkBoard[row - 1][col + 2] = true;
-
-            }
-            //right down
-            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
-                checkBoard[row + 1][col + 2] = true;
-            }
-            //up right
-            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
-                checkBoard[row - 2][col + 1] = true;
-            }
-            //up left
-            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
-                checkBoard[row - 2][col - 1] = true;
-            }
-            //down right
-            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
-                checkBoard[row + 2][col + 1] = true;
-            }
-            //down left
-            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
-                checkBoard[row + 2][col - 1] = true;
-            }
-        }
-
-        if (!checkBoard[destRow][destCol]){
-            return false;
-        }
-        if(playerNum == 0){
-            gameState.setCheckedWhite(true);
-        }
-        else{
-            gameState.setCheckedBlack(false);
-        }
-        return true;
-    }
-
-     */
 }

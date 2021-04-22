@@ -36,7 +36,6 @@ public class ChessMainActivity extends GameMainActivity {
      */
     @Override
     public GameConfig createDefaultConfig() {
-
         //Define allowed player types
         ArrayList<GamePlayerType> playerTypes = new ArrayList<GamePlayerType>();
 
@@ -52,11 +51,10 @@ public class ChessMainActivity extends GameMainActivity {
         GameConfig defaultConfig = new GameConfig(playerTypes,1,2,"chess", 8080);
         defaultConfig.addPlayer("Human Player", 0); //player 1: a human player
         defaultConfig.addPlayer("Trash Computer", 1); //player 2: a human player
-
         //returns the default configuration
         return defaultConfig;
-
     }
+
     /**
      * createLocalGame
      *
@@ -67,47 +65,9 @@ public class ChessMainActivity extends GameMainActivity {
      * @return a new, game-specific instance of a sub-class of the LocalGame
      *         class.
      **/
-
      @Override
      public LocalGame createLocalGame(GameState gameState) {
         if(gameState == null) return new ChessLocalGame();
         return new ChessLocalGame((ChessGameState) gameState);
      }
-
-    /*
-    /**
-     * createLocalGame
-     *
-     * Creates a new game that runs on the server tablet,
-     * @param gameState
-     * 				the gameState for this game or null for a new game
-     *
-     * @return a new, game-specific instance of a sub-class of the LocalGame
-     *         class.
-
-    @Override
-    public LocalGame createLocalGame(GameState gameState) {
-        if(gameState == null) return new ChessLocalGame();
-        return new LocalGame() {
-            @Override
-            protected void sendUpdatedStateTo(GamePlayer p) { }
-
-            @Override
-            protected boolean canMove(int playerIdx) {
-                return false;
-            }
-
-            @Override
-            protected String checkIfGameOver() { return null; }
-
-            @Override
-            protected boolean makeMove(GameAction action) {
-                return false;
-            }
-        };
-    }
-    */
-
-
-
 }

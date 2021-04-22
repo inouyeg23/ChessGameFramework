@@ -1,55 +1,29 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
+
 import android.graphics.Color;
-import android.graphics.Point;
-import android.nfc.Tag;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.ChessSurfaceView;
 import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
-import com.example.chessgameframework.game.GameFramework.Piece;
-import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
-import com.example.chessgameframework.game.GameFramework.Pieces.King;
-import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
-import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
-import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
-import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
-
-
-import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMoveInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
-import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
-import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
-;
+
 
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
-
     private static final String TAG = "ChessHumanPlayer";
-
-
     private int layoutId;
-
     // These variables will reference widgets that will be modified during play
     private TextView playerNameTextView = null;
     private TextView opposingNameTextView = null;
@@ -59,21 +33,20 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button pauseButton = null;
     private Button undoButton = null;
     private ChessSurfaceView chessView = null;
-
-
     private boolean pieceSelected = false;
     private int selX = -1;
     private int selY = -1;
     private MoveBoard selectedPieceMB = null;
     private boolean doubleClick = false;
 
-
-
-
     // the android activity that we are running
     private GameMainActivity myActivity;
 
-
+    /**
+     *
+     * @param name
+     * @param layoutId
+     */
     public ChessHumanPlayer(String name, int layoutId) {
         super(name);
         this.layoutId = layoutId;
@@ -84,11 +57,15 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
      *
      * @return the top object in the GUI's view heirarchy
      */
-
     public View getTopView() {
         return myActivity.findViewById(R.id.top_gui_layout);
     }
 
+    /**
+     * called when player gets a message
+     * @param info
+     *      the message
+     */
     public void receiveInfo(GameInfo info) {
         if (chessView == null) return;
 
@@ -148,27 +125,17 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
         if (event.getAction() == MotionEvent.ACTION_UP)
             return true;
         //check if a piece was pressed
         float x = event.getX();
         float y = event.getY();
-
         float boxWidth = v.getWidth() / 8;
         float boxHeight = v.getHeight() / 8;
-
         int ysquare = (int) (x / boxWidth);
         int xsquare = (int) (y / boxHeight);
-
-
-
         System.out.println("clicked on box :" + xsquare + ", " + ysquare);
-
         ChessGameState gameState = (ChessGameState) game.getGameState();
-
-
-
         if (!pieceSelected) {
             if (gameState.getPiece(xsquare, ysquare) != null) {
                 if ((gameState.getPiece(xsquare, ysquare).isBlack() && playerNum == 1) || (!(gameState.getPiece(xsquare, ysquare).isBlack()) && playerNum == 0)) {
@@ -202,10 +169,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
             }
             pieceSelected = false;
         }
-
         return true;
-
-
     }
 
     /**
@@ -234,7 +198,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.pauseButton = (Button) activity.findViewById(R.id.pauseButton);
         this.undoButton = (Button) activity.findViewById(R.id.undoButton);
         this.chessView = (ChessSurfaceView) activity.findViewById(R.id.chessSurfaceView);
-
         //Listen for button presses
         quitButton.setOnClickListener(this);
         forfeitButton.setOnClickListener(this);
@@ -244,7 +207,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
 
         //Listen for touch presses
         chessView.setOnTouchListener(this);
-
     }
 
     /**
@@ -255,6 +217,4 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         playerNameTextView.setText(allPlayerNames[0]);
         opposingNameTextView.setText(allPlayerNames[1]);
     }
-
-
 }

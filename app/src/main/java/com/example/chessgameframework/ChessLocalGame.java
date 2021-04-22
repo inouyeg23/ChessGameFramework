@@ -7,16 +7,16 @@ import com.example.chessgameframework.game.GameFramework.chessActionMessage.Ches
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
+/**
+ * @author Connor Morgan
+ */
 public class ChessLocalGame extends LocalGame {
     /**
-     * Constructor for the TTTLocalGame.
+     * Constructor for the ChessLocalGame.
      */
-
     public ChessLocalGame() {
-
         // perform superclass initialization
         super();
-
         // create a new, unfilled-in TTTState object
         super.state = new ChessGameState();
     }
@@ -29,6 +29,7 @@ public class ChessLocalGame extends LocalGame {
         super();
         super.state = new ChessGameState(chessState);
     }
+
     /**
      * Notify the given player that its state has changed. This should involve sending
      * a GameInfo object to the player. If the game is not a perfect-information game
@@ -82,9 +83,6 @@ public class ChessLocalGame extends LocalGame {
             // get the ID of our player
             int playerID = getPlayerIdx(CMA.getPlayer());
 
-            // if there is a friendly piece, return false
-
-
             // get the 0/1 id of the player whose move it is
             int playerTurn = CGS.getPlayerTurn();
 
@@ -95,14 +93,10 @@ public class ChessLocalGame extends LocalGame {
             if(!CGS.gameStarted)
                 CGS.gameStarted = true;
             // make it the other player's turn
-
             CGS.setPlayerTurn(1 - playerTurn);
-
-
             // return true, indicating the it was a legal move
             return true;
         }
-
         return false;
     } //makeMove
 

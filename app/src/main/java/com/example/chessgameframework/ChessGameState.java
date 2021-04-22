@@ -6,7 +6,6 @@ import com.example.chessgameframework.game.GameFramework.Pieces.King;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
@@ -17,13 +16,9 @@ import java.io.Serializable;
  * @authors: Jonah Ingler, Garrett Inouye, Logan Machida, Connor Morgan
  *
  */
-
 public class ChessGameState extends GameState implements Serializable {
-
     //8x8 array of pieces
     private Piece[][] board;
-
-
     //whose turn it is
     private int playerTurn;
 
@@ -76,8 +71,6 @@ public class ChessGameState extends GameState implements Serializable {
 
     // public piece variable to tell surface view what piece is clicked
     public Piece clickedPiece;
-
-
 
     /**
      * Constructor for class ChessGameState
@@ -260,8 +253,10 @@ public class ChessGameState extends GameState implements Serializable {
           kingLocationWhite[1] = col;
     }
 
-
-
+    /**
+     * checks to see if there are two kings
+     * @return
+     */
     public boolean checkIfTwoKings(){
           int c = 0;
           for(int i = 0; i < 8; i++){
@@ -274,106 +269,11 @@ public class ChessGameState extends GameState implements Serializable {
           return c == 2;
     }
 
-    /*
-    //finds the location of the king
-    public int[] getKingLoc(int k){
-          int[] kingLoc =  new int[2];
-        for (int row1 = 0; row1 < 8; row1++) {
-            for (int col1 = 0; col1 < 8; col1++) {
-                if(board[row1][col1] != null) {
-                    if (getPiece(row1, col1).equals(kings[k])) {
-                        kingLoc[0] = row1;
-                        kingLoc[1] = col1;
-                    }
-                }
-            }
-        }
-        return kingLoc;
-    }\
-     */
-
-    //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
-    public boolean inCheck(int[] kingLocation) {
-        Piece king = getPiece(kingLocation[0], kingLocation[1]);
-        //iterate through to search for a piece that can "take" the king
-        MoveBoard board = new MoveBoard();
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(getPiece(i,j).isBlack()!=king.isBlack()){
-                    board.findMoves(this,i,j);
-                    for(int k = 0; k < 8; k++){
-                        for(int l = 0; l < 8; l++){
-                            if (board.getCanMove(k,l) && kingLocation[0] == k && kingLocation[1] == l){
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /*
-    public void inCheck() {
-        int[] kingLocation = getKingLoc(0);
-        if(inCheck(kingLocation)) {
-            isCheckedBlack = true;
-        }
-        kingLocation = getKingLoc(1);
-        if(inCheck(kingLocation)) {
-            isCheckedWhite = true;
-        }
-    }
-     */
-
-    public boolean inCheckMate(int[] kingLocation) {
-        Piece king = getPiece(kingLocation[0], kingLocation[1]);
-        //inorder for a king to not be checkmated there needs to be a move that any piece of that
-        //color that can be made so the king is not in check
-
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(board[i][j] != null && board[i][j].isBlack() == king.isBlack() ){
-                    //this is a piece that we want to see if it can do something to get the king out of check
-                    MoveBoard mb = new MoveBoard();
-                    mb.findMoves(this,i,j);
-                    if(mb.getNumMoves() > 0)
-                        for(int k = 0; k < 8; k++){
-                            for(int l = 0; l < 8; l++){
-                                if(mb.getCanMove(k,l)){
-                                    //the piece can move here so lets see what happens if we make this move. is the king going to be in check still?
-                                    ChessGameState gs = new ChessGameState(this);
-                                    gs.movePiece(i,j,k,l,this.board[i][j]);
-                                    if(king.isBlack()) {
-                                        if (!gs.isCheckedBlack()) {
-                                            return false;
-                                        }
-                                    }
-                                    else
-                                        if(!gs.isCheckedWhite())
-                                            return false;
-                                }
-                            }
-                        }
-                }
-            }
-        }
-        if (king.isBlack()){
-            isCheckedmateBlack = true;
-        }
-        else{
-            isCheckedmateWhite = true;
-        }
-        return true;
-    }
-
     /**
      * toString method
      * prints the values for all the variables
      * defined in this class
      */
-
     @Override
     public String toString(){
         return "Player turn: " + playerTurn + "\n" +
@@ -398,8 +298,6 @@ public class ChessGameState extends GameState implements Serializable {
         System.out.println("moved piece");
         setPiece(selectedRow,selectedCol,board[row][col]);
         setPiece(row,col,null);
-
-
     }
 
     /**
@@ -427,6 +325,7 @@ public class ChessGameState extends GameState implements Serializable {
         }
     }
 
+    //FIXME islegal is still unused
     public boolean isLegal(int row, int col){
         //checking if the current player is in check
         //0 for black, 1 for white
@@ -446,6 +345,10 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
+    /**
+     * returns if the quit button is pressed
+     * @return
+     */
     public boolean isQuitPressed(){
         //quitInitiated would turn true or false based on button onClick
         if(isQuitPressed){
@@ -455,9 +358,12 @@ public class ChessGameState extends GameState implements Serializable {
         } else {
             return false;
         }
-
     }
 
+    /**
+     * returns if the draw button is pressed
+     * @return
+     */
     public boolean isDrawPressed(){
         //drawInitiated would turn true or false based on button onClick
         if(isDrawPressed){
@@ -470,7 +376,10 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-
+    /**
+     * returns if the forfeit button is pressed
+     * @return
+     */
     //forfeitInitiated would turn true or false based on button onClick
     public boolean isForfeitPressed(){
         if(isForfeitPressed){
@@ -491,7 +400,6 @@ public class ChessGameState extends GameState implements Serializable {
             return false;
         }
     }
-
 
     //getter and setter for player turn
     public int getPlayerTurn() {
