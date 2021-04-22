@@ -3,11 +3,10 @@ package com.example.chessgameframework;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
-import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
+import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
-import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
@@ -18,7 +17,6 @@ import java.io.Serializable;
  */
 
 public class ChessGameState extends GameState implements Serializable {
-
     //8x8 array of pieces
     private Piece[][] board;
 
@@ -45,7 +43,6 @@ public class ChessGameState extends GameState implements Serializable {
     private boolean isCheckedmateBlack;
 
     //booleans to work with onClick method and check if valid
-
     public boolean gameStarted;
     public boolean isQuitPressed;
     public boolean isDrawPressed;
@@ -68,6 +65,12 @@ public class ChessGameState extends GameState implements Serializable {
     //initialize the board full of pieces in the starting position
     //both kings are stored in the array below as well (black then white)
     Piece[] kings = new Piece[2];
+
+    public int[] kingLocationWhite = new int[2];
+    public int[] kingLocationBlack = new int[2];
+
+    // public piece variable to tell surface view what piece is clicked
+    public Piece clickedPiece;
 
     /**
      * Constructor for class ChessGameState
@@ -104,8 +107,8 @@ public class ChessGameState extends GameState implements Serializable {
         board[7][0] = new Rook(false);
         board[7][1] = new Knight(false);
         board[7][2] = new Bishop(false);
-        board[7][3] = new King(false);
-        board[7][4] = new Queen(false);
+        board[7][4] = new King(false);
+        board[7][3] = new Queen(false);
         board[7][5] = new Bishop(false);
         board[7][6] = new Knight(false);
         board[7][7] = new Rook(false);
@@ -197,9 +200,9 @@ public class ChessGameState extends GameState implements Serializable {
           isForfeitPressed = original.isForfeitPressed;
           isUndoPressed = original.isUndoPressed;
           isQuitPressed = original.isQuitPressed;
-
           currPlayer = original.currPlayer;
 
+          //highlighted moves
           highlightedPawnMove = original.highlightedPawnMove;
           highlightedKnightMove = original.highlightedKnightMove;
           highlightedRookMove = original.highlightedRookMove;
@@ -208,7 +211,12 @@ public class ChessGameState extends GameState implements Serializable {
           highlightedQueenMove = original.highlightedQueenMove;
       }// copy constructor
 
-
+    /**
+     * getPiece returns the specific piece at the place in the board
+     * @param row
+     * @param col
+     * @return
+     */
     public Piece getPiece(int row, int col){
         if(board[row][col] == null|| row < 0 || col < 0) {
             return null;
@@ -219,80 +227,47 @@ public class ChessGameState extends GameState implements Serializable {
         return board[row][col];
     }
 
+    /**
+     * setPiece sets the piece given as a parameter on a place in the board
+     * @param row
+     * @param col
+     * @param piece
+     */
     public void setPiece(int row, int col, Piece piece){
         if(row < 0 || col < 0) {
             return;
         }
-        if(row >= board.length || col >= board[row].length) {
+        if(row >= 8 || col >= 8) {
             return;
         }
         board[row][col] = piece;
     }
 
-    //finds the location of the king
-    public int[] getKingLoc(int k){
-          int[] kingLoc =  new int[2];
-        for (int row1 = 0; row1 < 8; row1++) {
-            for (int col1 = 0; col1 < 8; col1++) {
-                if (getPiece(row1, col1).equals(kings[k])) {
-                    kingLoc[0] = row1;
-                    kingLoc[1] = col1;
-                }
-            }
-        }
-        return kingLoc;
+    /**
+     * setKingLocation keeps track of where the king is for each color
+     * @param row
+     * @param col
+     */
+    public void setKingLocation(int row, int col){
+          kingLocationWhite[0] = row;
+          kingLocationWhite[1] = col;
     }
 
-    //determines whether the kings are checked or not, and returns the boolean value of which king is checked.
-    public boolean inCheck(int[] kingLocation) {
-        Piece king = getPiece(kingLocation[0], kingLocation[1]);
-        //iterate through to search for a piece that can "take" the king
-        for (int row2 = 0; row2 < 8; row2++) {
-            for (int col2 = 0; col2 < 8; col2++) {
-                //piece
-                Piece targetPiece = getPiece(row2, col2);
-                if (targetPiece.canMove(row2, col2, kingLocation[0], kingLocation[1])) {
-                    //puts the pieces in check if an opposing piece can move into it's spot
-                    //sets the checks accordingly
-                    if (king.isBlack() && !targetPiece.isBlack()) {
-                        return true;
-                    }
-                    if (!king.isBlack() && targetPiece.isBlack()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public void inCheck() {
-        int[] kingLocation = getKingLoc(0);
-        if(inCheck(kingLocation)) {
-            isCheckedBlack = true;
-        }
-        kingLocation = getKingLoc(1);
-        if(inCheck(kingLocation)) {
-            isCheckedWhite = true;
-        }
-    }
-
-    public boolean inCheckMate(int[] kingLocation) {
-        Piece king = getPiece(kingLocation[0], kingLocation[1]);
-        for (int row1 = 0; row1 < 8; row1++) {
-            for (int col1 = 0; col1 < 8; col1++) {
-                if (king.canMove(kingLocation[0], kingLocation[1], row1, col1)) {
-                    int[] kingLocation2 = new int[0];
-                    kingLocation2[0] = row1;
-                    kingLocation2[1] = col1;
-                    if (!inCheck(kingLocation2)) {
-                        return false;
-                    }
-                }
-            }
-
-        }
-        return true;
+    /**
+     * check to see if there are two kings
+     * @return
+     *      true if there are two kings, false if not
+     */
+    public boolean checkIfTwoKings(){
+          int c = 0;
+          for(int i = 0; i < 8; i++){
+              for(int j = 0; j < 8; j++){
+                  if(board[i][j] != null && board[i][j] instanceof King){
+                      c++;
+                  }
+              }
+          }
+          return c == 2;
     }
 
     /**
@@ -300,10 +275,10 @@ public class ChessGameState extends GameState implements Serializable {
      * prints the values for all the variables
      * defined in this class
      */
-
     @Override
     public String toString(){
         return "Player turn: " + playerTurn + "\n" +
+                "Current player: " + currPlayer + "\n" +
                 "Black points: " + pointsBlack + "\n" +
                 "White points: " + pointsWhite + "\n" +
                 "Black seconds: " + secondsBlack + "\n" +
@@ -312,20 +287,18 @@ public class ChessGameState extends GameState implements Serializable {
                 "White checked: " + isCheckedWhite + "\n" +
                 "Black checkmated: " + isCheckedmateBlack + "\n" +
                 "White checkmated: " + isCheckedmateWhite + "\n" +
-                "Game paused: " + isPaused + "\n";
+                "Game paused: " + isPaused + "\n" +
+                "Game forfeited: " + isForfeitPressed + "\n";
     }
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-        if(piece.canMove(row,col,selectedRow,selectedCol)){
-            setPiece(selectedRow,selectedCol,piece);
-            setPiece(row,col,null);
+        if(board[row][col] instanceof King){
+            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+            setKingLocation(selectedRow, selectedCol);
         }
-        if(currPlayer == 1){
-            currPlayer = 0;
-        }
-        else{
-            currPlayer = 1;
-        }
+        System.out.println("moved piece");
+        setPiece(selectedRow,selectedCol,board[row][col]);
+        setPiece(row,col,null);
     }
 
     /**
@@ -336,26 +309,26 @@ public class ChessGameState extends GameState implements Serializable {
      */
     public boolean isStartPressed(){
         if(gameStarted){
-            //this will be implemented using game framework; not required for game
-            //state assignment
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * checks to see if the game is paused
+     * @return
+     *      boolean value for if the game is paused
+     */
     public boolean isPausePressed(){
-        //this will be implemented using game framework; not required for game
-        //state assignment
         if(isPaused){
-            //this will be implemented using game framework; not required for game
-            //state assignment
             return true;
         } else {
             return false;
         }
     }
 
+    //FIXME unused method
     public boolean isLegal(int row, int col){
         //checking if the current player is in check
         //0 for black, 1 for white
@@ -375,6 +348,11 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
+    /**
+     * isQuitPressed would turn true or false based on button onClick
+     * @return
+     *      returns whether the button has been pressed
+     */
     public boolean isQuitPressed(){
         //quitInitiated would turn true or false based on button onClick
         if(isQuitPressed){
@@ -384,9 +362,13 @@ public class ChessGameState extends GameState implements Serializable {
         } else {
             return false;
         }
-
     }
 
+    /**
+     * isDrawPressed would turn true or false based on button onClick
+     * @return
+     *      returns whether the button has been pressed
+     */
     public boolean isDrawPressed(){
         //drawInitiated would turn true or false based on button onClick
         if(isDrawPressed){
@@ -399,19 +381,26 @@ public class ChessGameState extends GameState implements Serializable {
 
     }
 
-
-    //forfeitInitiated would turn true or false based on button onClick
+    /**
+     * forfeitInitiated would turn true or false based on button onClick
+     * @return
+     *      returns whether the button has been pressed
+     */
     public boolean isForfeitPressed(){
         if(isForfeitPressed){
-            //this will be implemented using game framework; not required for game
-            //state assignment
+            System.out.println("forfeit pressed in game state");
             return true;
         } else {
             return false;
         }
     }
 
-    //playAgainInitiated would turn true or false based on button onClick
+    /**
+     * playAgainInitiated would turn true or false based on button onClick
+     * @return
+     *      returns whether the button has been pressed
+     */
+
     public boolean isUndoPressed(){
         if(isUndoPressed){
             //this will be implemented using game framework; not required for game
