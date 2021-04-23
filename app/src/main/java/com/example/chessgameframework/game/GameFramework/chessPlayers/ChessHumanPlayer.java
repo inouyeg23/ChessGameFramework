@@ -1,10 +1,14 @@
 package com.example.chessgameframework.game.GameFramework.chessPlayers;
 
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -22,13 +26,16 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.IllegalMove
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
 import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
-;import java.util.Random;
+;import java.util.Locale;
+import java.util.Random;
 
-public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
+public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener, AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "ChessHumanPlayer";
 
     private int layoutId;
+
+
 
     // These variables will reference widgets that will be modified during play
     private TextView playerNameTextView = null;
@@ -37,7 +44,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     private Button forfeitButton = null;
     private Button offerDrawButton = null;
     private Button pauseButton = null;
-    private Button undoButton = null;
     private ChessSurfaceView chessView = null;
 
 
@@ -49,9 +55,24 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
 
     private int random;
 
+    // variables needed for time
+    private TextView playerTimeTextView = null;
+    private TextView opposingTimeTextView = null;
+
+    private CountDownTimer playerCountDownTimer;
+    private CountDownTimer opposingCountDownTimer;
+
+    private long playerTimeLeftInMillis = 600000;
+    private long opposingTimeLeftInMillis = 600000;
+
+    private boolean playerTimerRunning;
+    private boolean opposingTimerRunning;
+
 
     // the android activity that we are running
     private GameMainActivity myActivity;
+
+
 
 
     public ChessHumanPlayer(String name, int layoutId) {
@@ -97,7 +118,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
     public void onClick(View button) {
         ChessGameState gameState = (ChessGameState) game.getGameState();
 
-
         if (button == quitButton) {
             // the quit button has been pressed
             gameState.isQuitPressed = true;
@@ -121,11 +141,13 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         } else if (button == pauseButton) {
             // the pause button has been pressed
             gameState.isPaused = true;
-            game.sendAction(new ChessButtonAction(this));
-
-        } else if (button == undoButton) {
-            // the undo button has been pressed
-            gameState.isUndoPressed = true;
+            if(playerTimerRunning) {
+                playerPauseTimer();
+                pauseButton.setText("RESUME");
+            } else {
+                playerStartTimer();
+                pauseButton.setText("PAUSE");
+            }
             game.sendAction(new ChessButtonAction(this));
         }
     }
@@ -138,7 +160,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 
             float x = event.getX();
@@ -161,6 +182,11 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 return false;
             }
 
+            //cannot make move if timer is paused
+            if(opposingTimerRunning){
+                flash(Color.RED, 50);
+                return false;
+            }
 
             if (!pieceSelected) {
                 if (gameState.getPiece(xsquare, ysquare) != null) {
@@ -194,9 +220,15 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
 
                     System.out.println("we have sent a move");
 
+                    playerPauseTimer();
+                    opposingStartTimer();
+
                 }
                 pieceSelected = false;
                 chessView.drawHighlight = false;
+
+                playerPauseTimer();
+                opposingStartTimer();
             }
 
             chessView.invalidate();
@@ -204,6 +236,17 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         return true;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        ChessGameState gameState = (ChessGameState) game.getGameState();
+        //sets the hairstyle based on the drop down menu
+        gameState.setStartingColor(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        //necessary to run code
+    }
 
     /**
      * callback method--our game has been chosen/rechosen to be the GUI,
@@ -229,7 +272,6 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         this.forfeitButton = (Button) activity.findViewById(R.id.forfeitButton);
         this.offerDrawButton = (Button) activity.findViewById(R.id.offerdrawButton);
         this.pauseButton = (Button) activity.findViewById(R.id.pauseButton);
-        this.undoButton = (Button) activity.findViewById(R.id.undoButton);
         this.chessView = (ChessSurfaceView) activity.findViewById(R.id.chessSurfaceView);
 
         //Listen for button presses
@@ -237,7 +279,10 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         forfeitButton.setOnClickListener(this);
         offerDrawButton.setOnClickListener(this);
         pauseButton.setOnClickListener(this);
-        undoButton.setOnClickListener(this);
+
+        // set textViews for the timer
+        this.playerTimeTextView = (TextView) activity.findViewById(R.id.playerTime);
+        this.opposingTimeTextView = (TextView) activity.findViewById(R.id.opposingTime);
 
         //sets the surfaceView background color to be a specific shade of green to match
         //the background
@@ -246,8 +291,9 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         //Listen for touch presses
         chessView.setOnTouchListener(this);
 
-
-
+        playerStartTimer();
+        playerUpdateCountDownText();
+        opposingUpdateCountDownText();
     }
 
     /**
@@ -259,5 +305,76 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         opposingNameTextView.setText(allPlayerNames[1]);
     }
 
+    /**
+     * The following methods are taken from an external citation
+     * Date:    4 April 2021
+     * Problem: Did not know how to make a timer
+     * Resource: https://www.youtube.com/watch?v=MDuGwI6P-X8
+     * Solution: followed along the video and made minor adjustments to fit our
+     * game
+     */
+    //timer specifically for the player
+    private void playerStartTimer() {
+        playerCountDownTimer = new CountDownTimer(playerTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished){
+                playerTimeLeftInMillis = millisUntilFinished;
+                playerUpdateCountDownText();
+            }
+
+            @Override
+            public void onFinish(){
+                playerTimerRunning = false;
+                System.out.println("timer done");
+            }
+        }.start();
+
+        playerTimerRunning = true;
+    }
+    private void playerPauseTimer(){
+        playerCountDownTimer.cancel();
+        playerTimerRunning = false;
+    }
+
+    private void playerUpdateCountDownText() {
+        int minutes = (int) playerTimeLeftInMillis / 1000 / 60;
+        int seconds = (int) playerTimeLeftInMillis / 1000 % 60;
+
+        String playerTimeLeft = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+
+        playerTimeTextView.setText(playerTimeLeft);
+    }
+
+    //timer specifically for the computer or opposing player
+    private void opposingStartTimer() {
+        opposingCountDownTimer = new CountDownTimer(opposingTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished){
+                opposingTimeLeftInMillis = millisUntilFinished;
+                opposingUpdateCountDownText();
+            }
+
+            @Override
+            public void onFinish(){
+                opposingTimerRunning = false;
+                System.out.println("timer done");
+            }
+        }.start();
+        opposingTimerRunning = true;
+    }
+
+    private void opposingPauseTimer(){
+        opposingCountDownTimer.cancel();
+        opposingTimerRunning = false;
+    }
+
+    private void opposingUpdateCountDownText() {
+        int minutes = (int) opposingTimeLeftInMillis / 1000 / 60;
+        int seconds = (int) opposingTimeLeftInMillis / 1000 % 60;
+
+        String opposingTimeLeft = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+
+        opposingTimeTextView.setText(opposingTimeLeft);
+    }
 
 }

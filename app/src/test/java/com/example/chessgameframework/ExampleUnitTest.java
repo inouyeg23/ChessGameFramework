@@ -83,14 +83,6 @@ public class ExampleUnitTest {
     }
 
     @Test
-    public void isUndoPressed(){
-        ChessGameState gameState = new ChessGameState();
-        assertTrue(!gameState.isUndoPressed());
-        //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isUndoPressed = true;
-        assertTrue(gameState.isUndoPressed());
-    }
-    @Test
     public void getPlayerTurn(){
         ChessGameState gameState = new ChessGameState();
         assertEquals(0, gameState.getPlayerTurn());

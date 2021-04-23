@@ -31,6 +31,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
+import com.example.chessgameframework.game.GameFramework.chessPlayers.ChessHumanPlayer;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GameConfig;
 import com.example.chessgameframework.game.GameFramework.gameConfiguration.GamePlayerType;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
@@ -480,12 +481,6 @@ public abstract class GameMainActivity extends Activity implements
 
     protected void initSettingsTab(){
         //Override if the game has customizable rules
-        Spinner choosecolor = (Spinner)findViewById((R.id.chooseColor));
-        String [] chessColor = new String[] {"Random", "Black", "White"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, chessColor);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        choosecolor.setAdapter(adapter);
-
     }
 
     /**
