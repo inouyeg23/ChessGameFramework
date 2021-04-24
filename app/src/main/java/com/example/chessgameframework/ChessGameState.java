@@ -35,8 +35,8 @@ public class ChessGameState extends GameState implements Serializable {
     private int pointsBlack;
 
     //time remaining for each player
-    private Double secondsWhite;
-    private Double secondsBlack;
+    private int secondsWhite;
+    private int secondsBlack;
 
     //is the game paused
     public boolean isPaused;
@@ -152,8 +152,8 @@ public class ChessGameState extends GameState implements Serializable {
         pointsWhite = 0;
 
         //time starts at 10 minutes
-        secondsBlack = 10.0;
-        secondsWhite = 10.0;
+        secondsBlack = 10;
+        secondsWhite = 10;
 
         //game starts paused
         isPaused = false;
@@ -503,16 +503,16 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     //getter and setter for time
-    public Double getSecondsBlack() {
+    public int getSecondsBlack() {
         return secondsBlack;
     }
-    public void setSecondsBlack(Double secondsBlack) {
+    public void setSecondsBlack(int secondsBlack) {
         this.secondsBlack = secondsBlack;
     }
-    public Double getSecondsWhite() {
+    public int getSecondsWhite() {
         return secondsWhite;
     }
-    public void setSecondsWhite(Double secondsWhite) {
+    public void setSecondsWhite(int secondsWhite) {
         this.secondsWhite = secondsWhite;
     }
 
