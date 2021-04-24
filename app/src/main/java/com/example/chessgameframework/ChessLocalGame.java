@@ -9,9 +9,8 @@ import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 public class ChessLocalGame extends LocalGame {
     /**
-     * Constructor for the TTTLocalGame.
+     * Constructor for the ChessLocalGame.
      */
-
     public ChessLocalGame() {
 
         // perform superclass initialization
@@ -72,19 +71,14 @@ public class ChessLocalGame extends LocalGame {
         } else if ( action instanceof ChessMoveAction) {
             ChessGameState CGS = (ChessGameState) super.state;
             ChessMoveAction CMA = (ChessMoveAction) action;
-
             int row = CMA.getRow();
             int col = CMA.getCol();
             int selectedCol = CMA.getSelectedCol();
             int selectedRow = CMA.getSelectedRow();
             Piece piece = CMA.getSelectedPiece();
-
             // get the ID of our player
             int playerID = getPlayerIdx(CMA.getPlayer());
-
             // if there is a friendly piece, return false
-
-
             // get the 0/1 id of the player whose move it is
             int playerTurn = CGS.getPlayerTurn();
 
@@ -95,14 +89,10 @@ public class ChessLocalGame extends LocalGame {
             if(!CGS.gameStarted)
                 CGS.gameStarted = true;
             // make it the other player's turn
-
             CGS.setPlayerTurn(1 - playerTurn);
-
-
             // return true, indicating the it was a legal move
             return true;
         }
-
         return false;
     } //makeMove
 
