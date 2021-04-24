@@ -35,8 +35,8 @@ public class ChessGameState extends GameState implements Serializable {
     private int pointsBlack;
 
     //time remaining for each player
-    private int secondsWhite;
-    private int secondsBlack;
+    private Double secondsWhite;
+    private Double secondsBlack;
 
     //is the game paused
     public boolean isPaused;
@@ -51,7 +51,6 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean isQuitPressed;
     public boolean isDrawPressed;
     public boolean isForfeitPressed;
-    public boolean isUndoPressed;
 
     //different from playerTurn, it holds the current player rather than
     //the whole game switching between players to make sure it is
@@ -73,10 +72,9 @@ public class ChessGameState extends GameState implements Serializable {
     public int[] kingLocationWhite = new int[2];
     public int[] kingLocationBlack = new int[2];
 
-    // public piece variable to tell surface view what piece is clicked
-    public Piece clickedPiece;
+    private boolean computerHasMoved;
 
-
+    private int startingColor;
 
     /**
      * Constructor for class ChessGameState
@@ -153,9 +151,9 @@ public class ChessGameState extends GameState implements Serializable {
         pointsBlack = 0;
         pointsWhite = 0;
 
-        //time starts at 10 minutes, or 600 seconds
-        secondsBlack = 600;
-        secondsWhite = 600;
+        //time starts at 10 minutes
+        secondsBlack = 10.0;
+        secondsWhite = 10.0;
 
         //game starts paused
         isPaused = false;
@@ -204,7 +202,6 @@ public class ChessGameState extends GameState implements Serializable {
           gameStarted = original.gameStarted;
           isDrawPressed = original.isDrawPressed;
           isForfeitPressed = original.isForfeitPressed;
-          isUndoPressed = original.isUndoPressed;
           isQuitPressed = original.isQuitPressed;
 
           currPlayer = original.currPlayer;
@@ -399,6 +396,7 @@ public class ChessGameState extends GameState implements Serializable {
         setPiece(row,col,null);
 
 
+
     }
 
     /**
@@ -480,16 +478,6 @@ public class ChessGameState extends GameState implements Serializable {
         }
     }
 
-    //playAgainInitiated would turn true or false based on button onClick
-    public boolean isUndoPressed(){
-        if(isUndoPressed){
-            //this will be implemented using game framework; not required for game
-            //state assignment
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
     //getter and setter for player turn
@@ -515,16 +503,16 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     //getter and setter for time
-    public int getSecondsBlack() {
+    public Double getSecondsBlack() {
         return secondsBlack;
     }
-    public void setSecondsBlack(int secondsBlack) {
+    public void setSecondsBlack(Double secondsBlack) {
         this.secondsBlack = secondsBlack;
     }
-    public int getSecondsWhite() {
+    public Double getSecondsWhite() {
         return secondsWhite;
     }
-    public void setSecondsWhite(int secondsWhite) {
+    public void setSecondsWhite(Double secondsWhite) {
         this.secondsWhite = secondsWhite;
     }
 
@@ -563,5 +551,11 @@ public class ChessGameState extends GameState implements Serializable {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
+    public boolean getComputerHasMoved(){ return computerHasMoved; }
+    public void setComputerHasMoved(boolean moved){ computerHasMoved = moved; }
+
+    public int getStartingColor(){ return startingColor;}
+    public void setStartingColor(int color){ startingColor = color;}
 //GameState class
 }

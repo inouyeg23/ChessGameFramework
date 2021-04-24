@@ -297,6 +297,14 @@ public abstract class GameHumanPlayer implements GamePlayer, Tickable {
                 ChessGameState state = (ChessGameState)game.getGameState();
                 if(state.isQuitPressed()){
                     //recreate the app, bringing us back to the start screen
+                    /**
+                     * External Citation
+                     * Date:    21 April 2021
+                     * Problem: Quit button would not take you back to start screen
+                     * Resource:
+                     * https://stackoverflow.com/questions/2486934/programmatically-relaunch-recreate-an-activity
+                     * Solution: I used the recreate() method suggested in this post
+                     */
                     myActivity.recreate();
                 } else {
                     //Since the game is over, we will ask the player if they would like to restart the game

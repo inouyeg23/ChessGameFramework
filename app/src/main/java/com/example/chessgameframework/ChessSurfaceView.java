@@ -18,8 +18,22 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Pawn;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 
+/**
+ * ChessSurfaceView extends SurfaceView to draw the chess board, pieces, and the highlighted
+ * squares.  It also scales the pixel coordinates according to the surfaceView size and converts
+ * the number into an easy to follow row and col system.
+ *
+ * @author Garrett Inouye
+ * @data 4/21/21
+ */
+
 public class ChessSurfaceView extends SurfaceView {
+
+    // the game's state
+    protected ChessGameState gameState;
+
     // Initializing each drawable image with a variable
+
     private Bitmap blackPawn =      BitmapFactory.decodeResource(getResources(), R.drawable.black_pawn);
     private Bitmap blackKnight =    BitmapFactory.decodeResource(getResources(), R.drawable.black_knight);
     private Bitmap blackRook =      BitmapFactory.decodeResource(getResources(), R.drawable.black_rook);
@@ -51,8 +65,7 @@ public class ChessSurfaceView extends SurfaceView {
     //private piece class to determine the piece that's selected
     private Piece touchedPiece;
 
-    // the game's state
-    protected ChessGameState gameState;
+
 
     public boolean drawHighlight;
 
@@ -60,6 +73,7 @@ public class ChessSurfaceView extends SurfaceView {
         super(context, attrs);
 
         setWillNotDraw(false);
+
     }
 
     public void setState(ChessGameState state) {
@@ -92,6 +106,7 @@ public class ChessSurfaceView extends SurfaceView {
             }
         }
 
+        System.out.println("CHOSEN COLOR: " + gameState.getStartingColor());
 
         if(drawHighlight) {
             //draws all highlighted squares based on possible moves
