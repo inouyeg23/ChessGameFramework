@@ -19,14 +19,21 @@ public class MoveBoard {
 
 
         board = new boolean[8][8];
+        checkBoard = new boolean[8][8];
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
                 board[i][j] = false;
+                checkBoard[i][j] = false;
             }
         }
     }
 
     public void findMoves(ChessGameState gameState, int row, int col){
+        findPossibleMoves(gameState,row,col, true);
+        //removeCheckMoves(gameState,gameState.getPiece(row,col).isBlack());
+    }
+
+    public void findPossibleMoves(ChessGameState gameState, int row, int col, boolean checkForChecks){
 
         //check the color
         //figure out the normal moves that it would be able to make with no conditionals
@@ -44,498 +51,198 @@ public class MoveBoard {
             if(piece.isBlack()) {
                 //moves are +1+1, +0+1, +0+2, -1+1
                 if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col,gameState.getPlayerTurn())) {
-                        board[row + 2][col] = true;
-                        numMoves++;
-                    }
+
+                    addMoveToBoardIfGood(gameState,row,col,2,0, checkForChecks);
+
                 }
 
-                if (row < 7 && gameState.getPiece(row + 1, col) == null){
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col,gameState.getPlayerTurn())) {
-                        board[row + 1][col] = true;
-                        numMoves++;
-                    }
-                }
+                addMoveToBoardIfGood(gameState,row,col,1,0, checkForChecks);
 
                 if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col + 1,gameState.getPlayerTurn())) {
-                        board[row + 1][col + 1] = true;
-                        numMoves++;
-                    }
+
+                    addMoveToBoardIfGood(gameState,row,col,1,1, checkForChecks);
                 }
 
                 if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col - 1,gameState.getPlayerTurn())) {
-                        board[row + 1][col - 1] = true;
-                        numMoves++;
-                    }
+
+                    addMoveToBoardIfGood(gameState,row,col,1,-1, checkForChecks);
                 }
             }
             else{
                 //moves are -1-1, +0-1,+0-2, +1,-1
 
-                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col,gameState.getPlayerTurn())) {
-                        board[row - 2][col] = true;
-                        numMoves++;
-                    }
+                if(row == 6 && gameState.getPiece(row-1,col) == null) {
+
+                    addMoveToBoardIfGood(gameState,row,col,-2,0, checkForChecks);
+
                 }
 
-                if(row > 0 && gameState.getPiece(row-1,col) == null) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col,gameState.getPlayerTurn())) {
-                        board[row - 1][col] = true;
-                        numMoves++;
-                    }
-                }
+                addMoveToBoardIfGood(gameState,row,col,-1,0, checkForChecks);
 
                 if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col+1,gameState.getPlayerTurn())) {
-                        board[row - 1][col + 1] = true;
-                        numMoves++;
-                    }
+
+                    addMoveToBoardIfGood(gameState,row,col,-1,1, checkForChecks);
+
                 }
 
                 if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-1,gameState.getPlayerTurn())) {
-                        board[row - 1][col - 1] = true;
-                        numMoves++;
-                    }
+
+                    addMoveToBoardIfGood(gameState,row,col,-1,-1, checkForChecks);
+
                 }
 
             }
         }
         else if(piece instanceof King){
             //up
-            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col,gameState.getPlayerTurn())) {
-                    board[row - 1][col] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,-1,0, checkForChecks);
             //down
-            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col,gameState.getPlayerTurn())) {
-                    board[row + 1][col] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,1,0, checkForChecks);
             //right
-            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row,col+1,gameState.getPlayerTurn())) {
-                    board[row][col + 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,0,+1, checkForChecks);
             //left
-            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row,col-1,gameState.getPlayerTurn())) {
-                    board[row][col - 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,0,-1, checkForChecks);
             //up right
-            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col + 1,gameState.getPlayerTurn())) {
-                    board[row - 1][col + 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,-1,+1, checkForChecks);
             //up left
-            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-1,gameState.getPlayerTurn())) {
-                    board[row - 1][col - 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,-1,-1, checkForChecks);
             //down right
-            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col+1,gameState.getPlayerTurn())) {
-                    board[row + 1][col + 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,1,1, checkForChecks);
             //down left
-            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col-1,gameState.getPlayerTurn())) {
-                    board[row + 1][col - 1] = true;
-                    numMoves++;
-                }
-            }
+            addMoveToBoardIfGood(gameState,row,col,1,-1, checkForChecks);
 
         }
         else if(piece instanceof Queen){
-            //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col+i,gameState.getPlayerTurn())) {
-                        board[row + i][col + i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i, 0, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col+i,gameState.getPlayerTurn())) {
-                        board[row + i][col + i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row + i,col) != null)
+                    break;
+            }
+
+            for(int i = 1; row - i >= 0; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,-i, 0, checkForChecks))
+                    break;
+                else if(gameState.getPiece(row - i,col) != null)
+                    break;
+            }
+
+            for(int i = 1; col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,0, i, checkForChecks))
+                    break;
+                else if(gameState.getPiece(row,col + i) != null)
+                    break;
+            }
+
+            for(int i = 1; col - i >= 0; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,0,-i, checkForChecks))
+                    break;
+                else if(gameState.getPiece(row,col - i) != null)
+                    break;
+            }
+
+            for(int i = 1; row + i < 8 && col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i,i, checkForChecks))
+                    break;
+                else if(gameState.getPiece(row + i,col + i) != null)
+                    break;
             }
             //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col-i,gameState.getPlayerTurn())) {
-                        board[row + i][col - i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row + i < 8 && col - i > -1; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i,-i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col-i,gameState.getPlayerTurn())) {
-                        board[row + i][col - i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row + i,col - i) != null)
+                    break;
             }
             //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col-i,gameState.getPlayerTurn())) {
-                        board[row - i][col - i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row - i > -1 && col + i > -1; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col, -i, -i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col-i,gameState.getPlayerTurn())) {
-                        board[row - i][col - i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row - i,col - i) != null)
+                    break;
             }
             //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col+i,gameState.getPlayerTurn())) {
-                        board[row - i][col + i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row - i > -1 && col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,-i,i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col+i,gameState.getPlayerTurn())) {
-                        board[row - i][col + i] = true;
-                        numMoves++;
-                    }
-                }
-
-            }
-
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
+                else if(gameState.getPiece(row - i,col + i) != null)
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
-                }
-            }
-
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
-                    break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
-                }
-            }
-
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                    break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                }
-            }
-
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                    break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                }
             }
 
         }
         else if(piece instanceof Rook){
 
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i, 0, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row + i,col) != null)
+                    break;
             }
 
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row - i >= 0; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,-i, 0, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, i,col,gameState.getPlayerTurn())) {
-                        board[i][col] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row - i,col) != null)
+                    break;
             }
 
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,0, i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row,col + i) != null)
+                    break;
             }
 
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; col - i >= 0; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,0,-i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row,i,gameState.getPlayerTurn())) {
-                        board[row][i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row,col - i) != null)
+                    break;
             }
         }
         else if(piece instanceof Bishop){
             //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col+i,gameState.getPlayerTurn())) {
-                        board[row + i][col + i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row + i < 8 && col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i,i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col+i,gameState.getPlayerTurn())) {
-                        board[row + i][col + i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row + i,col + i) != null)
+                    break;
             }
             //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col-i,gameState.getPlayerTurn())) {
-                        board[row + i][col - i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row + i < 8 && col - i > -1; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,i,-i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row+i,col-i,gameState.getPlayerTurn())) {
-                        board[row + i][col - i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row + i,col - i) != null)
+                    break;
             }
             //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col-i,gameState.getPlayerTurn())) {
-                        board[row - i][col - i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row - i > -1 && col + i > -1; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col, -i, -i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col-i,gameState.getPlayerTurn())) {
-                        board[row - i][col - i] = true;
-                        numMoves++;
-                    }
-                }
+                else if(gameState.getPiece(row - i,col - i) != null)
+                    break;
             }
             //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col+i,gameState.getPlayerTurn())) {
-                        board[row - i][col + i] = true;
-                        numMoves++;
-                    }
+            for(int i = 1; row - i > -1 && col + i < 8; i++){
+                if(!addMoveToBoardIfGood(gameState,row,col,-i,i, checkForChecks))
                     break;
-                }
-                else {
-                    if(checkIfMoveWouldPutInCheck(gameState,row,col, row-i,col+i,gameState.getPlayerTurn())) {
-                        board[row - i][col + i] = true;
-                        numMoves++;
-                    }
-                }
-
+                else if(gameState.getPiece(row - i,col + i) != null)
+                    break;
             }
 
         }
         else if(piece instanceof Knight){
-            //left up
-            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col-2,gameState.getPlayerTurn())) {
-                    board[row - 1][col - 2] = true;
-                    numMoves++;
-                }
-            }
-            //left down
-            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col-2,gameState.getPlayerTurn())) {
-                    board[row + 1][col - 2] = true;
-                    numMoves++;
-                }
-            }
-            //right up
-            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-1,col+2,gameState.getPlayerTurn())) {
-                    board[row - 1][col + 2] = true;
-                    numMoves++;
-                }
-            }
-            //right down
-            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+1,col+2,gameState.getPlayerTurn())) {
-                    board[row + 1][col + 2] = true;
-                    numMoves++;
-                }
-            }
-            //up right
-            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col+1,gameState.getPlayerTurn())) {
-                    board[row - 2][col + 1] = true;
-                    numMoves++;
-                }
-            }
-            //up left
-            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row-2,col-1,gameState.getPlayerTurn())) {
-                    board[row - 2][col - 1] = true;
-                    numMoves++;
-                }
-            }
-            //down right
-            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col+1,gameState.getPlayerTurn())) {
-                    board[row + 2][col + 1] = true;
-                    numMoves++;
-                }
-            }
-            //down left
-            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
-                if(checkIfMoveWouldPutInCheck(gameState,row,col, row+2,col-1,gameState.getPlayerTurn())) {
-                    board[row + 2][col - 1] = true;
-                    numMoves++;
-                }
-            }
+            //The eight possible moves a knight can make
+            addMoveToBoardIfGood(gameState,row,col,-1,-2, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,1,-2, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,-1,2, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,1,2, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,-2,1, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,-2,-1, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,2,1, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,2,-1, checkForChecks);
+
+
         }
     }
 
@@ -547,368 +254,142 @@ public class MoveBoard {
         return this.numMoves;
     }
 
-    private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
-        /*
-        if(gameState.kingLocationWhite[0] == destRow && gameState.kingLocationWhite[1] == destCol){
-            if(kingMoves == 0){
-                gameState.setCheckedmateBlack(true);
-                System.out.println("king checkmated");
+    private boolean addMoveToBoardIfGood(ChessGameState gameState, int pieceRow, int pieceCol, int rowDiff, int colDiff, boolean checkForChecks){
+        Piece piece = gameState.getPiece(pieceRow,pieceCol);
+        boolean isBlack = piece.isBlack();
+        if(pieceRow + rowDiff <= 7 && pieceRow + rowDiff >= 0){
+            if(pieceCol + colDiff <= 7 && pieceCol + colDiff >= 0){
+                //move is in the board
+
+                if(gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff) == null ||
+                        gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff).isBlack() != piece.isBlack()){
+                    if(checkForChecks) {
+                        //now lets make the move and see if we are in check when the move is made
+                        ChessGameState gs = new ChessGameState(gameState);
+                        gs.movePiece(pieceRow,pieceCol,pieceRow+rowDiff,pieceCol + colDiff,piece);
+                        //move has been made, lets check if we are in check.
+
+                        if (piece instanceof King) {
+                            if (!getIfKingInCheck(gs, pieceRow + rowDiff, pieceCol + colDiff)) {
+                                System.out.println(isBlack);
+                                board[pieceRow + rowDiff][pieceCol + colDiff] = true;
+                                numMoves++;
+                                return true;
+                            }
+                        } else {
+                            int[] kingLoc = getKingLoc(gs, isBlack);
+                            System.out.println(isBlack);
+                            if (!getIfKingInCheck(gs, kingLoc[0], kingLoc[1])) {
+                                System.out.println("Move would not put the king in check");
+                                board[pieceRow + rowDiff][pieceCol + colDiff] = true;
+                                numMoves++;
+                                return true;
+                            }
+                        }
+                    }
+                    else{
+                        board[pieceRow][pieceCol] = true;
+                        numMoves++;
+                        return true;
+                    }
+                }
+
+
             }
-            gameState.setCheckedBlack(true);
-            System.out.println("king in check");
-            return false;
         }
-        */
-        System.out.println("no checks");
-        return true;
+
+        return false;
     }
 
-    /*
-    private boolean checkIfMoveWouldPutInCheck(ChessGameState gameState, int row, int col, int destRow, int destCol, int playerNum){
-        Piece piece = gameState.getPiece(row,col);
-
-        checkBoard = new boolean[8][8];
+    private int[] getKingLoc(ChessGameState gameState, boolean isBlacksTurn){
+        //find king
+        int kRow = -1;
+        int kCol = -1;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                checkBoard[i][j] = false;
+                Piece p = gameState.getPiece(i,j);
+
+                if(p instanceof King && p.isBlack() == isBlacksTurn){
+                    kRow = i;
+                    kCol = j;
+                    break;
+                }
             }
         }
 
-        if(piece instanceof Pawn){
-            //pawns can move in the three spaces infront of them
-            if(piece.isBlack()) {
-                //moves are +1+1, +0+1, +0+2, -1+1
-                if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
-                        checkBoard[row + 2][col] = true;
-                }
+        int[] kingLoc = new int[2];
+        kingLoc[0] = kRow;
+        kingLoc[1] = kCol;
 
-                if (row < 7 && gameState.getPiece(row + 1, col) == null){
-                       checkBoard[row + 1][col] = true;
-                }
+        return kingLoc;
 
-                if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row + 1][col + 1] = true;
+    }
+/*
+    private void removeCheckMoves(ChessGameState gameState, boolean isBlacksTurn){
+        //find king
+        int kRow = -1;
+        int kCol = -1;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                Piece p = gameState.getPiece(i,j);
+                if(p != null && p instanceof King && p.isBlack() == isBlacksTurn){
+                    kRow = i;
+                    kCol = j;
+                    break;
                 }
-
-                if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row + 1][col - 1] = true;
-                }
-            }
-            else{
-                //moves are -1-1, +0-1,+0-2, +1,-1
-
-                if(row == 6 && gameState.getPiece(row-1,col) == null && gameState.getPiece(row-2,col) == null) {
-                        checkBoard[row - 2][col] = true;
-                }
-
-                if(row > 0 && gameState.getPiece(row-1,col) == null) {
-                        checkBoard[row - 1][col] = true;
-                }
-
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                        checkBoard[row - 1][col + 1] = true;
-                }
-
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-                       checkBoard[row - 1][col - 1] = true;
-                }
-
             }
         }
-        else if(piece instanceof King){
-            //up
-            if(row > 0 && (gameState.getPiece(row - 1,col) == null || gameState.getPiece(row - 1,col).isBlack() != piece.isBlack())) {
-                    checkBoard[row - 1][col] = true;
-            }
-            //down
-            if(row < 7 && (gameState.getPiece(row + 1,col) == null || gameState.getPiece(row + 1,col).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col] = true;
-            }
-            //right
-            if(col < 7 && (gameState.getPiece(row ,col + 1) == null || gameState.getPiece(row,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row][col + 1] = true;
-            }
-            //left
-            if(col > 0 && (gameState.getPiece(row ,col - 1) == null || gameState.getPiece(row,col - 1).isBlack() != piece.isBlack())) {
-                   checkBoard[row][col - 1] = true;
-            }
-            //up right
-            if(row > 0 && col < 7 && (gameState.getPiece(row - 1,col + 1) == null || gameState.getPiece(row - 1,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row - 1][col + 1] = true;
-            }
-            //up left
-            if(row > 0 && col > 0 && (gameState.getPiece(row - 1,col - 1) == null || gameState.getPiece(row - 1,col - 1).isBlack() != piece.isBlack())) {
-                   checkBoard[row - 1][col - 1] = true;
-            }
-            //down right
-            if(row < 7 && col< 7 && (gameState.getPiece(row + 1,col + 1) == null || gameState.getPiece(row + 1,col + 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col + 1] = true;
-            }
-            //down left
-            if(row < 7 && col > 0 && (gameState.getPiece(row + 1,col - 1) == null || gameState.getPiece(row + 1,col - 1).isBlack() != piece.isBlack())) {
-                    checkBoard[row + 1][col - 1] = true;
-            }
 
-        }
-        else if(piece instanceof Queen){
-            //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col + i] = true;
-                    break;
-                }
-                else {
-                       checkBoard[row + i][col + i] = true;
-                }
-            }
-            //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col - i] = true;
-                    break;
-                }
-                else {
-                        checkBoard[row + i][col - i] = true;
-                }
-            }
-            //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row - i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col - i] = true;
-                    break;
-                }
-            }
-            //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack()) {
-                        checkBoard[row - i][col + i] = true;
-                    }
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col + i] = true;
-                }
+        //get the moves of the opponents pieces, if any of them attack the king then the opponent is in check
+        boolean inCheck = getIfKingInCheck(gameState, kRow, kCol);
 
-            }
+        //we need to get out of check so go through all of the moves and make them and check if the king is still in check
+        MoveBoard mb = new MoveBoard();
 
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack()) {
-                        break;
-                    }
-                    checkBoard[i][col] = true;
 
-                    break;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        break;
-                    checkBoard[i][col] = true;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                    checkBoard[row][i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
-            }
-
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        break;
-                    else {
-                        checkBoard[row][i] = true;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(gameState.getPiece(i,j) != null && gameState.getPiece(i,j).isBlack() == isBlacksTurn) {
+                    mb.findPossibleMoves(gameState, i, j, false);
+                    for (int ii = 0; ii < 8; ii++) {
+                        for (int jj = 0; jj < 8; jj++) {
+                            if (mb.getCanMove(ii, jj)) {
+                                ChessGameState cp = new ChessGameState(gameState);
+                                cp.movePiece(i, j, ii, jj, gameState.getPiece(i, j));
+                                if(getIfKingInCheck(cp,kRow,kCol)){
+                                    //king is in check after the move was made so it was a bad move
+                                    board[i][j] = false;
+                                }
+                            }
+                        }
                     }
                 }
             }
-
         }
-        else if(piece instanceof Rook){
 
-            for(int i = row + 1; i <= 7; i++){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack())
-                        checkBoard[i][col] = true;
-                    break;
-                }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
+        //otherwise we need to check that all of our moves don't put ourself in check
 
-            for(int i = row - 1; i >= 0; i--){
-                if(gameState.getPiece(i,col) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(i,col).isBlack() == piece.isBlack()) {
-                        break;
+    }
+*/
+    private boolean getIfKingInCheck(ChessGameState gameState, int kingRow, int kingCol){
+
+        boolean inCheck = false;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(gameState.getPiece(i,j) != null && gameState.getPiece(i,j).isBlack() != gameState.getPiece(kingRow,kingCol).isBlack()){
+                    MoveBoard mb = new MoveBoard();
+                    mb.findPossibleMoves(gameState,i,j, false);
+
+                    if(mb.board[kingRow][kingCol] && i != kingRow && j != kingCol) {
+                        System.out.println(gameState.getPiece(i,j) + " is located at: " + i + ", " + j);
+                        inCheck = true;
+
                     }
                 }
-                else {
-                    checkBoard[i][col] = true;
-                }
-            }
-
-            for(int i = col + 1; i <= 7; i++){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack()){
-                        break;
-                    }
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
-            }
-
-            for(int i = col - 1; i >= 0; i--){
-                if(gameState.getPiece(row,i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row,i).isBlack() == piece.isBlack())
-                        checkBoard[row][i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row][i] = true;
-                }
             }
         }
-        else if(piece instanceof Bishop){
-            //down right
-            for(int i = 1; row+i < 8 && col + i <8; i++){
-                if(gameState.getPiece(row + i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col + i).isBlack() == piece.isBlack()) {
-                        break;
-                    }
-                    checkBoard[row + i][col + i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row + i][col + i] = true;
-                }
-            }
-            //down left
-            for(int i = 1; row+i < 8 && col - i > -1; i++){
-                if(gameState.getPiece(row + i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row + i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row + i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row + i][col - i] = true;
-                }
-            }
-            //up left
-            for(int i = 1; row-i > -1 && col - i > -1; i++){
-                if(gameState.getPiece(row - i,col - i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col - i).isBlack() == piece.isBlack())
-                        checkBoard[row - i][col - i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col - i] = true;
-                }
-            }
-            //up right
-            for(int i = 1; row-i > -1 && col + i < 8; i++){
-                if(gameState.getPiece(row - i,col + i) != null){
-                    //there is a piece there so we want to break if it is an ally piece because we can't move there anymore
-                    if(gameState.getPiece(row - i,col + i).isBlack() == piece.isBlack())
-                        break;
-                    checkBoard[row - i][col + i] = true;
-                    break;
-                }
-                else {
-                    checkBoard[row - i][col + i] = true;
-                }
-
-            }
-
-        }
-        else if(piece instanceof Knight){
-            //left up
-            if(row > 0 && col > 1 && (gameState.getPiece(row - 1,col - 2) == null || gameState.getPiece(row - 1,col - 2).isBlack() != piece.isBlack())) {
-                checkBoard[row - 1][col - 2] = true;
-            }
-            //left down
-            if(row < 7 && col > 1 && (gameState.getPiece(row + 1,col - 2) == null || gameState.getPiece(row + 1,col - 2).isBlack() != piece.isBlack())) {
-                checkBoard[row + 1][col - 2] = true;
-
-            }
-            //right up
-            if(row < 0 && col < 6 && (gameState.getPiece(row - 1,col + 2) == null || gameState.getPiece(row - 1,col + 2).isBlack() != piece.isBlack())){
-                checkBoard[row - 1][col + 2] = true;
-
-            }
-            //right down
-            if(row > 7 && col < 6 && (gameState.getPiece(row + 1,col + 2) == null || gameState.getPiece(row + 1,col + 2).isBlack() != piece.isBlack())){
-                checkBoard[row + 1][col + 2] = true;
-            }
-            //up right
-            if(row > 1 && col < 7 && (gameState.getPiece(row - 2,col + 1) == null || gameState.getPiece(row - 2,col + 1).isBlack() != piece.isBlack())){
-                checkBoard[row - 2][col + 1] = true;
-            }
-            //up left
-            if(row > 1 && col > 0 && (gameState.getPiece(row - 2,col - 1) == null || gameState.getPiece(row - 2,col - 1).isBlack() != piece.isBlack())){
-                checkBoard[row - 2][col - 1] = true;
-            }
-            //down right
-            if(row < 6 && col < 7 && (gameState.getPiece(row + 2,col + 1) == null || gameState.getPiece(row + 2,col + 1).isBlack() != piece.isBlack())){
-                checkBoard[row + 2][col + 1] = true;
-            }
-            //down left
-            if(row < 6 && col > 0 && (gameState.getPiece(row + 2,col - 1) == null || gameState.getPiece(row + 2,col - 1).isBlack() != piece.isBlack())){
-                checkBoard[row + 2][col - 1] = true;
-            }
-        }
-
-        if (!checkBoard[destRow][destCol]){
-            return false;
-        }
-        if(playerNum == 0){
-            gameState.setCheckedWhite(true);
-        }
-        else{
-            gameState.setCheckedBlack(false);
-        }
-        return true;
+        return inCheck;
     }
 
-     */
+
 }
