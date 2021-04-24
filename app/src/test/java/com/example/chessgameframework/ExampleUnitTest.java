@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
 
+    //Connor
     @Test
     public void setPiece(){
         ChessGameState gameState = new ChessGameState();
@@ -31,6 +32,7 @@ public class ExampleUnitTest {
         assertTrue(p instanceof Rook);
     }
 
+    //Connor
     @Test
     public void getPiece() {
         ChessGameState gameState = new ChessGameState();
@@ -44,6 +46,7 @@ public class ExampleUnitTest {
         assertTrue(p1 instanceof King);
     }
 
+    //Garrett
     @Test
     public void isStartPressed(){
         ChessGameState gameState = new ChessGameState();
@@ -53,6 +56,7 @@ public class ExampleUnitTest {
         assertTrue(gameState.isStartPressed());
     }
 
+    //Garrett
     @Test
     public void isQuitPressed(){
         ChessGameState gameState = new ChessGameState();
@@ -62,6 +66,7 @@ public class ExampleUnitTest {
         assertTrue(gameState.isQuitPressed());
     }
 
+    //Garrett
     @Test
     public void isForfeitPressed(){
         ChessGameState gameState = new ChessGameState();
@@ -71,6 +76,7 @@ public class ExampleUnitTest {
         assertTrue(gameState.isForfeitPressed());
     }
 
+    //Garrett
     @Test
     public void isDrawPressed(){
         ChessGameState gameState = new ChessGameState();
@@ -80,6 +86,7 @@ public class ExampleUnitTest {
         assertTrue(gameState.isDrawPressed());
     }
 
+    //Garrett
     @Test
     public void isPausePressed(){
         ChessGameState gameState = new ChessGameState();
@@ -89,12 +96,14 @@ public class ExampleUnitTest {
         assertTrue(gameState.isPausePressed());
     }
 
+    //Logan
     @Test
     public void getPlayerTurn(){
         ChessGameState gameState = new ChessGameState();
         assertEquals(0, gameState.getPlayerTurn());
     }
 
+    //Logan
     @Test
     public void setPlayerTurn(){
         ChessGameState gameState = new ChessGameState();
@@ -102,6 +111,7 @@ public class ExampleUnitTest {
         assertEquals(1, gameState.getPlayerTurn());
     }
 
+    //Logan
     @Test
     public void setPointsBlack() {
         ChessGameState gameState = new ChessGameState();
@@ -109,13 +119,15 @@ public class ExampleUnitTest {
         assertEquals(10, gameState.getPointsBlack());
     }
 
-
+    //Logan
     @Test
     public void setPointsWhite() {
         ChessGameState gameState = new ChessGameState();
         gameState.setPointsWhite(10);
         assertEquals(10, gameState.getPointsWhite());
     }
+
+    //Jonah
     @Test
     public void checkIfTwoKings(){
         ChessGameState gameState = new ChessGameState();
@@ -125,12 +137,16 @@ public class ExampleUnitTest {
         gameState.setPiece(0,1, king2);
         assertTrue(gameState.checkIfTwoKings());
     }
+
+    //Jonah
     @Test
     public void setSecondsWhite(){
         ChessGameState gameState = new ChessGameState();
         gameState.setSecondsWhite(1000);
         assertEquals(1000, gameState.getSecondsWhite());
     }
+
+    //Jonah
     @Test
     public void setSecondsBlack(){
         ChessGameState gameState = new ChessGameState();
