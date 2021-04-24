@@ -1,4 +1,4 @@
-package com.example.chessgameframework.game.GameFramework.players;
+package com.example.chessgameframework.game.GameFramework.chessPlayers;
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;

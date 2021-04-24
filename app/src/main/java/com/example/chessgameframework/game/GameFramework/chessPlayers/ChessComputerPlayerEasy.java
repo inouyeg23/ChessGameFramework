@@ -10,21 +10,16 @@ import com.example.chessgameframework.game.GameFramework.players.GameComputerPla
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 /**
- * This is a really dumb computer player that always just makes a random move
- * it's so stupid that it sometimes tries to make moves on non-blank spots.
- *
- * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Logan Machida
  */
 public class ChessComputerPlayerEasy extends GameComputerPlayer {
-    /*
+    /**
      * Constructor for the ChessComputerPlayerEasy class
      */
     public ChessComputerPlayerEasy(String name) {
         // invoke superclass constructor
         super(name); // invoke superclass constructor
     }
-
 
     /**
      * Called when the player receives a game-state (or other info) from the
@@ -37,11 +32,13 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         // if it was a "not your turn" message, just ignore it
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
+
         //if (!(info instanceof ChessGameState)) return;
         boolean shouldBeBlack = false;
         if(playerNum == 1)
             shouldBeBlack = true;
         ChessGameState gameState = new ChessGameState((ChessGameState) info);
+        gameState.setComputerHasMoved(false);
         // move a piece at random
         Piece randomPiece = null;
 
@@ -56,7 +53,6 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
                 if(randomPiece != null)
                     if(randomPiece.isBlack() != shouldBeBlack)
                         randomPiece = null;
-
             }
 
             MoveBoard moveBoard = new MoveBoard();
@@ -64,10 +60,11 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
             for (int moveRow = 0; moveRow < 8; moveRow++) {
                 for (int moveCol = 0; moveCol < 8; moveCol++) {
                     if (moveBoard.getCanMove(moveRow, moveCol)) {
-                        sleep(1);
+                        sleep(3);
                         // move to that location
                         Logger.log("ChessComputerPlayerEasy", "Sending move");
                         game.sendAction(new ChessMoveAction(this, randomRow, randomCol, moveRow, moveCol, randomPiece));
+                        gameState.setComputerHasMoved(true);
                         return;
                     }
                 }
@@ -76,5 +73,3 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         }
     }
 }
-
-
