@@ -4,6 +4,7 @@ import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
+import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessCastlingAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
@@ -86,11 +87,23 @@ public class ChessLocalGame extends LocalGame {
             if(playerID != playerTurn)
                 return false;
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
+            if(action instanceof ChessCastlingAction){
+                //we need to move the other piece now too
+                if(selectedRow > row){
+                    //we castled to the right so we need to move the rook to the left
+                    CGS.movePiece(col, row + 3, col, row+1,CGS.getPiece(row,col));
+                }
+                else{
+                    //we castled to the left
+                    CGS.movePiece(col, row - 4, col, row-1,CGS.getPiece(row,col));
+                }
+            }
             if(!CGS.gameStarted)
                 CGS.gameStarted = true;
             // make it the other player's turn
             CGS.setPlayerTurn(1 - playerTurn);
             // return true, indicating the it was a legal move
+            System.out.println("made it the other player's turn");
             return true;
         }
         return false;

@@ -5,8 +5,7 @@ import com.example.chessgameframework.game.GameFramework.Piece;
 
 public class MoveBoard {
 
-    //8 by 8 array containing true or false if the piece can move there
-    //initiallized to all false and is updated when we call getMoves
+
     private boolean[][] board;
     private boolean[][] checkBoard;
     private int numMoves;
@@ -34,7 +33,11 @@ public class MoveBoard {
     }
 
     public void findPossibleMoves(ChessGameState gameState, int row, int col, boolean checkForChecks){
-
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                this.board[i][j] = false;
+            }
+        }
         //check the color
         //figure out the normal moves that it would be able to make with no conditionals
         //check if the player is in check then the move would need to get rid of check
@@ -110,6 +113,20 @@ public class MoveBoard {
             addMoveToBoardIfGood(gameState,row,col,1,1, checkForChecks);
             //down left
             addMoveToBoardIfGood(gameState,row,col,1,-1, checkForChecks);
+            //Castling to the right
+            King Kpiece = (King) piece;
+            if(!Kpiece.getHasMoved() && gameState.getPiece(row,col + 1) == null && gameState.getPiece(row,col + 2) == null
+                    && gameState.getPiece(row,col + 3) instanceof Rook && ((Rook)gameState.getPiece(row,col + 3)).getHasMoved() == false){
+                //all conditions are met for castling to the right
+                addMoveToBoardIfGood(gameState,row,col,0,2,checkForChecks);
+            }
+            //castling to the left
+            if(!Kpiece.getHasMoved() && gameState.getPiece(row,col - 1) == null && gameState.getPiece(row,col - 2) == null
+                    && gameState.getPiece(row,col - 3) == null
+                    && gameState.getPiece(row,col - 4) instanceof Rook && ((Rook)gameState.getPiece(row,col-4)).getHasMoved() == false){
+                //all conditions are met for castling to the left
+                addMoveToBoardIfGood(gameState,row,col,0,-2,checkForChecks);
+            }
 
         }
         else if(piece instanceof Queen){
@@ -266,7 +283,7 @@ public class MoveBoard {
                     if(checkForChecks) {
                         //now lets make the move and see if we are in check when the move is made
                         ChessGameState gs = new ChessGameState(gameState);
-                        gs.movePiece(pieceRow,pieceCol,pieceRow+rowDiff,pieceCol + colDiff,piece);
+                        gs.movePiece(pieceCol ,pieceRow,pieceRow+rowDiff,pieceCol + colDiff,piece);
                         //move has been made, lets check if we are in check.
 
                         if (piece instanceof King) {
@@ -280,7 +297,7 @@ public class MoveBoard {
                             int[] kingLoc = getKingLoc(gs, isBlack);
                             System.out.println(isBlack);
                             if (!getIfKingInCheck(gs, kingLoc[0], kingLoc[1])) {
-                                System.out.println("Move would not put the king in check");
+//                                System.out.println("Move would not put the king in check");
                                 board[pieceRow + rowDiff][pieceCol + colDiff] = true;
                                 numMoves++;
                                 return true;

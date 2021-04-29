@@ -180,7 +180,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                             chessView.drawHighlight = true;
                             chessView.setPlayerTouched(selX, selY);
                             chessView.setPieceTouched(gameState.getPiece(selX, selY));
-                            System.out.println("we successfully selected a piece that has moves");
+                            //System.out.println("we successfully selected a piece that has moves");
                         }
                     }
                 }
@@ -188,10 +188,10 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
             else {
                 //we clicked where we want the piece to go
                 if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
-                    System.out.println("send a move to: " + xsquare + ", " + ysquare);
+                    //System.out.println("send a move to: " + xsquare + ", " + ysquare);
                     ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
                     game.sendAction(action);
-                    System.out.println("we have sent a move");
+                    //System.out.println("we have sent a move");
                     playerPauseTimer();
                     opposingStartTimer();
                 }

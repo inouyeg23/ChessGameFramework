@@ -9,7 +9,15 @@ import com.example.chessgameframework.game.GameFramework.Piece;
  */
 
 public class Rook extends Piece {
+    private boolean hasMoved;
     public Rook(boolean isBlack) {
         super(isBlack);
+        this.hasMoved = false;
+    }
+    public boolean getHasMoved(){
+        return this.hasMoved;
+    }
+    public void setHasMoved(boolean hasMoved){
+        this.hasMoved = hasMoved;
     }
 }
