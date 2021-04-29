@@ -38,7 +38,6 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         if(playerNum == 1)
             shouldBeBlack = true;
         ChessGameState gameState = new ChessGameState((ChessGameState) info);
-        gameState.setComputerHasMoved(false);
         // move a piece at random
         Piece randomPiece = null;
 
@@ -60,11 +59,10 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
             for (int moveRow = 0; moveRow < 8; moveRow++) {
                 for (int moveCol = 0; moveCol < 8; moveCol++) {
                     if (moveBoard.getCanMove(moveRow, moveCol)) {
-                        sleep(3);
+                        sleep(1);
                         // move to that location
                         Logger.log("ChessComputerPlayerEasy", "Sending move");
                         game.sendAction(new ChessMoveAction(this, randomRow, randomCol, moveRow, moveCol, randomPiece));
-                        gameState.setComputerHasMoved(true);
                         return;
                     }
                 }

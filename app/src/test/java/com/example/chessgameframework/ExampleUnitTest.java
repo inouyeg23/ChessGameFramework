@@ -86,16 +86,6 @@ public class ExampleUnitTest {
         assertTrue(gameState.isDrawPressed());
     }
 
-    //Garrett
-    @Test
-    public void isPausePressed(){
-        ChessGameState gameState = new ChessGameState();
-        assertTrue(!gameState.isPausePressed());
-        //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isPaused = true;
-        assertTrue(gameState.isPausePressed());
-    }
-
     //Logan
     @Test
     public void getPlayerTurn(){
@@ -140,18 +130,12 @@ public class ExampleUnitTest {
 
     //Jonah
     @Test
-    public void setSecondsWhite(){
+    public void isPausePressed(){
         ChessGameState gameState = new ChessGameState();
-        gameState.setSecondsWhite(1000);
-        assertEquals(1000, gameState.getSecondsWhite());
-    }
-
-    //Jonah
-    @Test
-    public void setSecondsBlack(){
-        ChessGameState gameState = new ChessGameState();
-        gameState.setSecondsBlack(1000);
-        assertEquals(1000, gameState.getSecondsBlack());
+        assertTrue(!gameState.isPausePressed());
+        //assuming the button onClick is working and the user has pressed the quit button
+        gameState.isPaused = true;
+        assertTrue(gameState.isPausePressed());
     }
 
 //    @Test
