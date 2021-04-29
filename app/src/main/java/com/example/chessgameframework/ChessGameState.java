@@ -1,5 +1,8 @@
 package com.example.chessgameframework;
 
+import android.os.CountDownTimer;
+import android.widget.TextView;
+
 import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.Pieces.Bishop;
 import com.example.chessgameframework.game.GameFramework.Pieces.King;
@@ -11,6 +14,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * @authors: Jonah Ingler, Garrett Inouye, Logan Machida, Connor Morgan
@@ -27,9 +31,7 @@ public class ChessGameState extends GameState implements Serializable {
     //point tally for each player
     private int pointsWhite;
     private int pointsBlack;
-    //time remaining for each player
-    private int secondsWhite;
-    private int secondsBlack;
+
     //is the game paused
     public boolean isPaused;
     //is there a checkmate
@@ -58,6 +60,11 @@ public class ChessGameState extends GameState implements Serializable {
     public int[] kingLocationBlack = new int[2];
     private boolean computerHasMoved;
     private int startingColor;
+
+    private String playerTimerText = "10:00";
+    private String opposingTimerText = "10:00";
+    private boolean playerTimerRunning;
+    private boolean opposingTimerRunning;
 
     /**
      * Constructor for class ChessGameState
@@ -127,11 +134,9 @@ public class ChessGameState extends GameState implements Serializable {
         //point tally for each starts at 0
         pointsBlack = 0;
         pointsWhite = 0;
-        //time starts at 10 minutes
-        secondsBlack = 10;
-        secondsWhite = 10;
-        //game starts paused
+
         isPaused = false;
+
     }//constructor
 
     /**
@@ -161,9 +166,6 @@ public class ChessGameState extends GameState implements Serializable {
           // update number of points for each player
           pointsBlack = original.pointsBlack;
           pointsWhite = original.pointsWhite;
-          // update game clock for each player
-          secondsBlack = original.secondsBlack;
-          secondsWhite = original.secondsWhite;
           // update whether game is paused
           isPaused = original.isPaused;
           // new variables
@@ -250,14 +252,14 @@ public class ChessGameState extends GameState implements Serializable {
                 "Current player: " + currPlayer + "\n" +
                 "Black points: " + pointsBlack + "\n" +
                 "White points: " + pointsWhite + "\n" +
-                "Black seconds: " + secondsBlack + "\n" +
-                "White seconds: " + secondsWhite + "\n" +
                 "Black checked: " + isCheckedBlack + "\n" +
                 "White checked: " + isCheckedWhite + "\n" +
                 "Black checkmated: " + isCheckedmateBlack + "\n" +
                 "White checkmated: " + isCheckedmateWhite + "\n" +
                 "Game paused: " + isPaused + "\n" +
-                "Game forfeited: " + isForfeitPressed + "\n";
+                "Game forfeited: " + isForfeitPressed + "\n" +
+                "Player Timer: " + playerTimerText + "\n" +
+                "Opposing Timer: " + opposingTimerText + "\n";
     }
 
     /**
@@ -351,6 +353,8 @@ public class ChessGameState extends GameState implements Serializable {
             return false;
         }
     }
+
+
     //getter and setter for player turn
     public int getPlayerTurn() {
         return playerTurn;
@@ -371,19 +375,6 @@ public class ChessGameState extends GameState implements Serializable {
     public void setPointsWhite(int pointsWhite) {
         this.pointsWhite = pointsWhite;
     }
-    //getter and setter for time
-    public int getSecondsBlack() {
-        return secondsBlack;
-    }
-    public void setSecondsBlack(int secondsBlack) {
-        this.secondsBlack = secondsBlack;
-    }
-    public int getSecondsWhite() {
-        return secondsWhite;
-    }
-    public void setSecondsWhite(int secondsWhite) {
-        this.secondsWhite = secondsWhite;
-    }
     //set boolean checked condition, and get checked condition
     public boolean isCheckedBlack() {
         return isCheckedBlack;
@@ -401,24 +392,25 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean isCheckedmateBlack() {
         return isCheckedmateBlack;
     }
-    public void setCheckedmateBlack(boolean checkedmateBlack) {
-        isCheckedmateBlack = checkedmateBlack;
-    }
+    public void setCheckedmateBlack(boolean checkedmateBlack) { isCheckedmateBlack = checkedmateBlack; }
     public boolean isCheckedmateWhite() {
         return isCheckedmateWhite;
     }
-    public void setCheckedmateWhite(boolean checkedmateWhite) {
-        isCheckedmateWhite = checkedmateWhite;
-    }
+    public void setCheckedmateWhite(boolean checkedmateWhite) { isCheckedmateWhite = checkedmateWhite; }
     //set paused boolean and check paused boolean
-    public boolean isPaused() {
-        return isPaused;
-    }
-    public void setPaused(boolean paused) {
-        isPaused = paused;
-    }
-    public boolean getComputerHasMoved(){ return computerHasMoved; }
-    public void setComputerHasMoved(boolean moved){ computerHasMoved = moved; }
+    public boolean getPaused() { return isPaused; }
+    public void setPaused(boolean paused) { isPaused = paused; }
+
+    public String getPlayerTimerText(){ return playerTimerText; }
+    public void setPlayerTimerText(String text){ playerTimerText = text;}
+    public String getOpposingTimerText(){ return opposingTimerText; }
+    public void setOpposingTimerText(String text){ opposingTimerText = text;}
+
+    public boolean getPlayerTimerRunning(){ return playerTimerRunning; }
+    public void setPlayerTimerRunning(boolean run){ playerTimerRunning = run; }
+    public boolean getOpposingTimerRunning(){ return opposingTimerRunning; }
+    public void setOpposingTimerRunning(boolean run){ opposingTimerRunning = run; }
+
     public int getStartingColor(){ return startingColor;}
     public void setStartingColor(int color){ startingColor = color;}
 //GameState class
