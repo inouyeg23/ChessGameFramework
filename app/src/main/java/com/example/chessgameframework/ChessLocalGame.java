@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessCastlingAction;
@@ -117,7 +118,7 @@ public class ChessLocalGame extends LocalGame {
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
             if(action instanceof ChessCastlingAction){
                 //we need to move the other piece now too
-                if(selectedRow > row){
+                if(selectedCol > col){
                     //we castled to the right so we need to move the rook to the left
                     CGS.movePiece(col, row + 3, col, row+1,CGS.getPiece(row,col));
                 }
@@ -129,6 +130,39 @@ public class ChessLocalGame extends LocalGame {
             if(!CGS.gameStarted)
                 CGS.gameStarted = true;
 
+            if(playerTurn == 0){
+                if(CGS.isCheckedBlack()){
+                    int numMoves = 0;
+                    for(int i = 0; i < 8;i++){
+                        for(int j = 0; j < 8; j++){
+                            if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == true) {
+                                MoveBoard mb = new MoveBoard();
+                                mb.findMoves(CGS,i,j);
+                                numMoves += mb.getNumMoves();
+                            }
+                        }
+                    }
+                    if(numMoves == 0)
+                        state.setCheckedmateBlack(true);
+                }
+
+            }
+            else{
+                if(CGS.isCheckedWhite()){
+                    int numMoves = 0;
+                    for(int i = 0; i < 8;i++){
+                        for(int j = 0; j < 8; j++){
+                            if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == false) {
+                                MoveBoard mb = new MoveBoard();
+                                mb.findMoves(CGS,i,j);
+                                numMoves += mb.getNumMoves();
+                            }
+                        }
+                    }
+                    if(numMoves == 0)
+                        state.setCheckedmateWhite(true);
+                }
+            }
             // make it the other player's turn
             CGS.setPlayerTurn(1 - playerTurn);
 
@@ -172,8 +206,10 @@ public class ChessLocalGame extends LocalGame {
      */
     @Override
     protected String checkIfGameOver() {
-        if(!state.checkIfTwoKings()) {
-            return "Game Over. ";
+        if(state.isCheckedmateBlack()) {
+            return "White wins";
+        } else if(state.isCheckedWhite()){
+            return "Black wins";
         } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {

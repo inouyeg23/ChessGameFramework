@@ -29,6 +29,7 @@ public class MoveBoard {
 
     public void findMoves(ChessGameState gameState, int row, int col){
         findPossibleMoves(gameState,row,col, true);
+
         //removeCheckMoves(gameState,gameState.getPiece(row,col).isBlack());
     }
 
@@ -283,18 +284,19 @@ public class MoveBoard {
                     if(checkForChecks) {
                         //now lets make the move and see if we are in check when the move is made
                         ChessGameState gs = new ChessGameState(gameState);
-                        gs.movePiece(pieceCol ,pieceRow,pieceRow+rowDiff,pieceCol + colDiff,piece);
+                        //gs.movePiece(pieceCol ,pieceRow,pieceCol + colDiff,pieceRow+rowDiff,piece);
+                        gs.movePiece(pieceRow ,pieceCol,pieceRow+rowDiff,pieceCol + colDiff,piece);
                         //move has been made, lets check if we are in check.
-
+                        int[] kingLoc = getKingLoc(gs, isBlack);
                         if (piece instanceof King) {
-                            if (!getIfKingInCheck(gs, pieceRow + rowDiff, pieceCol + colDiff)) {
+                            if (!getIfKingInCheck(gs, kingLoc[0], kingLoc[1])) {
                                 System.out.println(isBlack);
                                 board[pieceRow + rowDiff][pieceCol + colDiff] = true;
                                 numMoves++;
                                 return true;
                             }
                         } else {
-                            int[] kingLoc = getKingLoc(gs, isBlack);
+
                             System.out.println(isBlack);
                             if (!getIfKingInCheck(gs, kingLoc[0], kingLoc[1])) {
 //                                System.out.println("Move would not put the king in check");
@@ -305,7 +307,7 @@ public class MoveBoard {
                         }
                     }
                     else{
-                        board[pieceRow][pieceCol] = true;
+                        board[pieceRow + rowDiff][pieceCol + colDiff] = true;
                         numMoves++;
                         return true;
                     }
@@ -393,6 +395,7 @@ public class MoveBoard {
         boolean inCheck = false;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
+                System.out.println("King row: " + kingRow + ", King col: " + kingCol);
                 if(gameState.getPiece(i,j) != null && gameState.getPiece(i,j).isBlack() != gameState.getPiece(kingRow,kingCol).isBlack()){
                     MoveBoard mb = new MoveBoard();
                     mb.findPossibleMoves(gameState,i,j, false);
