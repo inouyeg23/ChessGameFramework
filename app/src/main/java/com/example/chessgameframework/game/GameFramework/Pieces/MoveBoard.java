@@ -10,12 +10,20 @@ public class MoveBoard {
     private boolean[][] checkBoard;
     private int numMoves;
     private int kingMoves;
+    public boolean castlingRightBlack;
+    public boolean castlingRightWhite;
+    public boolean castlingLeftBlack;
+    public boolean castlingLeftWhite;
 
 
     public MoveBoard(){
         numMoves = 0;
         kingMoves = 0;
 
+        castlingLeftBlack = false;
+        castlingRightBlack = false;
+        castlingRightWhite = false;
+        castlingLeftWhite = false;
 
         board = new boolean[8][8];
         checkBoard = new boolean[8][8];
@@ -53,14 +61,29 @@ public class MoveBoard {
         else if(piece instanceof Pawn){
             //pawns can move in the three spaces infront of them
             if(piece.isBlack()) {
+                //en passant black
+                if (row == 1) {
+                    if (col < 7 && gameState.getPiece(row + 2, col + 1) != null && gameState.getPiece(row + 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+
+                        addMoveToBoardIfGood(gameState, row, col, 2, 1, checkForChecks);
+                    }
+
+                    if (col > 0 && gameState.getPiece(row + 2, col - 1) != null && gameState.getPiece(row + 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+
+                        addMoveToBoardIfGood(gameState, row, col, 2, -1, checkForChecks);
+                    }
+                }
+
+
                 //moves are +1+1, +0+1, +0+2, -1+1
                 if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
 
                     addMoveToBoardIfGood(gameState,row,col,2,0, checkForChecks);
 
                 }
-
-                addMoveToBoardIfGood(gameState,row,col,1,0, checkForChecks);
+                if(gameState.getPiece(row + 1, col) == null) {
+                    addMoveToBoardIfGood(gameState, row, col, 1, 0, checkForChecks);
+                }
 
                 if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
 
@@ -73,6 +96,22 @@ public class MoveBoard {
                 }
             }
             else{
+
+                //en passant white
+                if(row == 6) {
+                    if (col < 7 && gameState.getPiece(row - 2, col + 1) != null && gameState.getPiece(row - 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+
+                        addMoveToBoardIfGood(gameState, row, col, -2, 1, checkForChecks);
+
+                    }
+
+                    if (col > 0 && gameState.getPiece(row - 2, col - 1) != null && gameState.getPiece(row - 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+
+                        addMoveToBoardIfGood(gameState, row, col, -2, -1, checkForChecks);
+
+                    }
+                }
+
                 //moves are -1-1, +0-1,+0-2, +1,-1
 
                 if(row == 6 && gameState.getPiece(row-1,col) == null) {
@@ -80,9 +119,9 @@ public class MoveBoard {
                     addMoveToBoardIfGood(gameState,row,col,-2,0, checkForChecks);
 
                 }
-
-                addMoveToBoardIfGood(gameState,row,col,-1,0, checkForChecks);
-
+                if(gameState.getPiece(row - 1, col) == null) {
+                    addMoveToBoardIfGood(gameState, row, col, -1, 0, checkForChecks);
+                }
                 if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
 
                     addMoveToBoardIfGood(gameState,row,col,-1,1, checkForChecks);
@@ -114,19 +153,33 @@ public class MoveBoard {
             addMoveToBoardIfGood(gameState,row,col,1,1, checkForChecks);
             //down left
             addMoveToBoardIfGood(gameState,row,col,1,-1, checkForChecks);
+
             //Castling to the right
             King Kpiece = (King) piece;
-            if(!Kpiece.getHasMoved() && gameState.getPiece(row,col + 1) == null && gameState.getPiece(row,col + 2) == null
-                    && gameState.getPiece(row,col + 3) instanceof Rook && ((Rook)gameState.getPiece(row,col + 3)).getHasMoved() == false){
+            if(gameState.getPiece(row,col + 1) == null && gameState.getPiece(row, col + 2) == null
+                    && gameState.getPiece(row,col + 3) instanceof Rook) {
                 //all conditions are met for castling to the right
-                addMoveToBoardIfGood(gameState,row,col,0,2,checkForChecks);
+                addMoveToBoardIfGood(gameState, row, col, 0, 2, checkForChecks);
+                if (Kpiece.isBlack()) {
+                    castlingRightBlack = true;
+                }
+                else {
+                    castlingRightWhite = true;
+                }
             }
+
             //castling to the left
-            if(!Kpiece.getHasMoved() && gameState.getPiece(row,col - 1) == null && gameState.getPiece(row,col - 2) == null
+            if(gameState.getPiece(row,col - 1) == null && gameState.getPiece(row,col - 2) == null
                     && gameState.getPiece(row,col - 3) == null
-                    && gameState.getPiece(row,col - 4) instanceof Rook && ((Rook)gameState.getPiece(row,col-4)).getHasMoved() == false){
+                    && gameState.getPiece(row,col - 4) instanceof Rook){
                 //all conditions are met for castling to the left
-                addMoveToBoardIfGood(gameState,row,col,0,-2,checkForChecks);
+                addMoveToBoardIfGood(gameState,row,col,0,-3,checkForChecks);
+                if (Kpiece.isBlack()) {
+                    castlingLeftBlack = true;
+                }
+                else{
+                    castlingLeftWhite = true;
+                }
             }
 
         }
@@ -282,10 +335,37 @@ public class MoveBoard {
                 if(gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff) == null ||
                         gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff).isBlack() != piece.isBlack()){
                     if(checkForChecks) {
+                        Piece rook;
                         //now lets make the move and see if we are in check when the move is made
                         ChessGameState gs = new ChessGameState(gameState);
                         //gs.movePiece(pieceCol ,pieceRow,pieceCol + colDiff,pieceRow+rowDiff,piece);
-                        gs.movePiece(pieceRow ,pieceCol,pieceRow+rowDiff,pieceCol + colDiff,piece);
+                        if(castlingRightWhite){
+                            castlingRightWhite = false;
+                            //gs.setPiece(7,7, null);
+                            gs.movePiece(7, 7, 7, 5, gs.getPiece(7,7));
+                            gs.movePiece(7, 4, 7, 6, piece);
+                        }
+                        else if(castlingLeftWhite){
+                            castlingLeftWhite = false;
+                            //gs.setPiece(7,0, null);
+                            gs.movePiece(7, 0, 7, 3, gs.getPiece(7,0));
+                            gs.movePiece(7, 4, 7, 2, piece);
+                        }
+                        else if(castlingRightBlack){
+                            castlingRightBlack = false;
+                            //gs.setPiece(0,7, null);
+                            gs.movePiece(0, 7, 0, 5, gs.getPiece(0,7));
+                            gs.movePiece(0, 4, 0, 6, piece);
+                        }
+                        else if(castlingLeftBlack){
+                            castlingLeftBlack = false;
+                            //gs.setPiece(0,0, null);
+                            gs.movePiece(0, 0, 0, 3, gs.getPiece(0,0));
+                            gs.movePiece(0, 4, 0, 2, piece);
+                        }
+                        else {
+                            gs.movePiece(pieceRow, pieceCol, pieceRow + rowDiff, pieceCol + colDiff, piece);
+                        }
                         //move has been made, lets check if we are in check.
                         int[] kingLoc = getKingLoc(gs, isBlack);
                         if (piece instanceof King) {
