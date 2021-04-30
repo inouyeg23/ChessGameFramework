@@ -10,20 +10,13 @@ public class MoveBoard {
     private boolean[][] checkBoard;
     private int numMoves;
     private int kingMoves;
-    public boolean castlingRightBlack;
-    public boolean castlingRightWhite;
-    public boolean castlingLeftBlack;
-    public boolean castlingLeftWhite;
+
 
 
     public MoveBoard(){
         numMoves = 0;
         kingMoves = 0;
 
-        castlingLeftBlack = false;
-        castlingRightBlack = false;
-        castlingRightWhite = false;
-        castlingLeftWhite = false;
 
         board = new boolean[8][8];
         checkBoard = new boolean[8][8];
@@ -51,7 +44,6 @@ public class MoveBoard {
         //figure out the normal moves that it would be able to make with no conditionals
         //check if the player is in check then the move would need to get rid of check
         //check if moving the piece would cause the player to be in check
-
 
         //check what piece it is and figure out the possible moves accordingly
         Piece piece = gameState.getPiece(row,col);
@@ -156,29 +148,29 @@ public class MoveBoard {
 
             //Castling to the right
             King Kpiece = (King) piece;
-            if(gameState.getPiece(row,col + 1) == null && gameState.getPiece(row, col + 2) == null
+            if(!Kpiece.getHasMoved() && gameState.getPiece(row,col + 1) == null && gameState.getPiece(row, col + 2) == null
                     && gameState.getPiece(row,col + 3) instanceof Rook) {
                 //all conditions are met for castling to the right
                 addMoveToBoardIfGood(gameState, row, col, 0, 2, checkForChecks);
-                if (Kpiece.isBlack()) {
-                    castlingRightBlack = true;
+                if (piece.isBlack()) {
+                    gameState.castlingRightBlack = true;
                 }
                 else {
-                    castlingRightWhite = true;
+                    gameState.castlingRightWhite = true;
                 }
             }
 
             //castling to the left
-            if(gameState.getPiece(row,col - 1) == null && gameState.getPiece(row,col - 2) == null
+            if(col == 4 && !Kpiece.getHasMoved() && gameState.getPiece(row,col - 1) == null && gameState.getPiece(row,col - 2) == null
                     && gameState.getPiece(row,col - 3) == null
                     && gameState.getPiece(row,col - 4) instanceof Rook){
                 //all conditions are met for castling to the left
                 addMoveToBoardIfGood(gameState,row,col,0,-3,checkForChecks);
-                if (Kpiece.isBlack()) {
-                    castlingLeftBlack = true;
+                if (piece.isBlack()) {
+                    gameState.castlingLeftBlack = true;
                 }
-                else{
-                    castlingLeftWhite = true;
+                else {
+                    gameState.castlingLeftWhite = true;
                 }
             }
 
@@ -335,37 +327,48 @@ public class MoveBoard {
                 if(gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff) == null ||
                         gameState.getPiece(pieceRow + rowDiff, pieceCol + colDiff).isBlack() != piece.isBlack()){
                     if(checkForChecks) {
-                        Piece rook;
                         //now lets make the move and see if we are in check when the move is made
                         ChessGameState gs = new ChessGameState(gameState);
                         //gs.movePiece(pieceCol ,pieceRow,pieceCol + colDiff,pieceRow+rowDiff,piece);
-                        if(castlingRightWhite){
-                            castlingRightWhite = false;
+
+
+
+                            Piece rook;
+                        if(gameState.castlingRightWhite){
+                            gameState.castlingRightWhite = false;
                             //gs.setPiece(7,7, null);
-                            gs.movePiece(7, 7, 7, 5, gs.getPiece(7,7));
-                            gs.movePiece(7, 4, 7, 6, piece);
+                            rook = gameState.getPiece(7,7);
+                            gs.movePiece(7, 7, 7, 5, rook);
+                            //gs.movePiece(7, 4, 7, 6, piece);
+                            //gameState.kingIsMoving(piece);
                         }
-                        else if(castlingLeftWhite){
-                            castlingLeftWhite = false;
+                        else if(gameState.castlingLeftWhite){
+                            gameState.castlingLeftWhite = false;
                             //gs.setPiece(7,0, null);
-                            gs.movePiece(7, 0, 7, 3, gs.getPiece(7,0));
-                            gs.movePiece(7, 4, 7, 2, piece);
+                            rook = gameState.getPiece(7,0);
+                            gs.movePiece(7, 0, 7, 2, rook);
+                            //gs.movePiece(7, 4, 7, 2, piece);
+                            //gameState.kingIsMoving(piece);
                         }
-                        else if(castlingRightBlack){
-                            castlingRightBlack = false;
+                        else if(gameState.castlingRightBlack){
+                            gameState.castlingRightBlack = false;
                             //gs.setPiece(0,7, null);
-                            gs.movePiece(0, 7, 0, 5, gs.getPiece(0,7));
-                            gs.movePiece(0, 4, 0, 6, piece);
+                            rook = gameState.getPiece(0,7);
+                            gs.movePiece(0, 7, 0, 5, rook);
+                            //gs.movePiece(0, 4, 0, 6, piece);
+                            //gameState.kingIsMoving(piece);
                         }
-                        else if(castlingLeftBlack){
-                            castlingLeftBlack = false;
+                        else if(gameState.castlingLeftBlack){
+                            gameState.castlingLeftBlack = false;
                             //gs.setPiece(0,0, null);
-                            gs.movePiece(0, 0, 0, 3, gs.getPiece(0,0));
-                            gs.movePiece(0, 4, 0, 2, piece);
+                            rook = gameState.getPiece(0,0);
+                            gs.movePiece(0, 0, 0, 2, rook);
+                            //gs.movePiece(0, 4, 0, 2, piece);
+                            //gameState.kingIsMoving(piece);
                         }
-                        else {
-                            gs.movePiece(pieceRow, pieceCol, pieceRow + rowDiff, pieceCol + colDiff, piece);
-                        }
+                        gs.movePiece(pieceRow, pieceCol, pieceRow + rowDiff, pieceCol + colDiff, piece);
+                        gameState.kingSearch();
+
                         //move has been made, lets check if we are in check.
                         int[] kingLoc = getKingLoc(gs, isBlack);
                         if (piece instanceof King) {

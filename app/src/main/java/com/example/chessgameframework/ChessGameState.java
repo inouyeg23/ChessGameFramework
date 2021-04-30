@@ -1,6 +1,7 @@
 package com.example.chessgameframework;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
@@ -12,6 +13,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -53,6 +55,12 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean highlightedBishopMove;
     public boolean highlightedKingMove;
     public boolean highlightedQueenMove;
+
+    public boolean castlingRightBlack;
+    public boolean castlingRightWhite;
+    public boolean castlingLeftBlack;
+    public boolean castlingLeftWhite;
+
     //initialize the board full of pieces in the starting position
     //both kings are stored in the array below as well (black then white)
     Piece[] kings = new Piece[2];
@@ -78,12 +86,16 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
         //fills the board
+        King kingB = new King(true);
+        kingB.setHasMoved(false);
+        King kingW = new King(false);
+        kingW.setHasMoved(false);
         //black side
         board[0][0] = new Rook(true);
         board[0][1] = new Knight(true);
         board[0][2] = new Bishop(true);
         board[0][3] = new Queen(true);
-        board[0][4] = new King(true);
+        board[0][4] = kingB;
         board[0][5] = new Bishop(true);
         board[0][6] = new Knight(true);
         board[0][7] = new Rook(true);
@@ -100,7 +112,7 @@ public class ChessGameState extends GameState implements Serializable {
         board[7][0] = new Rook(false);
         board[7][1] = new Knight(false);
         board[7][2] = new Bishop(false);
-        board[7][4] = new King(false);
+        board[7][4] = kingW;
         board[7][3] = new Queen(false);
         board[7][5] = new Bishop(false);
         board[7][6] = new Knight(false);
@@ -137,6 +149,10 @@ public class ChessGameState extends GameState implements Serializable {
 
         isPaused = false;
 
+        castlingLeftBlack = false;
+        castlingRightBlack = false;
+        castlingRightWhite = false;
+        castlingLeftWhite = false;
     }//constructor
 
     /**
@@ -180,6 +196,13 @@ public class ChessGameState extends GameState implements Serializable {
           highlightedBishopMove = original.highlightedBishopMove;
           highlightedKingMove = original.highlightedKingMove;
           highlightedQueenMove = original.highlightedQueenMove;
+
+          castlingLeftBlack = original.castlingLeftBlack;
+          castlingRightBlack = original.castlingRightBlack;
+          castlingRightWhite = original.castlingRightWhite;
+          castlingLeftWhite = original.castlingLeftWhite;
+
+
       }// copy constructor
 
     /**
@@ -276,14 +299,34 @@ public class ChessGameState extends GameState implements Serializable {
      *      piece to move
      */
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-        if(board[row][col] instanceof King){
-            System.out.println("king location at: " + selectedRow + " " + selectedCol);
-            setKingLocation(selectedRow, selectedCol);
-            ((King) board[row][col]).setHasMoved(true);
-        }
-        System.out.println("moved piece");
+//        if(board[row][col] instanceof King){
+//            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+//            setKingLocation(selectedRow, selectedCol);
+//            ((King) board[row][col]).setHasMoved(true);
+//        }
+
+
         setPiece(selectedRow,selectedCol,board[row][col]);
         setPiece(row,col,null);
+    }
+
+//    public void kingIsMoving(Piece piece) {
+//        if(piece instanceof King){
+//            ((King) piece).setHasMoved(true);
+//            Log.e("KingMove", "KING HAS MOVED");
+//        }
+//    }
+
+    public void kingSearch(){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j] instanceof King){
+                    if((i != 0 || i != 7) && j !=4){
+                        ((King) getPiece(i,j)).setHasMoved(true);
+                    }
+                }
+            }
+        }
     }
 
     /**
