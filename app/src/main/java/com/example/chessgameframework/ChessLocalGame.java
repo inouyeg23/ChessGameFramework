@@ -120,11 +120,13 @@ public class ChessLocalGame extends LocalGame {
                 //we need to move the other piece now too
                 if(selectedCol > col){
                     //we castled to the right so we need to move the rook to the left
-                    CGS.movePiece(col, row + 3, col, row+1,CGS.getPiece(row,col));
+                    System.out.println("castled left side");
+                    CGS.movePiece(col + 3, row, col + 1, row,CGS.getPiece(row,col));
                 }
                 else{
                     //we castled to the left
-                    CGS.movePiece(col, row - 4, col, row-1,CGS.getPiece(row,col));
+                    System.out.println("castling right side");
+                    CGS.movePiece(col - 4, row, col - 1, row,CGS.getPiece(row,col));
                 }
             }
             if(!CGS.gameStarted)
