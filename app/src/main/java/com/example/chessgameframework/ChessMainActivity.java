@@ -2,6 +2,7 @@ package com.example.chessgameframework;
 
 import android.content.pm.ActivityInfo;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
@@ -71,17 +72,5 @@ public class ChessMainActivity extends GameMainActivity {
         if(gameState == null) return new ChessLocalGame();
         return new ChessLocalGame((ChessGameState) gameState);
      }
-
-     @Override
-    protected void initSettingsTab(){
-        //Override if the game has customizable rules
-        Spinner choosecolor = (Spinner) findViewById((R.id.chooseColor));
-        String [] chessColor = new String[] {"Random", "Black", "White"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, chessColor);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        choosecolor.setAdapter(adapter);
-
-    }
-
 
 }
