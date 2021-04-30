@@ -152,8 +152,10 @@ public class MoveBoard {
                     && gameState.getPiece(row,col + 3) instanceof Rook) {
                 //all conditions are met for castling to the right
                 addMoveToBoardIfGood(gameState, row, col, 0, 2, checkForChecks);
+
                 if (piece.isBlack()) {
                     gameState.castlingRightBlack = true;
+
                 }
                 else {
                     gameState.castlingRightWhite = true;
@@ -165,7 +167,8 @@ public class MoveBoard {
                     && gameState.getPiece(row,col - 3) == null
                     && gameState.getPiece(row,col - 4) instanceof Rook){
                 //all conditions are met for castling to the left
-                addMoveToBoardIfGood(gameState,row,col,0,-3,checkForChecks);
+                addMoveToBoardIfGood(gameState,row,col,0,-2,checkForChecks);
+
                 if (piece.isBlack()) {
                     gameState.castlingLeftBlack = true;
                 }

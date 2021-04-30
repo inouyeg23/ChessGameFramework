@@ -116,17 +116,19 @@ public class ChessLocalGame extends LocalGame {
             if(playerID != playerTurn)
                 return false;
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
-            if(action instanceof ChessCastlingAction){
+            if(CGS.castlingRightWhite || CGS.castlingRightBlack || CGS.castlingLeftWhite || CGS.castlingLeftBlack){
+                System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
                 //we need to move the other piece now too
-                if(selectedCol > col){
+                if(CGS.castlingRightWhite || CGS.castlingRightBlack){
                     //we castled to the right so we need to move the rook to the left
-                    System.out.println("castled left side");
-                    CGS.movePiece(col + 3, row, col + 1, row,CGS.getPiece(row,col));
+                    System.out.println("row: "+ row + ", col: " + col);
+                    CGS.movePiece(col, row + 3, col, row + 1,CGS.getPiece(row,col));
+                    //System.out.println(CGS.getPiece(col+3,row));
                 }
                 else{
                     //we castled to the left
-                    System.out.println("castling right side");
-                    CGS.movePiece(col - 4, row, col - 1, row,CGS.getPiece(row,col));
+                    System.out.println("castling left side");
+                    CGS.movePiece(col, row - 4, col, row - 1,CGS.getPiece(row,col));
                 }
             }
             if(!CGS.gameStarted)
