@@ -55,12 +55,12 @@ public class MoveBoard {
             if(piece.isBlack()) {
                 //en passant black
                 if (row == 1) {
-                    if (col < 7 && gameState.getPiece(row + 2, col + 1) != null && gameState.getPiece(row + 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+                    if (col < 7 && gameState.getPiece(row + 2, col + 1) != null && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
 
                         addMoveToBoardIfGood(gameState, row, col, 2, 1, checkForChecks);
                     }
 
-                    if (col > 0 && gameState.getPiece(row + 2, col - 1) != null && gameState.getPiece(row + 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+                    if (col > 0 && gameState.getPiece(row + 2, col - 1) != null && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
 
                         addMoveToBoardIfGood(gameState, row, col, 2, -1, checkForChecks);
                     }
@@ -68,7 +68,7 @@ public class MoveBoard {
 
 
                 //moves are +1+1, +0+1, +0+2, -1+1
-                if (row == 1 && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col) == null) {
+                if (row == 1 && gameState.getPiece(row + 2, col) == null && gameState.getPiece(row + 2, col) == null) {
 
                     addMoveToBoardIfGood(gameState,row,col,2,0, checkForChecks);
 
@@ -91,13 +91,13 @@ public class MoveBoard {
 
                 //en passant white
                 if(row == 6) {
-                    if (col < 7 && gameState.getPiece(row - 2, col + 1) != null && gameState.getPiece(row - 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+                    if (col < 7 && gameState.getPiece(row - 2, col + 1) != null && gameState.getPiece(row - 1, col) == null && gameState.getPiece(row - 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
 
                         addMoveToBoardIfGood(gameState, row, col, -2, 1, checkForChecks);
 
                     }
 
-                    if (col > 0 && gameState.getPiece(row - 2, col - 1) != null && gameState.getPiece(row - 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
+                    if (col > 0 && gameState.getPiece(row - 2, col - 1) != null && gameState.getPiece(row - 1, col) == null && gameState.getPiece(row - 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
 
                         addMoveToBoardIfGood(gameState, row, col, -2, -1, checkForChecks);
 
@@ -331,8 +331,6 @@ public class MoveBoard {
                         ChessGameState gs = new ChessGameState(gameState);
                         //gs.movePiece(pieceCol ,pieceRow,pieceCol + colDiff,pieceRow+rowDiff,piece);
 
-
-
                             Piece rook;
                         if(gameState.castlingRightWhite){
                             gameState.castlingRightWhite = false;
@@ -366,7 +364,9 @@ public class MoveBoard {
                             //gs.movePiece(0, 4, 0, 2, piece);
                             //gameState.kingIsMoving(piece);
                         }
+
                         gs.movePiece(pieceRow, pieceCol, pieceRow + rowDiff, pieceCol + colDiff, piece);
+
                         gameState.kingSearch();
 
                         //move has been made, lets check if we are in check.
