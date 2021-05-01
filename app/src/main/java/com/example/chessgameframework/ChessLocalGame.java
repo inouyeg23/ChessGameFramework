@@ -1,6 +1,7 @@
 package com.example.chessgameframework;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
@@ -16,6 +17,15 @@ import com.example.chessgameframework.game.GameFramework.players.GameHumanPlayer
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 import java.util.Locale;
+
+/**
+ * ChessLocalGame handles all the possible game actions that can occur.  This includes: Button Action,
+ * Move Action, Pause Action, Resume Action, Castling Action. Another game action that it deals
+ * with is checking if the game is over. It also holds the methods for the game timer.
+ *
+ * @authors: Logan Machida, Connor Morgan, Garrett Inouye
+ * @date: 4/30/21
+ */
 
 public class ChessLocalGame extends LocalGame {
 
@@ -134,6 +144,30 @@ public class ChessLocalGame extends LocalGame {
             if(!CGS.gameStarted)
                 CGS.gameStarted = true;
 
+            if(CGS.enPWhiteR){
+                CGS.setPiece(selectedCol + 1, selectedRow, null);
+                CGS.enPWhiteR = false;
+                //Log.e("EP Move", "En Passant white right move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if (CGS.enPWhiteL){
+                CGS.setPiece(selectedCol + 1, selectedRow, null);
+                CGS.enPWhiteL = false;
+                //Log.e("EP Move", "En Passant white left move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if(CGS.enPBlackL){
+                CGS.setPiece(selectedCol - 1, selectedRow, null);
+                CGS.enPBlackL = false;
+                //Log.e("EP Move", "En Passant black left move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if (CGS.enPBlackR){
+                CGS.setPiece(selectedCol - 1, selectedRow, null);
+                CGS.enPBlackR = false;
+                //Log.e("EP Move", "En Passant black right move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+
+            if(!CGS.getGameStarted())
+                CGS.setGameStarted(true);
+
             if(playerTurn == 0){
                 if(CGS.isCheckedBlack()){
                     int numMoves = 0;
@@ -189,6 +223,7 @@ public class ChessLocalGame extends LocalGame {
                     playerPauseTimer();
                 }
             }
+            //update the gamestate to refer to the human player to make the change to the timer
             playerUpdateCountDownText();
             opposingUpdateCountDownText();
 

@@ -10,10 +10,19 @@ import com.example.chessgameframework.game.GameFramework.Piece;
 
 public class Pawn extends Piece {
     private boolean justMoved2;
+    private boolean hasMoved;
     public Pawn(boolean isBlack) {
         super(isBlack);
         justMoved2 = false;
+        this.hasMoved = false;
     }
+    public boolean getHasMoved(){
+        return this.hasMoved;
+    }
+    public void setHasMoved(boolean hasMoved){
+        this.hasMoved = hasMoved;
+    }
+
     public boolean getJustMoved2(){
         return this.justMoved2;
     }
