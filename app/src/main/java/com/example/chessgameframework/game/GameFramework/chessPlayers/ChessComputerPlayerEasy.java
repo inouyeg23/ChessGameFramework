@@ -10,6 +10,9 @@ import com.example.chessgameframework.game.GameFramework.players.GameComputerPla
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 /**
+ * ChessComputerPlayerEasy is an easy computer player that selects a random piece and the moves it
+ * to a random square.
+ *
  * @author Logan Machida
  */
 public class ChessComputerPlayerEasy extends GameComputerPlayer {

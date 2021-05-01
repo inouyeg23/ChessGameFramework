@@ -50,10 +50,10 @@ public class ExampleUnitTest {
     @Test
     public void isStartPressed(){
         ChessGameState gameState = new ChessGameState();
-        assertTrue(!gameState.isStartPressed());
+        assertTrue(!gameState.getGameStarted());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.gameStarted = true;
-        assertTrue(gameState.isStartPressed());
+        gameState.setGameStarted(true);
+        assertTrue(gameState.getGameStarted());
     }
 
     //Garrett
@@ -62,7 +62,7 @@ public class ExampleUnitTest {
         ChessGameState gameState = new ChessGameState();
         assertTrue(!gameState.isQuitPressed());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isQuitPressed = true;
+        gameState.setQuitPressed(true);
         assertTrue(gameState.isQuitPressed());
     }
 
@@ -72,7 +72,7 @@ public class ExampleUnitTest {
         ChessGameState gameState = new ChessGameState();
         assertTrue(!gameState.isForfeitPressed());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isForfeitPressed = true;
+        gameState.setForfeitPressed(true);
         assertTrue(gameState.isForfeitPressed());
     }
 
@@ -82,7 +82,7 @@ public class ExampleUnitTest {
         ChessGameState gameState = new ChessGameState();
         assertTrue(!gameState.isDrawPressed());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isDrawPressed = true;
+        gameState.setDrawPressed(true);
         assertTrue(gameState.isDrawPressed());
     }
 
@@ -119,23 +119,12 @@ public class ExampleUnitTest {
 
     //Jonah
     @Test
-    public void checkIfTwoKings(){
-        ChessGameState gameState = new ChessGameState();
-        King king1 = new King(true);
-        King king2 = new King(false);
-        gameState.setPiece(0,0, king1);
-        gameState.setPiece(0,1, king2);
-        assertTrue(gameState.checkIfTwoKings());
-    }
-
-    //Jonah
-    @Test
     public void isPausePressed(){
         ChessGameState gameState = new ChessGameState();
-        assertTrue(!gameState.isPausePressed());
+        assertTrue(!gameState.getPaused());
         //assuming the button onClick is working and the user has pressed the quit button
-        gameState.isPaused = true;
-        assertTrue(gameState.isPausePressed());
+        gameState.setPaused(true);
+        assertTrue(gameState.getPaused());
     }
 
 //    @Test

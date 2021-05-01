@@ -17,11 +17,14 @@ import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 import java.util.ArrayList;
 
+/**
+ *  ChessMainActivity works with GameMainActivity to update who's playing the game and to set up
+ *  the default config.  It also creates a new local game when called.
+ *
+ * @authors: Logan Machida, Garrett Inouye
+ */
+
 public class ChessMainActivity extends GameMainActivity {
-    /**
-     *  We need to override the abstract methods from GameMainActivity.
-     *  I can see what that looks like in the TTTMainActivity
-     */
 
     /**
      * Sets up a default of one human and one computer player
@@ -38,19 +41,16 @@ public class ChessMainActivity extends GameMainActivity {
 
         //Adds the allowed player types
         playerTypes.add(new GamePlayerType("Local Human Player") {
-            public GamePlayer createPlayer(String name) {
-                return new ChessHumanPlayer(name, R.id.chessSurfaceView);
-            }});
+            public GamePlayer createPlayer(String name) { return new ChessHumanPlayer(name, R.id.chessSurfaceView); }});
         playerTypes.add(new GamePlayerType("Easy Computer") {
             public GamePlayer createPlayer(String name) { return new ChessComputerPlayerEasy(name); }});
         playerTypes.add(new GamePlayerType("Hard Computer") {
-            public GamePlayer createPlayer(String name) {
-                return new ChessComputerPlayerHard(name);
-            }});
+            public GamePlayer createPlayer(String name) { return new ChessComputerPlayerHard(name); }});
+
         //create a game configuration class for chess
         GameConfig defaultConfig = new GameConfig(playerTypes,1,2,"chess", 8080);
         defaultConfig.addPlayer("Human Player", 0); //player 1: a human player
-        defaultConfig.addPlayer("Trash Computer", 1); //player 2: a human player
+        defaultConfig.addPlayer("Computer", 1); //player 2: a human player
 
         //returns the default configuration
         return defaultConfig;
