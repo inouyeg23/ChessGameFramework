@@ -4,6 +4,7 @@ import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
 
 /**
+ * Piece object for the knight
  * @authors: Jonah Ingler
  *
  */
