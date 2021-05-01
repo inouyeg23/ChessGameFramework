@@ -1,5 +1,7 @@
 package com.example.chessgameframework.game.GameFramework.Pieces;
 
+import android.util.Log;
+
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
 
@@ -37,8 +39,8 @@ public class MoveBoard {
 
     public void findMoves(ChessGameState gameState, int row, int col){
         findPossibleMoves(gameState,row,col, true);
-
         //removeCheckMoves(gameState,gameState.getPiece(row,col).isBlack());
+
     }
 
     public void findPossibleMoves(ChessGameState gameState, int row, int col, boolean checkForChecks){
@@ -60,77 +62,72 @@ public class MoveBoard {
         else if(piece instanceof Pawn){
             //pawns can move in the three spaces infront of them
             if(piece.isBlack()) {
+
                 //en passant black
-                if (row == 1) {
-                    if (col < 7 && gameState.getPiece(row + 2, col + 1) != null && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
-
-                        addMoveToBoardIfGood(gameState, row, col, 2, 1, checkForChecks);
+                if(row == 4) {
+                    //left
+                    if (col > 0 && (gameState.getPiece(row + 1, col - 1) == null) && gameState.getPiece(row, col - 1) != null && gameState.getPiece(row, col - 1) instanceof Pawn && !gameState.getPiece(row, col - 1).isBlack() && ((Pawn)gameState.getPiece(row, col - 1)).getJustMoved2()){
+                        gameState.enPBlackL = true;
+                        addMoveToBoardIfGood(gameState, row, col, +1, -1, checkForChecks);
                     }
-
-                    if (col > 0 && gameState.getPiece(row + 2, col - 1) != null && gameState.getPiece(row + 1, col) == null && gameState.getPiece(row + 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
-
-                        addMoveToBoardIfGood(gameState, row, col, 2, -1, checkForChecks);
+                    //right
+                    if (col < 7 && (gameState.getPiece(row + 1, col + 1) == null) && gameState.getPiece(row, col + 1) != null && gameState.getPiece(row, col + 1) instanceof Pawn && !gameState.getPiece(row, col + 1).isBlack() && ((Pawn)gameState.getPiece(row, col + 1)).getJustMoved2()){
+                        gameState.enPBlackR = true;
+                        addMoveToBoardIfGood(gameState, row, col, + 1, + 1, checkForChecks);
                     }
                 }
-
 
                 //moves are +1+1, +0+1, +0+2, -1+1
-                if (row == 1 && gameState.getPiece(row + 2, col) == null && gameState.getPiece(row + 2, col) == null) {
-
+                if (row == 1 && gameState.getPiece(row + 2, col) == null && gameState.getPiece(row + 1, col) == null) {
                     addMoveToBoardIfGood(gameState,row,col,2,0, checkForChecks);
-
                 }
+
                 if(gameState.getPiece(row + 1, col) == null) {
                     addMoveToBoardIfGood(gameState, row, col, 1, 0, checkForChecks);
                 }
 
                 if(row < 7 && col < 7 && gameState.getPiece(row+1,col+1) != null && gameState.getPiece(row+1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-
                     addMoveToBoardIfGood(gameState,row,col,1,1, checkForChecks);
                 }
 
                 if(row < 7 && col > 0 && gameState.getPiece(row+1,col-1) != null && gameState.getPiece(row+1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-
                     addMoveToBoardIfGood(gameState,row,col,1,-1, checkForChecks);
                 }
             }
             else{
 
                 //en passant white
-                if(row == 6) {
-                    if (col < 7 && gameState.getPiece(row - 2, col + 1) != null && gameState.getPiece(row - 1, col) == null && gameState.getPiece(row - 2, col + 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
-
-                        addMoveToBoardIfGood(gameState, row, col, -2, 1, checkForChecks);
-
+                if(row == 3) {
+                //left
+                    if (col > 0 && (gameState.getPiece(row-1,col-1) == null) && gameState.getPiece(row,col-1) != null && gameState.getPiece(row,col-1) instanceof Pawn && gameState.getPiece(row,col-1).isBlack() && ((Pawn)gameState.getPiece(row,col - 1)).getJustMoved2())  {
+                        gameState.enPWhiteL = true;
+                        addMoveToBoardIfGood(gameState, row, col, -1, -1, checkForChecks);
+                        //Log.e("EP", "En Passant white left");
                     }
-
-                    if (col > 0 && gameState.getPiece(row - 2, col - 1) != null && gameState.getPiece(row - 1, col) == null && gameState.getPiece(row - 2, col - 1).isBlack() != gameState.getPiece(row, col).isBlack()) {
-
-                        addMoveToBoardIfGood(gameState, row, col, -2, -1, checkForChecks);
-
+                //right
+                    if (col < 7 && (gameState.getPiece(row - 1,col + 1) == null) && gameState.getPiece(row,col+1) != null && gameState.getPiece(row,col+1) instanceof Pawn && gameState.getPiece(row,col+1).isBlack() && ((Pawn)gameState.getPiece(row,col + 1)).getJustMoved2()) {
+                        gameState.enPWhiteR = true;
+                        addMoveToBoardIfGood(gameState, row, col, - 1, + 1, checkForChecks);
+                        //Log.e("EP", "En Passant white right");
                     }
                 }
 
                 //moves are -1-1, +0-1,+0-2, +1,-1
 
-                if(row == 6 && gameState.getPiece(row-1,col) == null) {
-
+                if(row == 6 && gameState.getPiece(row - 1,col) == null && gameState.getPiece(row - 2,col) == null) {
                     addMoveToBoardIfGood(gameState,row,col,-2,0, checkForChecks);
-
                 }
+
                 if(gameState.getPiece(row - 1, col) == null) {
                     addMoveToBoardIfGood(gameState, row, col, -1, 0, checkForChecks);
                 }
-                if(row > 0 && col < 7 && gameState.getPiece(row-1,col+1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
 
-                    addMoveToBoardIfGood(gameState,row,col,-1,1, checkForChecks);
-
+                if(row > 0 && col < 7 && gameState.getPiece(row - 1,col + 1) != null && gameState.getPiece(row-1,col+1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                    addMoveToBoardIfGood(gameState, row, col, -1,1, checkForChecks);
                 }
 
-                if(row > 0 && col > 0 && gameState.getPiece(row-1,col-1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
-
-                    addMoveToBoardIfGood(gameState,row,col,-1,-1, checkForChecks);
-
+                if(row > 0 && col > 0 && gameState.getPiece(row - 1,col - 1) != null && gameState.getPiece(row-1,col-1).isBlack() != gameState.getPiece(row,col).isBlack()) {
+                    addMoveToBoardIfGood(gameState, row, col,-1,-1, checkForChecks);
                 }
 
             }
@@ -379,7 +376,9 @@ public class MoveBoard {
                             //gameState.kingIsMoving(piece);
                         }
 
+                        gameState.pawnMovesTwo();
                         gs.movePiece(pieceRow, pieceCol, pieceRow + rowDiff, pieceCol + colDiff, piece);
+
 
                         gameState.kingSearch();
 
