@@ -24,7 +24,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
  * the number into an easy to follow row and col system.
  *
  * @author Garrett Inouye
- * @data 4/21/21
+ * @data 4/29/21
  */
 
 public class ChessSurfaceView extends SurfaceView {
@@ -105,8 +105,6 @@ public class ChessSurfaceView extends SurfaceView {
 
             }
         }
-
-        System.out.println("CHOSEN COLOR: " + gameState.getStartingColor());
 
         if(drawHighlight) {
             //draws all highlighted squares based on possible moves

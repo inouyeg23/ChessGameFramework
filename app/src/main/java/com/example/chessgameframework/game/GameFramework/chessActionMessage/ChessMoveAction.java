@@ -4,6 +4,12 @@ import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
+/**
+ * ChessMoveAction is the action that is sent if the player were to select a piece and move it
+ *
+ * @authors: Connor Morgan
+ */
+
 public class ChessMoveAction extends GameAction {
 
     private int row;

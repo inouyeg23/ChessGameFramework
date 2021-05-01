@@ -28,6 +28,14 @@ import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 ;
 import java.util.Random;
 
+/**
+ * ChessHumanPlayer is the human player. It sets up the GUI at the start of the game. It also handles
+ * button clicks and touches by the user.
+ *
+ * @authors: Logan Machida, Connor Morgan, Garrett Inouye
+ * @date: 4/29/21
+ */
+
 public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickListener, View.OnTouchListener {
     private static final String TAG = "ChessHumanPlayer";
     private int layoutId;
@@ -103,12 +111,12 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ChessGameState gameState = (ChessGameState) game.getGameState();
         if (button == quitButton) {
             // the quit button has been pressed
-            gameState.isQuitPressed = true;
+            gameState.setQuitPressed(true);
             game.sendAction(new ChessButtonAction(this));
         }
         else if (button == forfeitButton) {
             // the forfeit button has been pressed
-            gameState.isForfeitPressed = true;
+            gameState.setForfeitPressed(true);
             game.sendAction(new ChessButtonAction(this));
         }
         else if (button == offerDrawButton) {
@@ -118,7 +126,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 //using gameIsOver to display a message
                 gameIsOver(allPlayerNames[1] + " has declined your draw offer.");
             } else {
-                gameState.isDrawPressed = true;
+                gameState.setDrawPressed(true);
             }
             game.sendAction(new ChessButtonAction(this));
         }

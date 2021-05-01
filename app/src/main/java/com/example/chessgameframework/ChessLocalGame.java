@@ -17,6 +17,15 @@ import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 import java.util.Locale;
 
+/**
+ * ChessLocalGame handles all the possible game actions that can occur.  This includes: Button Action,
+ * Move Action, Pause Action, Resume Action, Castling Action. Another game action that it deals
+ * with is checking if the game is over. It also holds the methods for the game timer.
+ *
+ * @authors: Logan Machida, Connor Morgan, Garrett Inouye
+ * @date: 4/30/21
+ */
+
 public class ChessLocalGame extends LocalGame {
 
     // variables needed for time
@@ -131,8 +140,8 @@ public class ChessLocalGame extends LocalGame {
                     CGS.movePiece(col, row - 4, col, row - 1,CGS.getPiece(row,col));
                 }
             }
-            if(!CGS.gameStarted)
-                CGS.gameStarted = true;
+            if(!CGS.getGameStarted())
+                CGS.setGameStarted(true);
 
             if(playerTurn == 0){
                 if(CGS.isCheckedBlack()){
@@ -189,6 +198,7 @@ public class ChessLocalGame extends LocalGame {
                     playerPauseTimer();
                 }
             }
+            //update the gamestate to refer to the human player to make the change to the timer
             playerUpdateCountDownText();
             opposingUpdateCountDownText();
 
@@ -211,9 +221,9 @@ public class ChessLocalGame extends LocalGame {
     @Override
     protected String checkIfGameOver() {
         if(state.isCheckedmateBlack()) {
-            return "White wins";
+            return "White wins. ";
         } else if(state.isCheckedWhite()){
-            return "Black wins";
+            return "Black wins. ";
         } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {
