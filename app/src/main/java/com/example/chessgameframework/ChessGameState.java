@@ -65,6 +65,11 @@ public class ChessGameState extends GameState implements Serializable {
     public boolean castlingLeftBlack;
     public boolean castlingLeftWhite;
 
+    public boolean enPWhiteL;
+    public boolean enPWhiteR;
+    public boolean enPBlackL;
+    public boolean enPBlackR;
+
     //initialize the board full of pieces in the starting position
     //both kings are stored in the array below as well (black then white)
     Piece[] kings = new Piece[2];
@@ -95,6 +100,9 @@ public class ChessGameState extends GameState implements Serializable {
         kingB.setHasMoved(false);
         King kingW = new King(false);
         kingW.setHasMoved(false);
+
+        Pawn pawnW1 = new Pawn(false);
+
         //black side
         board[0][0] = new Rook(true);
         board[0][1] = new Knight(true);
@@ -158,6 +166,11 @@ public class ChessGameState extends GameState implements Serializable {
         castlingRightBlack = false;
         castlingRightWhite = false;
         castlingLeftWhite = false;
+
+        enPWhiteR = false;
+        enPWhiteL = false;
+        enPBlackL = false;
+        enPBlackR = false;
     }//constructor
 
     /**
@@ -201,6 +214,11 @@ public class ChessGameState extends GameState implements Serializable {
           castlingRightWhite = original.castlingRightWhite;
           castlingLeftWhite = original.castlingLeftWhite;
 
+          enPBlackR = original.enPBlackR;
+          enPBlackL = original.enPWhiteL;
+          enPWhiteL = original.enPWhiteR;
+          enPWhiteR = original.enPBlackL;
+
       }// copy constructor
 
     /**
@@ -240,6 +258,23 @@ public class ChessGameState extends GameState implements Serializable {
             System.out.println("moved piece");
             setPiece(selectedRow, selectedCol, board[row][col]);
             setPiece(row, col, null);
+        }
+    }
+
+    public void pawnMovesTwo(){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j] instanceof Pawn){
+                    if(i != 1 && i != 6) {
+                        if((i == 3 || i == 4) && !((Pawn) getPiece(i,j)).getHasMoved()) {
+                            ((Pawn) getPiece(i,j)).setJustMoved2(true);
+                            //Log.e("justMoved2", "set to true: i = " + i + " j = " + j);
+                        }
+                        ((Pawn) getPiece(i,j)).setHasMoved(true);
+                        //Log.e("hasMoved", "set to true: i = " + i + " j = " + j);
+                    }
+                }
+            }
         }
     }
 

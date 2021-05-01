@@ -1,6 +1,7 @@
 package com.example.chessgameframework;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
@@ -136,6 +137,28 @@ public class ChessLocalGame extends LocalGame {
                     CGS.movePiece(col, row - 4, col, row-1,CGS.getPiece(row,col));
                 }
             }
+
+            if(CGS.enPWhiteR){
+                CGS.setPiece(selectedCol + 1, selectedRow, null);
+                CGS.enPWhiteR = false;
+                //Log.e("EP Move", "En Passant white right move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if (CGS.enPWhiteL){
+                CGS.setPiece(selectedCol + 1, selectedRow, null);
+                CGS.enPWhiteL = false;
+                //Log.e("EP Move", "En Passant white left move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if(CGS.enPBlackL){
+                CGS.setPiece(selectedCol - 1, selectedRow, null);
+                CGS.enPBlackL = false;
+                //Log.e("EP Move", "En Passant black left move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+            else if (CGS.enPBlackR){
+                CGS.setPiece(selectedCol - 1, selectedRow, null);
+                CGS.enPBlackR = false;
+                //Log.e("EP Move", "En Passant black right move. Selected row = " + (selectedRow) + ". Selected col = " + selectedCol);
+            }
+
             if(!CGS.getGameStarted())
                 CGS.setGameStarted(true);
 
@@ -154,7 +177,6 @@ public class ChessLocalGame extends LocalGame {
                     if(numMoves == 0)
                         state.setCheckedmateBlack(true);
                 }
-
             }
             else{
                 if(CGS.isCheckedWhite()){
