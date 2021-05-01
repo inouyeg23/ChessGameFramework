@@ -1,6 +1,7 @@
 package com.example.chessgameframework;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.Piece;
@@ -12,6 +13,7 @@ import com.example.chessgameframework.game.GameFramework.Pieces.Knight;
 import com.example.chessgameframework.game.GameFramework.Pieces.Queen;
 import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.infoMessage.GameState;
+import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -56,6 +58,12 @@ public class ChessGameState extends GameState implements Serializable {
     private boolean isDrawPressed;
     private boolean isForfeitPressed;
     private boolean isPaused;
+  
+    //boolean to work with castling action
+    public boolean castlingRightBlack;
+    public boolean castlingRightWhite;
+    public boolean castlingLeftBlack;
+    public boolean castlingLeftWhite;
 
     //initialize the board full of pieces in the starting position
     //both kings are stored in the array below as well (black then white)
@@ -83,12 +91,16 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
         //fills the board
+        King kingB = new King(true);
+        kingB.setHasMoved(false);
+        King kingW = new King(false);
+        kingW.setHasMoved(false);
         //black side
         board[0][0] = new Rook(true);
         board[0][1] = new Knight(true);
         board[0][2] = new Bishop(true);
         board[0][3] = new Queen(true);
-        board[0][4] = new King(true);
+        board[0][4] = kingB;
         board[0][5] = new Bishop(true);
         board[0][6] = new Knight(true);
         board[0][7] = new Rook(true);
@@ -105,7 +117,7 @@ public class ChessGameState extends GameState implements Serializable {
         board[7][0] = new Rook(false);
         board[7][1] = new Knight(false);
         board[7][2] = new Bishop(false);
-        board[7][4] = new King(false);
+        board[7][4] = kingW;
         board[7][3] = new Queen(false);
         board[7][5] = new Bishop(false);
         board[7][6] = new Knight(false);
@@ -142,6 +154,10 @@ public class ChessGameState extends GameState implements Serializable {
 
         isPaused = false;
 
+        castlingLeftBlack = false;
+        castlingRightBlack = false;
+        castlingRightWhite = false;
+        castlingLeftWhite = false;
     }//constructor
 
     /**
@@ -179,6 +195,12 @@ public class ChessGameState extends GameState implements Serializable {
           isForfeitPressed = original.isForfeitPressed;
           isQuitPressed = original.isQuitPressed;
           currPlayer = original.currPlayer;
+
+          castlingLeftBlack = original.castlingLeftBlack;
+          castlingRightBlack = original.castlingRightBlack;
+          castlingRightWhite = original.castlingRightWhite;
+          castlingLeftWhite = original.castlingLeftWhite;
+
       }// copy constructor
 
     /**
@@ -263,7 +285,26 @@ public class ChessGameState extends GameState implements Serializable {
           kingLocationWhite[1] = col;
     }
 
-    /**
+//    public void kingIsMoving(Piece piece) {
+//        if(piece instanceof King){
+//            ((King) piece).setHasMoved(true);
+//            Log.e("KingMove", "KING HAS MOVED");
+//        }
+//    }
+
+    public void kingSearch(){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j] instanceof King){
+                    if((i != 0 || i != 7) && j !=4){
+                        ((King) getPiece(i,j)).setHasMoved(true);
+                    }
+                }
+            }
+        }
+    }
+  
+  /**
      * toString method
      * prints the values for all the variables
      * defined in this class
@@ -284,7 +325,6 @@ public class ChessGameState extends GameState implements Serializable {
                 "Opposing Timer: " + opposingTimerText + "\n";
     }
 
-
     /**
      * getter and setter methods for communicating with other classes
      *
@@ -302,43 +342,19 @@ public class ChessGameState extends GameState implements Serializable {
     public void setPaused(boolean paused) { isPaused = paused; }
 
     //game conditions
-    public int getPlayerTurn() {
-        return playerTurn;
-    }
-    public void setPlayerTurn(int player){
-        playerTurn = player;
-    }
-    public int getPointsBlack() {
-        return pointsBlack;
-    }
-    public void setPointsBlack(int pointsBlack) {
-        this.pointsBlack = pointsBlack;
-    }
-    public int getPointsWhite() {
-        return pointsWhite;
-    }
-    public void setPointsWhite(int pointsWhite) {
-        this.pointsWhite = pointsWhite;
-    }
-    public boolean isCheckedBlack() {
-        return isCheckedBlack;
-    }
-    public void setCheckedBlack(boolean checkedBlack) {
-        isCheckedBlack = checkedBlack;
-    }
-    public boolean isCheckedWhite() {
-        return isCheckedWhite;
-    }
-    public void setCheckedWhite(boolean checkedWhite) {
-        isCheckedBlack = checkedWhite;
-    }
-    public boolean isCheckedmateBlack() {
-        return isCheckedmateBlack;
-    }
+    public int getPlayerTurn() {return playerTurn;}
+    public void setPlayerTurn(int player){playerTurn = player;}
+    public int getPointsBlack() {return pointsBlack;}
+    public void setPointsBlack(int pointsBlack) {this.pointsBlack = pointsBlack;}
+    public int getPointsWhite() {return pointsWhite;}
+    public void setPointsWhite(int pointsWhite) {this.pointsWhite = pointsWhite;}
+    public boolean isCheckedBlack() {return isCheckedBlack;}
+    public void setCheckedBlack(boolean checkedBlack) {isCheckedBlack = checkedBlack;}
+    public boolean isCheckedWhite() {return isCheckedWhite;}
+    public void setCheckedWhite(boolean checkedWhite) {isCheckedBlack = checkedWhite;}
+    public boolean isCheckedmateBlack() {return isCheckedmateBlack;}
     public void setCheckedmateBlack(boolean checkedmateBlack) { isCheckedmateBlack = checkedmateBlack; }
-    public boolean isCheckedmateWhite() {
-        return isCheckedmateWhite;
-    }
+    public boolean isCheckedmateWhite() {return isCheckedmateWhite; }
     public void setCheckedmateWhite(boolean checkedmateWhite) { isCheckedmateWhite = checkedmateWhite; }
 
     //timer
