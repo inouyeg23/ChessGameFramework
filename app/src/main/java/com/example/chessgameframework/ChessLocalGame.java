@@ -17,15 +17,6 @@ import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
 import java.util.Locale;
 
-/**
- * ChessLocalGame handles all the possible game actions that can occur.  This includes: Button Action,
- * Move Action, Pause Action, Resume Action, Castling Action. Another game action that it deals
- * with is checking if the game is over. It also holds the methods for the game timer.
- *
- * @authors: Logan Machida, Connor Morgan, Garrett Inouye
- * @date: 4/30/21
- */
-
 public class ChessLocalGame extends LocalGame {
 
     // variables needed for time
@@ -126,22 +117,21 @@ public class ChessLocalGame extends LocalGame {
                 return false;
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
             if(CGS.castlingRightWhite || CGS.castlingRightBlack || CGS.castlingLeftWhite || CGS.castlingLeftBlack){
-                System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
-                //we need to move the other piece now too
                 if(CGS.castlingRightWhite || CGS.castlingRightBlack){
                     //we castled to the right so we need to move the rook to the left
-                    System.out.println("row: "+ row + ", col: " + col);
                     CGS.movePiece(col, row + 3, col, row + 1,CGS.getPiece(row,col));
-                    //System.out.println(CGS.getPiece(col+3,row));
+                    CGS.castlingRightBlack = false;
+                    CGS.castlingRightWhite = false;
                 }
                 else{
                     //we castled to the left
-                    System.out.println("castling left side");
                     CGS.movePiece(col, row - 4, col, row - 1,CGS.getPiece(row,col));
+                    CGS.castlingLeftBlack = false;
+                    CGS.castlingLeftWhite = false;
                 }
             }
-            if(!CGS.getGameStarted())
-                CGS.setGameStarted(true);
+            if(!CGS.gameStarted)
+                CGS.gameStarted = true;
 
             if(playerTurn == 0){
                 if(CGS.isCheckedBlack()){
@@ -198,7 +188,6 @@ public class ChessLocalGame extends LocalGame {
                     playerPauseTimer();
                 }
             }
-            //update the gamestate to refer to the human player to make the change to the timer
             playerUpdateCountDownText();
             opposingUpdateCountDownText();
 
@@ -221,9 +210,9 @@ public class ChessLocalGame extends LocalGame {
     @Override
     protected String checkIfGameOver() {
         if(state.isCheckedmateBlack()) {
-            return "White wins. ";
+            return "White wins";
         } else if(state.isCheckedWhite()){
-            return "Black wins. ";
+            return "Black wins";
         } else if(state.isForfeitPressed()){
             return playerNames[0] + " forfeited. " + playerNames[1] + " won. ";
         } else if(state.isQuitPressed()) {

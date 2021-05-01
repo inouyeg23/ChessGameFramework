@@ -111,12 +111,12 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
         ChessGameState gameState = (ChessGameState) game.getGameState();
         if (button == quitButton) {
             // the quit button has been pressed
-            gameState.setQuitPressed(true);
+            gameState.isQuitPressed = true;
             game.sendAction(new ChessButtonAction(this));
         }
         else if (button == forfeitButton) {
             // the forfeit button has been pressed
-            gameState.setForfeitPressed(true);
+            gameState.isForfeitPressed = true;
             game.sendAction(new ChessButtonAction(this));
         }
         else if (button == offerDrawButton) {
@@ -126,7 +126,7 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 //using gameIsOver to display a message
                 gameIsOver(allPlayerNames[1] + " has declined your draw offer.");
             } else {
-                gameState.setDrawPressed(true);
+                gameState.isDrawPressed = true;
             }
             game.sendAction(new ChessButtonAction(this));
         }

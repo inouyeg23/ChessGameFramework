@@ -36,10 +36,12 @@ public class ChessComputerPlayerEasy extends GameComputerPlayer {
         if (info instanceof NotYourTurnInfo) return;
         Logger.log("ChessComputer", "My turn!");
         //if (!(info instanceof ChessGameState)) return;
+
         boolean shouldBeBlack = false;
         if (playerNum == 1)
             shouldBeBlack = true;
         ChessGameState gameState = new ChessGameState((ChessGameState) info);
+        if(gameState.getPlayerTurn() != playerNum) return;
         // move a piece at random
         // if the AI cannot take a piece, move a piece at random
         Piece randomPiece = null;

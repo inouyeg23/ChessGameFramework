@@ -141,11 +141,11 @@ public class MoveBoard {
             //down
             addMoveToBoardIfGood(gameState,row,col,1,0, checkForChecks);
             //right
-            addMoveToBoardIfGood(gameState,row,col,0,+1, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,0,1, checkForChecks);
             //left
             addMoveToBoardIfGood(gameState,row,col,0,-1, checkForChecks);
             //up right
-            addMoveToBoardIfGood(gameState,row,col,-1,+1, checkForChecks);
+            addMoveToBoardIfGood(gameState,row,col,-1,1, checkForChecks);
             //up left
             addMoveToBoardIfGood(gameState,row,col,-1,-1, checkForChecks);
             //down right
@@ -244,16 +244,18 @@ public class MoveBoard {
 
         }
         else if(piece instanceof Rook){
-
+             boolean moveresult = true;
             for(int i = 1; row + i < 8; i++){
-                if(!addMoveToBoardIfGood(gameState,row,col,i, 0, checkForChecks))
+                moveresult = addMoveToBoardIfGood(gameState,row,col,i, 0, checkForChecks);
+                if(!moveresult)
                     break;
                 else if(gameState.getPiece(row + i,col) != null)
                     break;
             }
 
             for(int i = 1; row - i >= 0; i++){
-                if(!addMoveToBoardIfGood(gameState,row,col,-i, 0, checkForChecks))
+                moveresult = addMoveToBoardIfGood(gameState,row,col,-i, 0, checkForChecks);
+                if(!moveresult)
                     break;
                 else if(gameState.getPiece(row - i,col) != null)
                     break;
@@ -302,6 +304,8 @@ public class MoveBoard {
                 else if(gameState.getPiece(row - i,col + i) != null)
                     break;
             }
+
+            //rooks queens kings need to work
 
         }
         else if(piece instanceof Knight){
@@ -436,53 +440,7 @@ public class MoveBoard {
         return kingLoc;
 
     }
-/*
-    private void removeCheckMoves(ChessGameState gameState, boolean isBlacksTurn){
-        //find king
-        int kRow = -1;
-        int kCol = -1;
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                Piece p = gameState.getPiece(i,j);
-                if(p != null && p instanceof King && p.isBlack() == isBlacksTurn){
-                    kRow = i;
-                    kCol = j;
-                    break;
-                }
-            }
-        }
 
-        //get the moves of the opponents pieces, if any of them attack the king then the opponent is in check
-        boolean inCheck = getIfKingInCheck(gameState, kRow, kCol);
-
-        //we need to get out of check so go through all of the moves and make them and check if the king is still in check
-        MoveBoard mb = new MoveBoard();
-
-
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(gameState.getPiece(i,j) != null && gameState.getPiece(i,j).isBlack() == isBlacksTurn) {
-                    mb.findPossibleMoves(gameState, i, j, false);
-                    for (int ii = 0; ii < 8; ii++) {
-                        for (int jj = 0; jj < 8; jj++) {
-                            if (mb.getCanMove(ii, jj)) {
-                                ChessGameState cp = new ChessGameState(gameState);
-                                cp.movePiece(i, j, ii, jj, gameState.getPiece(i, j));
-                                if(getIfKingInCheck(cp,kRow,kCol)){
-                                    //king is in check after the move was made so it was a bad move
-                                    board[i][j] = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //otherwise we need to check that all of our moves don't put ourself in check
-
-    }
-*/
     private boolean getIfKingInCheck(ChessGameState gameState, int kingRow, int kingCol){
 
         boolean inCheck = false;
