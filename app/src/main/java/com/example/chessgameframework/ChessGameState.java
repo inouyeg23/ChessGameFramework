@@ -468,7 +468,21 @@ public class ChessGameState extends GameState implements Serializable {
     public void setForfeitPressed(boolean forfeitPressed){isForfeitPressed = forfeitPressed;}
     public void setDrawPressed(boolean drawPressed){isDrawPressed = drawPressed;}
 
-    public void pawnMovesTwo() {
+    public void pawnMovesTwo(){
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if(board[i][j] instanceof Pawn){
+                    if(i != 1 && i != 6) {
+                        if((i == 3 || i == 4) && !((Pawn) getPiece(i,j)).getHasMoved()) {
+                            ((Pawn) getPiece(i,j)).setJustMoved2(true);
+                            //Log.e("justMoved2", "set to true: i = " + i + " j = " + j);
+                        }
+                        ((Pawn) getPiece(i,j)).setHasMoved(true);
+                        //Log.e("hasMoved", "set to true: i = " + i + " j = " + j);
+                    }
+                }
+            }
+        }
     }
 //GameState class
 }
