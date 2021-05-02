@@ -243,9 +243,9 @@ public class ChessGameState extends GameState implements Serializable {
 
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
         if(board[row][col] instanceof King){
-            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+            //System.out.println("king location at: " + selectedRow + " " + selectedCol);
             setKingLocation(selectedRow, selectedCol);
-            ((King) board[row][col]).setHasMoved(true);
+            //((King) board[row][col]).setHasMoved(true);
         }
 
         // promote a pawn
