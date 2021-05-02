@@ -58,7 +58,7 @@ public class ChessGameState extends GameState implements Serializable {
     private boolean isDrawPressed;
     private boolean isForfeitPressed;
     private boolean isPaused;
-  
+
     //boolean to work with castling action
     public boolean castlingRightBlack;
     public boolean castlingRightWhite;
@@ -222,63 +222,6 @@ public class ChessGameState extends GameState implements Serializable {
       }// copy constructor
 
     /**
-     * Move piece method
-     * @param row
-     *      current row
-     * @param col
-     *      current col
-     * @param selectedRow
-     *      dest row
-     * @param selectedCol
-     *      dest col
-     * @param piece
-     *      piece to move
-     */
-
-    public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-        if(board[row][col] instanceof King){
-            System.out.println("king location at: " + selectedRow + " " + selectedCol);
-            setKingLocation(selectedRow, selectedCol);
-            ((King) board[row][col]).setHasMoved(true);
-        }
-
-        // promote a pawn
-        if(board[row][col] instanceof Pawn && selectedRow == 0) {
-            System.out.println("pawn promoted to Queen");
-            setPiece(selectedRow, selectedCol, new Queen(false));
-            setPiece(row, col, null);
-        }
-        else if(board[row][col] instanceof Pawn && selectedRow == 7) {
-            System.out.println("pawn promoted to Queen");
-            setPiece(selectedRow, selectedCol, new Queen(true));
-            setPiece(row, col, null);
-        }
-        // make a regular move
-        else{
-            System.out.println("moved piece");
-            setPiece(selectedRow, selectedCol, board[row][col]);
-            setPiece(row, col, null);
-        }
-    }
-
-    public void pawnMovesTwo(){
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(board[i][j] instanceof Pawn){
-                    if(i != 1 && i != 6) {
-                        if((i == 3 || i == 4) && !((Pawn) getPiece(i,j)).getHasMoved()) {
-                            ((Pawn) getPiece(i,j)).setJustMoved2(true);
-                            //Log.e("justMoved2", "set to true: i = " + i + " j = " + j);
-                        }
-                        ((Pawn) getPiece(i,j)).setHasMoved(true);
-                        //Log.e("hasMoved", "set to true: i = " + i + " j = " + j);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * getPiece returns the specific piece at the place in the board
      * @param row
      * @param col
@@ -338,7 +281,7 @@ public class ChessGameState extends GameState implements Serializable {
             }
         }
     }
-  
+
   /**
      * toString method
      * prints the values for all the variables
@@ -361,38 +304,154 @@ public class ChessGameState extends GameState implements Serializable {
     }
 
     /**
-     * getter and setter methods for communicating with other classes
-     *
+     * Move piece method
+     * @param row
+     *      current row
+     * @param col
+     *      current col
+     * @param selectedRow
+     *      dest row
+     * @param selectedCol
+     *      dest col
+     * @param piece
+     *      piece to move
      */
-    //buttons
-    public void setGameStarted(boolean gameStarted) { this.gameStarted = gameStarted; }
-    public boolean getGameStarted() { return gameStarted; }
-    public void setQuitPressed(boolean quitPressed) { isQuitPressed = quitPressed; }
-    public boolean isQuitPressed() { return isQuitPressed; }
-    public void setDrawPressed(boolean drawPressed) { isDrawPressed = drawPressed; }
-    public boolean isDrawPressed() { return isDrawPressed; }
-    public void setForfeitPressed(boolean forfeitPressed) { isForfeitPressed = forfeitPressed; }
-    public boolean isForfeitPressed() { return isForfeitPressed; }
+    public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
+//        if(board[row][col] instanceof King){
+//            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+//            setKingLocation(selectedRow, selectedCol);
+//            ((King) board[row][col]).setHasMoved(true);
+//        }
+
+
+        setPiece(selectedRow,selectedCol,board[row][col]);
+        setPiece(row,col,null);
+    }
+
+//    public void kingIsMoving(Piece piece) {
+//        if(piece instanceof King){
+//            ((King) piece).setHasMoved(true);
+//            Log.e("KingMove", "KING HAS MOVED");
+//        }
+//    }
+
+
+    /**
+     * all methods for each of the actions defined in
+     * the actions.txt text file. Each method returns a
+     * boolean and verifies whether the move is legal and
+     * modifies the gamestate to reflect the taken action
+     */
+    public boolean isStartPressed(){
+        if(gameStarted){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * checks if the paused button is pressed
+     * @return
+     */
+    public boolean isPausePressed(){
+        if(isPaused){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * checks if the paused button is pressed
+     * @return
+     */
+    public boolean isQuitPressed(){
+        //quitInitiated would turn true or false based on button onClick
+        if(isQuitPressed){
+            //this will be implemented using game framework; not required for game
+            //state assignment
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * checks if the paused button is pressed
+     * @return
+     */
+    public boolean isDrawPressed(){
+        //drawInitiated would turn true or false based on button onClick
+        if(isDrawPressed){
+            //this will be implemented using game framework; not required for game
+            //state assignment
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * checks if the paused button is pressed
+     * @return
+     */
+    public boolean isForfeitPressed(){
+        if(isForfeitPressed){
+            System.out.println("forfeit pressed in game state");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    //getter and setter for player turn
+    public int getPlayerTurn() {
+        return playerTurn;
+    }
+    public void setPlayerTurn(int player){
+        playerTurn = player;
+    }
+    //getter and setter for points
+    public int getPointsBlack() {
+        return pointsBlack;
+    }
+    public void setPointsBlack(int pointsBlack) {
+        this.pointsBlack = pointsBlack;
+    }
+    public int getPointsWhite() {
+        return pointsWhite;
+    }
+    public void setPointsWhite(int pointsWhite) {
+        this.pointsWhite = pointsWhite;
+    }
+    //set boolean checked condition, and get checked condition
+    public boolean isCheckedBlack() {
+        return isCheckedBlack;
+    }
+    public void setCheckedBlack(boolean checkedBlack) {
+        isCheckedBlack = checkedBlack;
+    }
+    public boolean isCheckedWhite() {
+        return isCheckedWhite;
+    }
+    public void setCheckedWhite(boolean checkedWhite) {
+        isCheckedBlack = checkedWhite;
+    }
+    //set boolean checkmated condition, and get checkmated condition
+    public boolean isCheckedmateBlack() {
+        return isCheckedmateBlack;
+    }
+    public void setCheckedmateBlack(boolean checkedmateBlack) { isCheckedmateBlack = checkedmateBlack; }
+    public boolean isCheckedmateWhite() {
+        return isCheckedmateWhite;
+    }
+    public void setCheckedmateWhite(boolean checkedmateWhite) { isCheckedmateWhite = checkedmateWhite; }
+    //set paused boolean and check paused boolean
     public boolean getPaused() { return isPaused; }
     public void setPaused(boolean paused) { isPaused = paused; }
 
-    //game conditions
-    public int getPlayerTurn() {return playerTurn;}
-    public void setPlayerTurn(int player){playerTurn = player;}
-    public int getPointsBlack() {return pointsBlack;}
-    public void setPointsBlack(int pointsBlack) {this.pointsBlack = pointsBlack;}
-    public int getPointsWhite() {return pointsWhite;}
-    public void setPointsWhite(int pointsWhite) {this.pointsWhite = pointsWhite;}
-    public boolean isCheckedBlack() {return isCheckedBlack;}
-    public void setCheckedBlack(boolean checkedBlack) {isCheckedBlack = checkedBlack;}
-    public boolean isCheckedWhite() {return isCheckedWhite;}
-    public void setCheckedWhite(boolean checkedWhite) {isCheckedBlack = checkedWhite;}
-    public boolean isCheckedmateBlack() {return isCheckedmateBlack;}
-    public void setCheckedmateBlack(boolean checkedmateBlack) { isCheckedmateBlack = checkedmateBlack; }
-    public boolean isCheckedmateWhite() {return isCheckedmateWhite; }
-    public void setCheckedmateWhite(boolean checkedmateWhite) { isCheckedmateWhite = checkedmateWhite; }
-
-    //timer
     public String getPlayerTimerText(){ return playerTimerText; }
     public void setPlayerTimerText(String text){ playerTimerText = text;}
     public String getOpposingTimerText(){ return opposingTimerText; }
@@ -401,5 +460,7 @@ public class ChessGameState extends GameState implements Serializable {
     public void setPlayerTimerRunning(boolean run){ playerTimerRunning = run; }
     public boolean getOpposingTimerRunning(){ return opposingTimerRunning; }
     public void setOpposingTimerRunning(boolean run){ opposingTimerRunning = run; }
+    public void setGameStarted(boolean started){gameStarted = started;}
+    public boolean getGameStarted(){return gameStarted;}
 //GameState class
 }
