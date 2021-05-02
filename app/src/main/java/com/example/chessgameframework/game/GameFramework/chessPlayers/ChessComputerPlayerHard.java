@@ -13,11 +13,13 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurn
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
 /**
- * This is a really dumb computer player that always just makes a random move
- * it's so stupid that it sometimes tries to make moves on non-blank spots.
+ * ChessComputerPlayerHard is a more sophisticated computer player.  Rather than random moves,
+ * it tries to take certain pieces that have the "highest value."  So if given a decision between
+ * taking a piece or moving to an empty space, it'll choose to take a piece since that has "more
+ * value".
  *
- * @author Steven R. Vegdahl
- * @version July 2013
+ * @author Logan Machida
+ * @date 4/29/21
  */
 public class ChessComputerPlayerHard extends GameComputerPlayer {
     /*

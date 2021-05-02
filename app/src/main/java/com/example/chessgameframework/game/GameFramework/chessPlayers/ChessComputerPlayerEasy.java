@@ -7,9 +7,11 @@ import com.example.chessgameframework.game.GameFramework.infoMessage.GameInfo;
 import com.example.chessgameframework.game.GameFramework.infoMessage.NotYourTurnInfo;
 import com.example.chessgameframework.game.GameFramework.players.GameComputerPlayer;
 import com.example.chessgameframework.game.GameFramework.utilities.Logger;
+
 /**
- * This is a really dumb computer player that always just makes a random move
- * it's so stupid that it sometimes tries to make moves on non-blank spots.
+ * ChessComputerPlayerEasy is an easy computer player that selects a random piece and the moves it
+ * to a random square.
+ *
  * @author Logan Machida
  *
  */

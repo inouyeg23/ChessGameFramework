@@ -5,6 +5,13 @@ import android.util.Log;
 import com.example.chessgameframework.ChessGameState;
 import com.example.chessgameframework.game.GameFramework.Piece;
 
+/**
+ * MoveBoard is a helper class for determining which moves are possible.
+ *
+ * @authors: Jonah Ingler, Connor Morgan
+ * @date: 4/30/21
+ */
+
 public class MoveBoard {
 
 
