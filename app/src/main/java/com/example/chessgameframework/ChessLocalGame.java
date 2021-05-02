@@ -6,9 +6,7 @@ import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.Piece;
-import com.example.chessgameframework.game.GameFramework.Pieces.King;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
-import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessCastlingAction;
@@ -116,7 +114,7 @@ public class ChessLocalGame extends LocalGame {
             int col = CMA.getCol();
             int selectedCol = CMA.getSelectedCol();
             int selectedRow = CMA.getSelectedRow();
-            Piece piece = CGS.getPiece(row,col);
+            Piece piece = CMA.getSelectedPiece();
 
             // get the ID of our player
             int playerID = getPlayerIdx(CMA.getPlayer());
@@ -127,35 +125,18 @@ public class ChessLocalGame extends LocalGame {
             // place the player's piece on the selected square
             if(playerID != playerTurn)
                 return false;
-            if(piece instanceof Rook) {
-                ((Rook) piece).setHasMoved(true);
-                System.out.println(((Rook) piece).getHasMoved() + "_______________________________________________________________________");
-            }
-            else if(piece instanceof King)
-                ((King) piece).setHasMoved(true);
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
-            if(CGS.castlingRightWhite || CGS.castlingRightBlack || CGS.castlingLeftWhite || CGS.castlingLeftBlack){
-
-                System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
+            if(action instanceof ChessCastlingAction){
                 //we need to move the other piece now too
-                if(CGS.castlingRightWhite || CGS.castlingRightBlack){
+                if(selectedCol > col){
                     //we castled to the right so we need to move the rook to the left
-                    System.out.println("row: "+ row + ", col: " + col);
-
-                    CGS.movePiece(col, row + 3, col, row + 1,CGS.getPiece(row,col));
-                    //System.out.println(CGS.getPiece(col+3,row));
-                    CGS.castlingRightBlack = false;
-                    CGS.castlingRightWhite = false;
+                    CGS.movePiece(col, row + 3, col, row+1,CGS.getPiece(row,col));
                 }
                 else{
                     //we castled to the left
-                    System.out.println("castling left side");
-                    CGS.movePiece(col, row - 4, col, row - 1,CGS.getPiece(row,col));
-                    CGS.castlingLeftBlack = false;
-                    CGS.castlingLeftWhite = false;
+                    CGS.movePiece(col, row - 4, col, row-1,CGS.getPiece(row,col));
                 }
             }
-
 
             if(CGS.enPWhiteR){
                 CGS.setPiece(selectedCol + 1, selectedRow, null);
@@ -181,39 +162,37 @@ public class ChessLocalGame extends LocalGame {
             if(!CGS.getGameStarted())
                 CGS.setGameStarted(true);
 
-
-
-            if(playerTurn == 0 || playerTurn == 1){
-                int numMoves = 0;
-                for(int i = 0; i < 8;i++){
-                    for(int j = 0; j < 8; j++){
-                        if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == true) {
-                            MoveBoard mb = new MoveBoard();
-                            mb.findMoves(CGS,i,j);
-                            numMoves += mb.getNumMoves();
+            if(playerTurn == 0){
+                if(CGS.isCheckedBlack()){
+                    int numMoves = 0;
+                    for(int i = 0; i < 8;i++){
+                        for(int j = 0; j < 8; j++){
+                            if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == true) {
+                                MoveBoard mb = new MoveBoard();
+                                mb.findMoves(CGS,i,j);
+                                numMoves += mb.getNumMoves();
+                            }
                         }
                     }
+                    if(numMoves == 0)
+                        state.setCheckedmateBlack(true);
                 }
-
-                if(numMoves == 0)
-                    state.setCheckedmateBlack(true);
-
-
             }
             else{
-
-                int numMoves = 0;
-                for(int i = 0; i < 8;i++){
-                    for(int j = 0; j < 8; j++){
-                        if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == false) {
-                            MoveBoard mb = new MoveBoard();
-                            mb.findMoves(CGS,i,j);
-                            numMoves += mb.getNumMoves();
+                if(CGS.isCheckedWhite()){
+                    int numMoves = 0;
+                    for(int i = 0; i < 8;i++){
+                        for(int j = 0; j < 8; j++){
+                            if(CGS.getPiece(i,j) != null && CGS.getPiece(i,j).isBlack() == false) {
+                                MoveBoard mb = new MoveBoard();
+                                mb.findMoves(CGS,i,j);
+                                numMoves += mb.getNumMoves();
+                            }
                         }
                     }
+                    if(numMoves == 0)
+                        state.setCheckedmateWhite(true);
                 }
-                if(numMoves == 0)
-                    state.setCheckedmateWhite(true);
             }
             // make it the other player's turn
             CGS.setPlayerTurn(1 - playerTurn);
