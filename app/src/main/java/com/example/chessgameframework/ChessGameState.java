@@ -335,17 +335,6 @@ public class ChessGameState extends GameState implements Serializable {
 //        }
 //    }
 
-    public void kingSearch(){
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                if(board[i][j] instanceof King){
-                    if((i != 0 || i != 7) && j !=4){
-                        ((King) getPiece(i,j)).setHasMoved(true);
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * all methods for each of the actions defined in
@@ -471,5 +460,7 @@ public class ChessGameState extends GameState implements Serializable {
     public void setPlayerTimerRunning(boolean run){ playerTimerRunning = run; }
     public boolean getOpposingTimerRunning(){ return opposingTimerRunning; }
     public void setOpposingTimerRunning(boolean run){ opposingTimerRunning = run; }
+    public void setGameStarted(boolean started){gameStarted = started;}
+    public boolean getGameStarted(){return gameStarted;}
 //GameState class
 }
