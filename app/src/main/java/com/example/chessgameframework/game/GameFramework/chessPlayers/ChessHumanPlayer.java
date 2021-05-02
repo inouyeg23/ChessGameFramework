@@ -14,7 +14,6 @@ import com.example.chessgameframework.R;
 import com.example.chessgameframework.game.GameFramework.GameMainActivity;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
-import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessCastlingAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessMoveAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessPauseAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessResumeAction;
@@ -197,18 +196,8 @@ public class ChessHumanPlayer extends GameHumanPlayer implements View.OnClickLis
                 if (selectedPieceMB.getCanMove(xsquare, ysquare)) {
 
                     System.out.println("send a move to: " + xsquare + ", " + ysquare);
-
-
-                    if(gameState.castlingLeftBlack || gameState.castlingLeftWhite || gameState.castlingRightBlack || gameState.castlingRightWhite){
-                        ChessCastlingAction chessAction = new ChessCastlingAction(this,selX,selY,xsquare,ysquare,gameState.getPiece(selX,selY));
-                        game.sendAction(chessAction);
-                    }
-                    else{
-                        ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
-                        game.sendAction(action);
-                    }
-
-
+                    ChessMoveAction action = new ChessMoveAction(this, selX, selY, xsquare, ysquare, gameState.getPiece(selX, selY));
+                    game.sendAction(action);
                     System.out.println("we have sent a move");
 
                 }
