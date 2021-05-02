@@ -6,7 +6,9 @@ import android.widget.TextView;
 
 import com.example.chessgameframework.game.GameFramework.LocalGame;
 import com.example.chessgameframework.game.GameFramework.Piece;
+import com.example.chessgameframework.game.GameFramework.Pieces.King;
 import com.example.chessgameframework.game.GameFramework.Pieces.MoveBoard;
+import com.example.chessgameframework.game.GameFramework.Pieces.Rook;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessButtonAction;
 import com.example.chessgameframework.game.GameFramework.chessActionMessage.ChessCastlingAction;
@@ -126,15 +128,32 @@ public class ChessLocalGame extends LocalGame {
             if(playerID != playerTurn)
                 return false;
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
-            if(action instanceof ChessCastlingAction){
+            if(piece instanceof Rook) {
+                ((Rook) piece).setHasMoved(true);
+                System.out.println(((Rook) piece).getHasMoved() + "_______________________________________________________________________");
+            }
+            else if(piece instanceof King)
+                ((King) piece).setHasMoved(true);
+
+            if(CGS.castlingRightWhite || CGS.castlingRightBlack || CGS.castlingLeftWhite || CGS.castlingLeftBlack){
+
+                System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
                 //we need to move the other piece now too
-                if(selectedCol > col){
+                if(CGS.castlingRightWhite || CGS.castlingRightBlack){
                     //we castled to the right so we need to move the rook to the left
-                    CGS.movePiece(col, row + 3, col, row+1,CGS.getPiece(row,col));
+                    System.out.println("row: "+ row + ", col: " + col);
+
+                    CGS.movePiece(col, row + 3, col, row + 1,CGS.getPiece(row,col));
+                    //System.out.println(CGS.getPiece(col+3,row));
+                    CGS.castlingRightBlack = false;
+                    CGS.castlingRightWhite = false;
                 }
                 else{
                     //we castled to the left
-                    CGS.movePiece(col, row - 4, col, row-1,CGS.getPiece(row,col));
+                    System.out.println("castling left side");
+                    CGS.movePiece(col, row - 4, col, row - 1,CGS.getPiece(row,col));
+                    CGS.castlingLeftBlack = false;
+                    CGS.castlingLeftWhite = false;
                 }
             }
 
