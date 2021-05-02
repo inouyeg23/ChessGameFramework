@@ -462,5 +462,13 @@ public class ChessGameState extends GameState implements Serializable {
     public void setOpposingTimerRunning(boolean run){ opposingTimerRunning = run; }
     public void setGameStarted(boolean started){gameStarted = started;}
     public boolean getGameStarted(){return gameStarted;}
+    public boolean getQuitPressed(){return isQuitPressed;};
+    public void setQuitPressed(boolean quitPressed){isQuitPressed = quitPressed;}
+    public boolean getForfeitPressed(){return isForfeitPressed;}
+    public void setForfeitPressed(boolean forfeitPressed){isForfeitPressed = forfeitPressed;}
+    public void setDrawPressed(boolean drawPressed){isDrawPressed = drawPressed;}
+
+    public void pawnMovesTwo() {
+    }
 //GameState class
 }
