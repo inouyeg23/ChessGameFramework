@@ -228,10 +228,7 @@ public class ChessGameState extends GameState implements Serializable {
      * @return
      */
     public Piece getPiece(int row, int col){
-        if(board[row][col] == null|| row < 0 || col < 0) {
-            return null;
-        }
-        if(row >= board.length || col >= board[row].length){
+        if( row < 0 || col < 0 || row >= board.length || col >= board[row].length || board[row][col] == null) {
             return null;
         }
         return board[row][col];
@@ -317,23 +314,30 @@ public class ChessGameState extends GameState implements Serializable {
      *      piece to move
      */
     public void movePiece(int row, int col, int selectedRow, int selectedCol, Piece piece){
-//        if(board[row][col] instanceof King){
-//            System.out.println("king location at: " + selectedRow + " " + selectedCol);
-//            setKingLocation(selectedRow, selectedCol);
-//            ((King) board[row][col]).setHasMoved(true);
-//        }
+        if(board[row][col] instanceof King){
+            System.out.println("king location at: " + selectedRow + " " + selectedCol);
+            setKingLocation(selectedRow, selectedCol);
+            ((King) board[row][col]).setHasMoved(true);
+        }
 
-
-        setPiece(selectedRow,selectedCol,board[row][col]);
-        setPiece(row,col,null);
+        // promote a pawn
+        if(board[row][col] instanceof Pawn && selectedRow == 0) {
+            System.out.println("pawn promoted to Queen");
+            setPiece(selectedRow, selectedCol, new Queen(false));
+            setPiece(row, col, null);
+        }
+        else if(board[row][col] instanceof Pawn && selectedRow == 7) {
+            System.out.println("pawn promoted to Queen");
+            setPiece(selectedRow, selectedCol, new Queen(true));
+            setPiece(row, col, null);
+        }
+        // make a regular move
+        else{
+            System.out.println("moved piece");
+            setPiece(selectedRow, selectedCol, board[row][col]);
+            setPiece(row, col, null);
+        }
     }
-
-//    public void kingIsMoving(Piece piece) {
-//        if(piece instanceof King){
-//            ((King) piece).setHasMoved(true);
-//            Log.e("KingMove", "KING HAS MOVED");
-//        }
-//    }
 
 
     /**
