@@ -4,6 +4,13 @@ import com.example.chessgameframework.game.GameFramework.Piece;
 import com.example.chessgameframework.game.GameFramework.actionMessage.GameAction;
 import com.example.chessgameframework.game.GameFramework.players.GamePlayer;
 
+/**
+ * ChessCastlingAction is the action for the special move castling
+ *
+ * @author Connor Morgan
+ * @date: 4/30/21
+ */
+
 public class ChessCastlingAction  extends ChessMoveAction {
 
     /**

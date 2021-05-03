@@ -129,14 +129,14 @@ public class ChessLocalGame extends LocalGame {
                 return false;
             if(piece instanceof Rook) {
                 ((Rook) piece).setHasMoved(true);
-                System.out.println(((Rook) piece).getHasMoved() + "_______________________________________________________________________");
+                //System.out.println(((Rook) piece).getHasMoved() + "_______________________________________________________________________");
             }
             else if(piece instanceof King)
                 ((King) piece).setHasMoved(true);
             CGS.movePiece(col, row, selectedCol, selectedRow, piece);
             if(CGS.castlingRightWhite || CGS.castlingRightBlack || CGS.castlingLeftWhite || CGS.castlingLeftBlack){
 
-                System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
+                //System.out.println("---------------------------------------------------------\nwe found a castling action\n-----------------------------------");
                 //we need to move the other piece now too
                 if(CGS.castlingRightWhite || CGS.castlingRightBlack){
                     //we castled to the right so we need to move the rook to the left
@@ -156,7 +156,7 @@ public class ChessLocalGame extends LocalGame {
                 }
             }
 
-
+            //checking for enpassant and which color move it is for
             if(CGS.enPWhiteR){
                 CGS.setPiece(selectedCol + 1, selectedRow, null);
                 CGS.enPWhiteR = false;
@@ -180,8 +180,6 @@ public class ChessLocalGame extends LocalGame {
 
             if(!CGS.getGameStarted())
                 CGS.setGameStarted(true);
-
-
 
             if(playerTurn == 0 || playerTurn == 1){
                 int numMoves = 0;

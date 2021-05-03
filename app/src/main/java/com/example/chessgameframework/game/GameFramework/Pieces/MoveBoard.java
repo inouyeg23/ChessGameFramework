@@ -14,14 +14,13 @@ import com.example.chessgameframework.game.GameFramework.Piece;
 
 public class MoveBoard {
 
-
+    //instance variables for the board
     private boolean[][] board;
     private boolean[][] checkBoard;
     private int numMoves;
     private int kingMoves;
 
-
-
+    //setting up the board to be booleans to test spaces
     public MoveBoard(){
         numMoves = 0;
         kingMoves = 0;
@@ -37,12 +36,15 @@ public class MoveBoard {
         }
     }
 
+    //finding moves
     public void findMoves(ChessGameState gameState, int row, int col){
         findPossibleMoves(gameState,row,col, true);
         //removeCheckMoves(gameState,gameState.getPiece(row,col).isBlack());
 
     }
 
+    //finding all possible moves base on pieces
+    //also works in conjunction with the highlight method in surfaceView
     public void findPossibleMoves(ChessGameState gameState, int row, int col, boolean checkForChecks){
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -327,14 +329,7 @@ public class MoveBoard {
         }
     }
 
-    public boolean getCanMove(int row,int col){
-        return board[row][col];
-    }
-
-    public int getNumMoves(){
-        return this.numMoves;
-    }
-
+    //adding a move to the board if the move is viable
     private boolean addMoveToBoardIfGood(ChessGameState gameState, int pieceRow, int pieceCol, int rowDiff, int colDiff, boolean checkForChecks){
         Piece piece = gameState.getPiece(pieceRow,pieceCol);
         boolean isBlack = piece.isBlack();
@@ -435,6 +430,7 @@ public class MoveBoard {
         return false;
     }
 
+    //getting the king location on the board
     private int[] getKingLoc(ChessGameState gameState, boolean isBlacksTurn){
         //find king
         int kRow = -1;
@@ -459,6 +455,7 @@ public class MoveBoard {
 
     }
 
+    //checking if the king is ever in check
     private boolean getIfKingInCheck(ChessGameState gameState, int kingRow, int kingCol){
 
         boolean inCheck = false;
@@ -478,6 +475,13 @@ public class MoveBoard {
             }
         }
         return inCheck;
+    }
+
+    public boolean getCanMove(int row,int col){
+        return board[row][col];
+    }
+    public int getNumMoves(){
+        return this.numMoves;
     }
 
 
